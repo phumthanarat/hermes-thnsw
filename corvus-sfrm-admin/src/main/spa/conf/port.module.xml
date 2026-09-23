@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module id="port" seqno="6">
+	<name>Port</name>
+	<description>Inbound port / channel management (File Polling, FTP, SFTP, Mail)</description>
+	<link>/admin/port/file_polling</link>
+	<tabs>
+		<tab id="file_polling">
+			<name>Ports</name>
+			<description>Configure File Polling, FTP, SFTP and Mail channels that feed inbound files into SFRM</description>
+			<link>/admin/port/file_polling</link>
+		</tab>
+	</tabs>
+</module>

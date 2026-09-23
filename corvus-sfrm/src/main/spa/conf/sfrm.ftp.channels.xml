@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<module id="sfrm.ftp.channels" name="SFRM Plugin" version="1.0">
+
+	<parameters>
+		<parameter name="execution-interval" value="30000" />
+	</parameters>
+
+	<component id="task-list" name="FTP Channels Collector">
+		<class>hk.hku.cecid.edi.sfrm.task.FtpChannelCollector</class>
+		<parameter name="max-thread-count" value="3" />
+	</component>
+</module>

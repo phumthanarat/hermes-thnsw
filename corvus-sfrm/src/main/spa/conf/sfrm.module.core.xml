@@ -32,8 +32,8 @@
 		<class>hk.hku.cecid.piazza.commons.security.KeyStoreManager</class>
 		<parameter name="keystore-location" value="corvus.p12"/>
 		<parameter name="keystore-password" value="password"/>
-		<parameter name="key-alias" value="dummy"/>
-		<parameter name="key-password" value=""/>
+		<parameter name="key-alias" value="corvus"/>
+		<parameter name="key-password" value="password"/>
 		<parameter name="keystore-type" value="PKCS12"/>
 		<parameter name="keystore-provider" value="org.bouncycastle.jce.provider.BouncyCastleProvider"/>
 	</component>

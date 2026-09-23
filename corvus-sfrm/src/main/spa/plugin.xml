@@ -12,7 +12,9 @@
 	
 	<runtime>
 		<library name="corvus-sfrm.jar"/>
-		<library name="ant.jar"/>		
+		<library name="ant.jar"/>
+		<library name="commons-net.jar"/>
+		<library name="jsch.jar"/>
 		<library name="conf/"/>
 		<library name="security/"/>
 	</runtime>

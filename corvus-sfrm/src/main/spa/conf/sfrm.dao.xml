@@ -166,5 +166,119 @@
 			value="SELECT SUM(segment_end - segment_start + 1) FROM sfrm_message_segment WHERE message_id = ? AND message_box = ? AND segment_type LIKE ? AND proceed_timestamp IS NOT NULL AND completed_timestamp BETWEEN ? AND ?"/>
 		-->
 		<!-- End query for testing purpose -->
-	</dao>				
+	</dao>
+
+	<dao name="hk.hku.cecid.edi.sfrm.dao.FilePollingChannelDAO">
+		<class>hk.hku.cecid.edi.sfrm.dao.ds.FilePollingChannelDSDAO</class>
+		<parameter name="table" value="sfrm_file_polling_channel" />
+		<parameter name="key" value="channel_id" />
+		<parameter type="column" name="channel_id" value="channelId" />
+		<parameter type="column" name="name" value="name" />
+		<parameter type="column" name="watch_path" value="watchPath" />
+		<parameter type="column" name="polling_interval" value="pollingInterval" />
+		<parameter type="column" name="max_files_per_poll" value="maxFilesPerPoll" />
+		<parameter type="column" name="is_disabled" value="isDisabled" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="created_timestamp" value="createdTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM sfrm_file_polling_channel WHERE channel_id = ?"/>
+		<parameter type="finder" name="find_all_channels" value="SELECT * FROM sfrm_file_polling_channel ORDER BY channel_id"/>
+		<parameter type="finder" name="find_enabled_channels" value="SELECT * FROM sfrm_file_polling_channel WHERE is_disabled = false ORDER BY channel_id"/>
+	</dao>
+
+	<dao name="hk.hku.cecid.edi.sfrm.dao.FtpChannelDAO">
+		<class>hk.hku.cecid.edi.sfrm.dao.ds.FtpChannelDSDAO</class>
+		<parameter name="table" value="sfrm_ftp_channel" />
+		<parameter name="key" value="channel_id" />
+		<parameter type="column" name="channel_id" value="channelId" />
+		<parameter type="column" name="name" value="name" />
+		<parameter type="column" name="host" value="host" />
+		<parameter type="column" name="port" value="port" />
+		<parameter type="column" name="username" value="username" />
+		<parameter type="column" name="password_encrypted" value="passwordEncrypted" />
+		<parameter type="column" name="remote_path" value="remotePath" />
+		<parameter type="column" name="is_passive_mode" value="isPassiveMode" />
+		<parameter type="column" name="use_tls" value="useTls" />
+		<parameter type="column" name="tls_cert_fingerprint" value="tlsCertFingerprint" />
+		<parameter type="column" name="polling_interval" value="pollingInterval" />
+		<parameter type="column" name="max_files_per_poll" value="maxFilesPerPoll" />
+		<parameter type="column" name="is_disabled" value="isDisabled" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="created_timestamp" value="createdTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM sfrm_ftp_channel WHERE channel_id = ?"/>
+		<parameter type="finder" name="find_all_channels" value="SELECT * FROM sfrm_ftp_channel ORDER BY channel_id"/>
+		<parameter type="finder" name="find_enabled_channels" value="SELECT * FROM sfrm_ftp_channel WHERE is_disabled = false ORDER BY channel_id"/>
+	</dao>
+
+	<dao name="hk.hku.cecid.edi.sfrm.dao.SftpChannelDAO">
+		<class>hk.hku.cecid.edi.sfrm.dao.ds.SftpChannelDSDAO</class>
+		<parameter name="table" value="sfrm_sftp_channel" />
+		<parameter name="key" value="channel_id" />
+		<parameter type="column" name="channel_id" value="channelId" />
+		<parameter type="column" name="name" value="name" />
+		<parameter type="column" name="host" value="host" />
+		<parameter type="column" name="port" value="port" />
+		<parameter type="column" name="username" value="username" />
+		<parameter type="column" name="password_encrypted" value="passwordEncrypted" />
+		<parameter type="column" name="remote_path" value="remotePath" />
+		<parameter type="column" name="host_key_fingerprint" value="hostKeyFingerprint" />
+		<parameter type="column" name="polling_interval" value="pollingInterval" />
+		<parameter type="column" name="max_files_per_poll" value="maxFilesPerPoll" />
+		<parameter type="column" name="is_disabled" value="isDisabled" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="created_timestamp" value="createdTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM sfrm_sftp_channel WHERE channel_id = ?"/>
+		<parameter type="finder" name="find_all_channels" value="SELECT * FROM sfrm_sftp_channel ORDER BY channel_id"/>
+		<parameter type="finder" name="find_enabled_channels" value="SELECT * FROM sfrm_sftp_channel WHERE is_disabled = false ORDER BY channel_id"/>
+	</dao>
+
+	<dao name="hk.hku.cecid.edi.sfrm.dao.MailChannelDAO">
+		<class>hk.hku.cecid.edi.sfrm.dao.ds.MailChannelDSDAO</class>
+		<parameter name="table" value="sfrm_mail_channel" />
+		<parameter name="key" value="channel_id" />
+		<parameter type="column" name="channel_id" value="channelId" />
+		<parameter type="column" name="name" value="name" />
+		<parameter type="column" name="protocol" value="protocol" />
+		<parameter type="column" name="host" value="host" />
+		<parameter type="column" name="port" value="port" />
+		<parameter type="column" name="username" value="username" />
+		<parameter type="column" name="password_encrypted" value="passwordEncrypted" />
+		<parameter type="column" name="folder" value="folder" />
+		<parameter type="column" name="use_ssl" value="useSsl" />
+		<parameter type="column" name="polling_interval" value="pollingInterval" />
+		<parameter type="column" name="max_messages_per_poll" value="maxMessagesPerPoll" />
+		<parameter type="column" name="is_disabled" value="isDisabled" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="created_timestamp" value="createdTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM sfrm_mail_channel WHERE channel_id = ?"/>
+		<parameter type="finder" name="find_all_channels" value="SELECT * FROM sfrm_mail_channel ORDER BY channel_id"/>
+		<parameter type="finder" name="find_enabled_channels" value="SELECT * FROM sfrm_mail_channel WHERE is_disabled = false ORDER BY channel_id"/>
+	</dao>
+
+	<dao name="hk.hku.cecid.edi.sfrm.dao.HttpChannelDAO">
+		<class>hk.hku.cecid.edi.sfrm.dao.ds.HttpChannelDSDAO</class>
+		<parameter name="table" value="sfrm_http_channel" />
+		<parameter name="key" value="channel_id" />
+		<parameter type="column" name="channel_id" value="channelId" />
+		<parameter type="column" name="name" value="name" />
+		<parameter type="column" name="bind_address" value="bindAddress" />
+		<parameter type="column" name="port" value="port" />
+		<parameter type="column" name="use_tls" value="useTls" />
+		<parameter type="column" name="target_service" value="targetService" />
+		<parameter type="column" name="is_disabled" value="isDisabled" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="created_timestamp" value="createdTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM sfrm_http_channel WHERE channel_id = ?"/>
+		<parameter type="finder" name="find_all_channels" value="SELECT * FROM sfrm_http_channel ORDER BY channel_id"/>
+		<parameter type="finder" name="find_enabled_channels" value="SELECT * FROM sfrm_http_channel WHERE is_disabled = false ORDER BY channel_id"/>
+	</dao>
 </dao-config>

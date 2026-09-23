@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<module id="sfrm.mail.channels" name="SFRM Plugin" version="1.0">
+
+	<parameters>
+		<parameter name="execution-interval" value="30000" />
+	</parameters>
+
+	<component id="task-list" name="Mail Channels Collector">
+		<class>hk.hku.cecid.edi.sfrm.task.MailChannelCollector</class>
+		<parameter name="max-thread-count" value="3" />
+	</component>
+</module>
