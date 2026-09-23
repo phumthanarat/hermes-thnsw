@@ -10,3 +10,13 @@ CREATE TABLE IF NOT EXISTS listener_port (
 	created_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (port_id)
 )ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS ca_issued_cert (
+	serial_number varchar(50) NOT NULL,
+	subject_dn varchar(500) NOT NULL,
+	cert blob NOT NULL,
+	revoked boolean NOT NULL DEFAULT false,
+	issued_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	revoked_timestamp timestamp NULL DEFAULT NULL,
+	PRIMARY KEY (serial_number)
+)ENGINE=INNODB;

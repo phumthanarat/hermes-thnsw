@@ -34,5 +34,15 @@
       <description>Additional dedicated HTTP(S) listener ports for partners</description>
       <link>/admin/main/listenerports</link>
     </tab>
+    <tab id="certificates">
+      <name>Certificates</name>
+      <description>Certificate health across AS2plus, ebMS and SFRM</description>
+      <link>/admin/main/certificates</link>
+    </tab>
+    <tab id="ca">
+      <name>Certificate Authority</name>
+      <description>Issue and revoke partner certificates from this gateway's internal CA</description>
+      <link>/admin/main/ca</link>
+    </tab>
   </tabs>
 </module>

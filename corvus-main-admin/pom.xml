@@ -57,12 +57,27 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>corvus-as2</artifactId>
-			<scope>provided</scope>			
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corvus-as2plus</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>corvus-ebms</artifactId>
-			<scope>provided</scope>			
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>corvus-sfrm</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+			<version>1.55</version>
 		</dependency>
 	</dependencies>
 </project>

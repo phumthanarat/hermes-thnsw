@@ -19,7 +19,9 @@
 	<requires>
 		<import plugin="hk.hku.cecid.piazza.corvus.admin" />
 		<import plugin="hk.hku.cecid.edi.as2"/>
+		<import plugin="hk.hku.cecid.edi.as2plus"/>
 		<import plugin="hk.hku.cecid.ebms"/>
+		<import plugin="hk.hku.cecid.edi.sfrm"/>
 	</requires>
 	
 	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="JVM Properties Pagelet Adaptor">
@@ -70,6 +72,27 @@
 	  <parameter name="center" value="main.listenerports" />
 	</extension>
 
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Certificate Health Pagelet Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.listener.CertificateHealthPageletAdaptor" />
+	  <parameter name="context" value="/main/certificates" />
+	  <parameter name="module" value="main" />
+	  <parameter name="tab" value="certificates" />
+	  <parameter name="center" value="main.certificates" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Certificate Authority Pagelet Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.listener.CertificateAuthorityPageletAdaptor" />
+	  <parameter name="context" value="/main/ca" />
+	  <parameter name="module" value="main" />
+	  <parameter name="tab" value="ca" />
+	  <parameter name="center" value="main.ca" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="CA CRL Listener">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.listener.CaCrlListener" />
+	  <parameter name="context" value="/ca/crl" />
+	</extension>
+
 	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Properties Pagelet">
 	  <parameter name="id" value="main.properties" />
 	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/properties.xsl" />
@@ -93,6 +116,16 @@
 	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Listener Ports Pagelet">
 	  <parameter name="id" value="main.listenerports" />
 	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/listener_ports.xsl" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Certificate Health Pagelet">
+	  <parameter name="id" value="main.certificates" />
+	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/certificates.xsl" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Certificate Authority Pagelet">
+	  <parameter name="id" value="main.ca" />
+	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/certificate_authority.xsl" />
 	</extension>
 
 	<extension point="hk.hku.cecid.piazza.corvus.admin.module" name="Corvus Main Admin Module">
