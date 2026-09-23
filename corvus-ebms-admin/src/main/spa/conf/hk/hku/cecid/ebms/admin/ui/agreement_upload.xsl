@@ -3,6 +3,42 @@
 <xsl:output method="html"/>
 <xsl:template match="/partnership">
 
+<form name="deleteCpaForm" method="post" action="agreement_upload">
+    <input type="hidden" name="action" value="delete_cpa" />
+    <input type="hidden" name="cpa_id" value="" />
+</form>
+
+<xsl:if test="existing_cpa">
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tr>
+    <th colspan="3">Existing CPAs</th>
+  </tr>
+  <tr>
+    <th>CPA ID</th>
+    <th>Partnership Channels</th>
+    <th></th>
+  </tr>
+  <xsl:for-each select="existing_cpa">
+  <tr>
+    <td><code><xsl:value-of select="./cpa_id" /></code></td>
+    <td><xsl:value-of select="./channel_count" /></td>
+    <td>
+      <a href="#1" style="color:var(--danger);">
+        <xsl:attribute name="title">Remove all partnership channels for this CPA -- do this before re-uploading an updated version of the same CPA</xsl:attribute>
+        <xsl:attribute name="onclick">
+          if (confirm('Remove all <xsl:value-of select="./channel_count" /> partnership channel(s) for CPA &quot;<xsl:value-of select="./cpa_id" />&quot;? This cannot be undone.')) {
+            document.deleteCpaForm.cpa_id.value='<xsl:value-of select="./cpa_id" />';
+            document.deleteCpaForm.submit();
+          }
+        </xsl:attribute>
+        Delete
+      </a>
+    </td>
+  </tr>
+  </xsl:for-each>
+</table>
+<br/>
+</xsl:if>
 
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
   <tr>

@@ -51,6 +51,13 @@ public class AgreementUploadPageletAdaptor extends AdminPageletAdaptor {
 
         boolean isMultipart = FileUpload.isMultipartContent(request);
 
+        if (!isMultipart && "post".equalsIgnoreCase(request.getMethod())
+                && "delete_cpa".equalsIgnoreCase(request.getParameter(REQ_PARAM_ACTION))) {
+            deleteCpa(request);
+        }
+
+        appendCpaList(dom);
+
         if (isMultipart) {
             DiskFileUpload upload = new DiskFileUpload();
             try {
@@ -116,6 +123,60 @@ public class AgreementUploadPageletAdaptor extends AdminPageletAdaptor {
         }
 
         return dom.getSource();
+    }
+
+    /**
+     * Deletes every partnership channel sharing the given cpa_id -- there is
+     * no separate "CPA" record to edit (a CPA upload just creates several
+     * partnership rows under a shared cpa_id, and re-uploading the same
+     * cpa_id throws "Duplicate Partnership exists"), so removing them all
+     * here is how an admin clears the way to re-upload an updated CPA file.
+     */
+    private void deleteCpa(HttpServletRequest request) {
+        String cpaId = request.getParameter("cpa_id");
+        try {
+            PartnershipDAO partnershipDAO = (PartnershipDAO) EbmsProcessor.core.dao.createDAO(PartnershipDAO.class);
+            PartnershipDVO filter = (PartnershipDVO) partnershipDAO.createDVO();
+            filter.setCpaId(cpaId);
+            List partnerships = partnershipDAO.findPartnershipsByCPA(filter);
+            int count = 0;
+            Iterator it = partnerships.iterator();
+            while (it.hasNext()) {
+                PartnershipDVO p = (PartnershipDVO) it.next();
+                partnershipDAO.remove(p);
+                count++;
+            }
+            request.setAttribute(ATTR_MESSAGE, "Removed " + count + " partnership(s) for CPA '" + cpaId + "'");
+        } catch (Exception e) {
+            EbmsProcessor.core.log.error("Unable to delete CPA", e);
+            request.setAttribute(ATTR_MESSAGE, "Unable to remove CPA '" + cpaId + "': " + e.getMessage());
+        }
+    }
+
+    private void appendCpaList(PropertyTree dom) {
+        try {
+            PartnershipDAO partnershipDAO = (PartnershipDAO) EbmsProcessor.core.dao.createDAO(PartnershipDAO.class);
+            List partnerships = partnershipDAO.findAllPartnerships();
+
+            java.util.Map counts = new java.util.LinkedHashMap();
+            Iterator it = partnerships.iterator();
+            while (it.hasNext()) {
+                PartnershipDVO p = (PartnershipDVO) it.next();
+                Integer current = (Integer) counts.get(p.getCpaId());
+                counts.put(p.getCpaId(), new Integer(current == null ? 1 : current.intValue() + 1));
+            }
+
+            int i = 0;
+            Iterator cpaIter = counts.keySet().iterator();
+            while (cpaIter.hasNext()) {
+                i++;
+                String cpaId = (String) cpaIter.next();
+                dom.setProperty("existing_cpa[" + i + "]/cpa_id", cpaId);
+                dom.setProperty("existing_cpa[" + i + "]/channel_count", counts.get(cpaId).toString());
+            }
+        } catch (Exception e) {
+            EbmsProcessor.core.log.error("Unable to list existing CPAs", e);
+        }
     }
 
     /**
