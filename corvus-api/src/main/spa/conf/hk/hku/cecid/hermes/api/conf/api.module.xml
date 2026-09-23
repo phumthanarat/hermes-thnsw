@@ -1,7 +1,23 @@
 <module id="api.main" name="API Plugin" version="1.0">
     <component id="logger" name="System Logger">
         <class>hk.hku.cecid.piazza.commons.util.LoggerLog4j</class>
-        <parameter name="config" value="hk/hku/cecid/hermes/api/conf/log4j.properties.xml" />       
+        <parameter name="config" value="hk/hku/cecid/hermes/api/conf/log4j.properties.xml" />
         <parameter name="category" value="hk.hku.cecid.hermes.api" />
+    </component>
+    <component id="daofactory" name="API Key DAO Factory">
+        <class>hk.hku.cecid.piazza.commons.dao.ds.SimpleDSDAOFactory</class>
+        <parameter name="driver" value="@apiDriverClass@" />
+        <parameter name="url" value="@apiConnStr@" />
+        <parameter name="username" value="@apiuser@" />
+        <parameter name="password" value="@apipw@" />
+        <parameter name="pooling" value="true" />
+        <parameter name="maxActive" value="10" />
+        <parameter name="maxIdle" value="5" />
+        <parameter name="maxWait" value="-1" />
+        <parameter name="testOnBorrow" value="true" />
+        <parameter name="testOnReturn" value="false" />
+        <parameter name="testWhileIdle" value="false" />
+        <parameter name="validationQuery" value="@apiValidationQuery@" />
+        <parameter name="config" value="@apiDAOFile@" />
     </component>
 </module>

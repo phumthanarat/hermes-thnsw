@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module id="api" seqno="5">
+  <name>Web Service API</name>
+  <description>The Web Service (REST API) Module</description>
+  <link>/admin/api/overview</link>
+  <tabs>
+    <tab id="overview">
+      <name>Endpoints</name>
+      <description>Registered REST API Endpoints</description>
+      <link>/admin/api/overview</link>
+    </tab>
+    <tab id="keys">
+      <name>API Keys</name>
+      <description>Issue and revoke REST API keys</description>
+      <link>/admin/api/keys</link>
+    </tab>
+  </tabs>
+</module>

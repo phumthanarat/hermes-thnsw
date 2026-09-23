@@ -38,4 +38,5 @@ public class Constants {
     public static final String DEFAULT_AS2_PARTNERSHIP_ENCRYPT_ALGORITHM = "3des";
     public static final String DEFAULT_AS2_PARTNERSHIP_MIC_ALGORITHM = "sha1";
     public static final String RESET_ACTION = "reset";
+    public static final String API_KEY_HEADER = "X-API-Key";
 }

@@ -1,0 +1,16 @@
+<dao-config>
+	<dao name="hk.hku.cecid.hermes.api.dao.ApiKeyDAO">
+		<class>hk.hku.cecid.hermes.api.dao.ds.ApiKeyDSDAO</class>
+		<parameter name="table" value="api_key" />
+		<parameter name="key" value="api_key" />
+		<parameter type="column" name="api_key" value="apiKey" />
+		<parameter type="column" name="client_name" value="clientName" />
+		<parameter type="column" name="enabled" value="enabled" />
+		<parameter type="column" name="created_timestamp" value="createdTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM api_key WHERE api_key = ?" />
+		<parameter type="finder" name="find_enabled_key" value="SELECT * FROM api_key WHERE api_key = ? AND enabled = 'true'" />
+		<parameter type="finder" name="find_all_keys" value="SELECT * FROM api_key ORDER BY created_timestamp DESC" />
+	</dao>
+</dao-config>

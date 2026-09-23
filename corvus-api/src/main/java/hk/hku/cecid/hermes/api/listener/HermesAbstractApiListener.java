@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.json.JsonParseException;
 import hk.hku.cecid.piazza.commons.json.JsonUtil;
 import hk.hku.cecid.piazza.commons.rest.RestRequest;
@@ -18,6 +19,7 @@ import hk.hku.cecid.piazza.commons.servlet.RequestListenerException;
 import hk.hku.cecid.piazza.commons.servlet.http.HttpRequestAdaptor;
 import hk.hku.cecid.hermes.api.Constants;
 import hk.hku.cecid.hermes.api.ErrorCode;
+import hk.hku.cecid.hermes.api.dao.ApiKeyDAO;
 import hk.hku.cecid.hermes.api.spa.ApiPlugin;
 
 
@@ -81,6 +83,28 @@ public class HermesAbstractApiListener extends HttpRequestAdaptor {
     }
 
     /**
+     * Checks the request's X-API-Key header against the api_key table.
+     * A key must be present and match an enabled record.
+     *
+     * @param request the incoming HTTP request.
+     * @return true if the request carries a valid, enabled API key.
+     */
+    protected boolean isAuthorized(HttpServletRequest request) {
+        String apiKey = request.getHeader(Constants.API_KEY_HEADER);
+        if (apiKey == null || apiKey.length() == 0) {
+            return false;
+        }
+        try {
+            ApiKeyDAO dao = (ApiKeyDAO) ApiPlugin.core.dao.createDAO(ApiKeyDAO.class);
+            return dao.findEnabledKey(apiKey) != null;
+        }
+        catch (DAOException e) {
+            logError("Error validating API key", e);
+            return false;
+        }
+    }
+
+    /**
      * processRequest
      * @param request
      * @param response
@@ -91,6 +115,18 @@ public class HermesAbstractApiListener extends HttpRequestAdaptor {
     public String processRequest(HttpServletRequest request, HttpServletResponse response) throws RequestListenerException {
 
         try {
+            if (!isAuthorized(request)) {
+                Map<String, Object> errorResponse = createError(ErrorCode.ERROR_UNAUTHORIZED,
+                        "Missing or invalid " + Constants.API_KEY_HEADER + " header");
+                String jsonResponse = JsonUtil.fromDictionary(errorResponse);
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType(Constants.CONTENT_TYPE);
+                OutputStreamWriter osw = new OutputStreamWriter(response.getOutputStream());
+                osw.write(jsonResponse);
+                osw.close();
+                return null;
+            }
+
             RestRequest restRequest = new RestRequest(request);
             Map<String, Object> dictionaryResponse = processApi(restRequest);
             String jsonResponse = JsonUtil.fromDictionary(dictionaryResponse);

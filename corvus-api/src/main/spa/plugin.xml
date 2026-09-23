@@ -18,7 +18,8 @@
 
     <requires>
       <import plugin="hk.hku.cecid.ebms" />
-      <import plugin="hk.hku.cecid.edi.as2" />
+      <import plugin="hk.hku.cecid.edi.as2plus" />
+      <import plugin="hk.hku.cecid.piazza.corvus.admin" />
     </requires>
 
     <extension point="hk.hku.cecid.piazza.corvus.api.httpd.listener" name="API Plugin Greeting Listener">
@@ -49,6 +50,36 @@
     <extension point="hk.hku.cecid.piazza.corvus.api.httpd.listener" name="API Plugin Message History Listener">
         <parameter name="class" value="hk.hku.cecid.hermes.api.listener.HermesMessageHistoryApiListener"/>
         <parameter name="context" value="/message/history/*" />
+    </extension>
+
+    <extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="API Overview Pagelet Adaptor">
+      <parameter name="class" value="hk.hku.cecid.hermes.api.admin.listener.ApiOverviewPageletAdaptor" />
+      <parameter name="context" value="/api/overview" />
+      <parameter name="module" value="api" />
+      <parameter name="tab" value="overview" />
+      <parameter name="center" value="api.overview" />
+    </extension>
+
+    <extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="API Overview Pagelet">
+      <parameter name="id" value="api.overview" />
+      <parameter name="pagelet" value="hk/hku/cecid/hermes/api/admin/ui/overview.xsl" />
+    </extension>
+
+    <extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="API Keys Pagelet Adaptor">
+      <parameter name="class" value="hk.hku.cecid.hermes.api.admin.listener.ApiKeyPageletAdaptor" />
+      <parameter name="context" value="/api/keys" />
+      <parameter name="module" value="api" />
+      <parameter name="tab" value="keys" />
+      <parameter name="center" value="api.keys" />
+    </extension>
+
+    <extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="API Keys Pagelet">
+      <parameter name="id" value="api.keys" />
+      <parameter name="pagelet" value="hk/hku/cecid/hermes/api/admin/ui/keys.xsl" />
+    </extension>
+
+    <extension point="hk.hku.cecid.piazza.corvus.admin.module" name="Web Service API Admin Module">
+      <parameter name="module" value="hk/hku/cecid/hermes/api/admin/conf/admin-module.xml" />
     </extension>
 
 </plugin>

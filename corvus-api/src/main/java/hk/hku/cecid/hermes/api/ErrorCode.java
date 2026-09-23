@@ -15,4 +15,5 @@ public class ErrorCode {
     public static final int ERROR_SENDING_MESSAGE = 10010;
     public static final int ERROR_EXTRACTING_PAYLOAD_FROM_MESSAGE = 10011;
     public static final int ERROR_UNKNOWN_ACTION = 10012;
+    public static final int ERROR_UNAUTHORIZED = 10013;
 }
