@@ -1,0 +1,1421 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright UN/CEFACT and OASIS, 2001. All Rights Reserved				-->
+<!-- ====================================================================== -->
+<!-- Version : 1.00					 										-->
+<!-- CPA ID : THNSW_THMINS_Production_1_00					 										-->
+<!-- Created Date	: 2017-12-08											-->
+<!-- Created CPA by : Smart Alliance								-->
+<!-- ====================================================================== -->
+<!-- Version : 1.01					 										-->
+<!-- CPA ID : THNSW_THMINS_Production_1_01					 										-->
+<!-- update SSL-ClientCert - SSL- ServerCert  for MINS     										-->
+<!-- Created CPA by : Smart Alliance								-->
+<!-- ====================================================================== -->
+<!-- Version : 1.02					 											-->
+<!-- Updated Date	: 2019-06-04 												-->
+<!-- CPAID = THNSW_THMINS_Production_1_02										-->
+<!-- Chang  SSLClientCert	&  SSLServerCert	 for THNSW 								-->
+<!-- Updated CPA by : Smart Alliance Co., Ltd.									-->
+<!-- ========================================================================== -->
+<!-- Version : 1.03					 											-->
+<!-- Updated Date	: 2019-12-04 												-->
+<!-- CPAID = THNSW_THMINS_Production_1_03										-->
+<!-- Chang  SSLClientCert	&  SSLServerCert	 for THNSW 								-->
+<!-- Updated CPA by : Smart Alliance Co., Ltd.									-->
+<!-- ========================================================================== -->
+
+<tp:CollaborationProtocolAgreement 
+	xmlns:tp="http://www.oasis-open.org/committees/ebxml-cppa/schema/cpp-cpa-2_0.xsd"
+	xmlns:tns="http://www.oasis-open.org/committees/ebxml-cppa/schema/cpp-cpa-2_0.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	tp:version="1_03"
+	xsi:schemaLocation="http://www.oasis-open.org/committees/ebxml-cppa/schema/cpp-cpa-2_0.xsd X:\Schema\ebXML\Oasis\cpp-cpa-2_0b.xsd"
+	tns:cpaid="THNSW_THMINS_Production">
+	<tns:Status tns:value="agreed"/>
+	<tns:Start>2019-12-04T00:00:00Z</tns:Start>
+	<tns:End>2023-11-05T00:00:00Z</tns:End>
+	<tp:PartyInfo 
+		tp:defaultMshChannelId="ebMS2MshSignalChannel_A02"
+		tp:partyName="Marine Insurance Group" 
+		tp:defaultMshPackageId="ebMS2MshSignalPackage">
+		<!-- Change-It [Other_Government _ID ]-->
+		<tp:PartyId tp:type="string">THMINS</tp:PartyId>
+		<tp:PartyRef xlink:type="simple" xlink:href="http://www.oasis-open.org/"/>
+
+<!-- ############################################## -->
+<!-- ############################################## -->
+<!-- ### Service Name [THNSW.THMINS:Insurance] 		-->
+<!-- ############################################## -->
+<!-- ############################################## -->
+<tp:CollaborationRole>
+	<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+	<tp:Role xlink:href="" xlink:type="simple" tp:name="Government"/>
+	<tp:ServiceBinding>
+		<tp:Service tp:type="string">THNSW.THMINS:Insurance</tp:Service>
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Document [INSPolicy]	-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Send.INSPolicy" tp:action="INSPolicy" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Recv.INSPolicy</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Document [INSResponse]	-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Send.INSResponse" tp:action="INSResponse" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Recv.INSResponse</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Document [INSRequest_ERR]	-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Send.INSRequest_ERR" tp:action="INSRequest_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Recv.INSRequest_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Document [INSConfirm_ERR]	-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Send.INSConfirm_ERR" tp:action="INSConfirm_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Recv.INSConfirm_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Document [INSCancel_ERR]	-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Send.INSCancel_ERR" tp:action="INSCancel_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Recv.INSCancel_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+		
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanReceive Document [INSRequest] 			-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Recv.INSRequest" tp:action="INSRequest" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Send.INSRequest</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanReceive Document [INSConfirm] 			-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Recv.INSConfirm" tp:action="INSConfirm" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Send.INSConfirm</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanReceive Document [INSCancel] 			-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Recv.INSCancel" tp:action="INSCancel" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Send.INSCancel</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+		
+
+	</tp:ServiceBinding>
+</tp:CollaborationRole>
+
+    <!-- ############################################## -->
+	<!-- ############################################## -->
+	<!-- ### Service Name [THNSWRegister]				-->
+	<!-- ############################################## -->
+	<!-- ############################################## -->
+	<tp:CollaborationRole>
+		<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+		<tp:Role xlink:href="" xlink:type="simple" tp:name="Government"/>
+		<tp:ServiceBinding>
+			<tp:Service tp:type="string">THNSWRegister</tp:Service>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Document  [ConfirmStatus]		-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Send.ConfirmStatus" tp:action="ConfirmStatus" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		   <tp:OtherPartyActionBinding>THNSWRegister.Recv.ConfirmStatus</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Document  [ApprovStatus]		-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Send.ApprovStatus" tp:action="ApprovStatus" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		   <tp:OtherPartyActionBinding>THNSWRegister.Recv.ApprovStatus</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Document  [NSWREGIS_ERR]		-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Send.NSWREGIS_ERR" tp:action="NSWREGIS_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		   <tp:OtherPartyActionBinding>THNSWRegister.Recv.NSWREGIS_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanReceive Document  [NewUser]			-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Recv.NewUser" tp:action="NewUser" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		   <tp:OtherPartyActionBinding>THNSWRegister.Send.NewUser</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanReceive Document  [NSWConfirmStatus] -->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Recv.NSWConfirmStatus" tp:action="NSWConfirmStatus" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		   <tp:OtherPartyActionBinding>THNSWRegister.Send.NSWConfirmStatus</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanReceive Document  [UpdateUser]		-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Recv.UpdateUser" tp:action="UpdateUser" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		   <tp:OtherPartyActionBinding>THNSWRegister.Send.UpdateUser</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+	  </tp:ServiceBinding>
+	</tp:CollaborationRole>
+
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<!-- ### Service Name [THNSW.Loopback_HTTP]		   -->
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<tp:CollaborationRole>
+		<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+		<tp:Role xlink:href="" xlink:type="simple" tp:name="Government"/>
+		<tp:ServiceBinding>
+			<tp:Service tp:type="string">THNSW.Loopback_HTTP</tp:Service>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend Loopback Message Document		-->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="NSW.Loopback_Send" tp:action="Loopback" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="none" 
+					tp:isAuthenticated="none" 
+					tp:isTamperProof="none" 
+					tp:isAuthorizationRequired="false" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>NSW.Loopback_Recv</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive LoopbackResponse Message Document   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="NSW.LoopbackResponse_Recv" tp:action="LoopbackResponse" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="none" 
+					tp:isAuthenticated="none" 
+					tp:isTamperProof="none" 
+					tp:isAuthorizationRequired="false" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>NSW.LoopbackResponse_Send</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive LoopbackError Message Document	   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="NSW.LoopbackError_Recv" tp:action="LoopbackError" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="none" 
+					tp:isAuthenticated="none" 
+					tp:isTamperProof="none" 
+					tp:isAuthorizationRequired="false" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>NSW.LoopbackError_Send</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive LoopbackxError Message Document     -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="NSW.LoopbackxError_Recv" tp:action="LoopbackxError" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="none" 
+					tp:isAuthenticated="none" 
+					tp:isTamperProof="none" 
+					tp:isAuthorizationRequired="false" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>NSW.LoopbackxError_Send</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+	  </tp:ServiceBinding>
+	</tp:CollaborationRole>
+
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<!-- ### Service Name [THNSW.LoopbackSecure]		-->
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<tp:CollaborationRole>
+		<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+		<tp:Role xlink:href="" xlink:type="simple" tp:name="Government"/>
+		<tp:ServiceBinding>
+			<tp:Service tp:type="string">THNSW.LoopbackSecure</tp:Service>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanSend LoopbackSSL Message Document  		   -->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="LoopbackSSL_Send" tp:action="Loopback" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A02</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		  <tp:OtherPartyActionBinding>LoopbackSSL_Recv</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive LoopbackResponseSSL Message Document   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="LoopbackResponseSSL_Recv" tp:action="LoopbackResponse" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A02</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		  <tp:OtherPartyActionBinding>LoopbackResponseSSL_Send</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive SSL LoopbackError Message Document   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="LoopbackSSLError_Recv" tp:action="LoopbackError" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A02</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		  <tp:OtherPartyActionBinding>LoopbackSSLError_Send</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive SSL LoopbackxError Message Document   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="LoopbackSSLxError_Recv" tp:action="LoopbackxError" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A02</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		  <tp:OtherPartyActionBinding>LoopbackSSLxError_Send</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+	  </tp:ServiceBinding>
+	</tp:CollaborationRole>
+
+		<!-- =============================== -->
+		<!-- =============================== -->
+		<!-- Security & Certificate Path	 -->
+		<!-- =============================== -->
+		<!-- =============================== -->
+    <tp:Certificate tp:certId="GOVs_SSLClientCert">
+      <!-- Change-It [Add Your Certificate With KeyInfo]-->
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <KeyValue>
+      <RSAKeyValue>
+        <Modulus>
+          pHVdVkHRyRMchdwRlWASFuD9nLnGvFgBTvHBNKUqsGR/fUN1dXN6yS1tAjPKIhFZH4
+          2F1ImUQzHDJTeIzVdFThqNuWWa1KndFP6rUqmzysafcp9c703nMdHbkXlcdbKgvTC9
+          LIz+FFbClW9Qr+CayJ+JtikLTBuvgHTlXt+/Csk6h5nja0zkeJ0UfG2hwx2V0FH7us
+          fb3ghA+Hc6b2f9Qf7/b32zoOok7zxqfoKD8V0Kr7ocMT4Dtek6/XRpFLMWVGZXe93L
+          PiV6A49dPZeL+6+1t9jR4UO7kZl35yXJmO0gCVvxE7mtKZqomOA+rqz7BhLE1fSZmx
+          u6VD2DSWcCoQ==
+        </Modulus>
+        <Exponent>AQAB</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+    <X509Data>
+      <X509IssuerSerial>
+        <X509IssuerName>CN=production.itrade.tradesiam.com,OU=Service Provider,O=TradeSiam Companany Limited,L=Klongtoey,ST=Bangkok,C=TH</X509IssuerName>
+        <X509SerialNumber>2013290241</X509SerialNumber>
+      </X509IssuerSerial>
+      <X509SKI>HSC9lUvKtdpP0aS69V31RfzN</X509SKI>
+      <X509SubjectName>CN=production.itrade.tradesiam.com,OU=Service Provider,O=TradeSiam Companany Limited,L=Klongtoey,ST=Bangkok,C=TH</X509SubjectName>
+      <X509Certificate>
+MIID3TCCAsWgAwIBAgIEeABfATANBgkqhkiG9w0BAQsFADCBnjELMAkGA1UEBhMCVEgxEDAOBgNV
+BAgTB0Jhbmdrb2sxEjAQBgNVBAcTCUtsb25ndG9leTEkMCIGA1UEChMbVHJhZGVTaWFtIENvbXBh
+bmFueSBMaW1pdGVkMRkwFwYDVQQLExBTZXJ2aWNlIFByb3ZpZGVyMSgwJgYDVQQDEx9wcm9kdWN0
+aW9uLml0cmFkZS50cmFkZXNpYW0uY29tMB4XDTE4MTEwNjEzNDMwMloXDTIzMTEwNTEzNDMwMlow
+gZ4xCzAJBgNVBAYTAlRIMRAwDgYDVQQIEwdCYW5na29rMRIwEAYDVQQHEwlLbG9uZ3RvZXkxJDAi
+BgNVBAoTG1RyYWRlU2lhbSBDb21wYW5hbnkgTGltaXRlZDEZMBcGA1UECxMQU2VydmljZSBQcm92
+aWRlcjEoMCYGA1UEAxMfcHJvZHVjdGlvbi5pdHJhZGUudHJhZGVzaWFtLmNvbTCCASIwDQYJKoZI
+hvcNAQEBBQADggEPADCCAQoCggEBAKR1XVZB0ckTHIXcEZVgEhbg/Zy5xrxYAU7xwTSlKrBkf31D
+dXVzesktbQIzyiIRWR+NhdSJlEMxwyU3iM1XRU4ajbllmtSp3RT+q1Kps8rGn3KfXO9N5zHR25F5
+XHWyoL0wvSyM/hRWwpVvUK/gmsifibYpC0wbr4B05V7fvwrJOoeZ42tM5HidFHxtocMdldBR+7rH
+294IQPh3Om9n/UH+/299s6DqJO88an6Cg/FdCq+6HDE+A7XpOv10aRSzFlRmV3vdyz4legOPXT2X
+i/uvtbfY0eFDu5GZd+clyZjtIAlb8RO5rSmaqJjgPq6s+wYSxNX0mZsbulQ9g0lnAqECAwEAAaMh
+MB8wHQYDVR0OBBYEFBrCHSC9lUvKtdpP0aS69V31RfzNMA0GCSqGSIb3DQEBCwUAA4IBAQAnUmjG
+0LwNQVAE//T37Aj10aExhVOp8y6MgNCGbeKdCw+C8ThEXL4+O6cSRrTRhfU93BX7G3hoNR/lohrS
+cdb+Kgm0EoyGEw6fJMGAj6H17AiZilQC+OFHbFRvHtIgJvuJ+H7DiQg5eifiygEwcqKejS+E/yEA
+dReX3kRjiSTce9PYuYj+xmfBwfdFM9YuuHVQ51GzxrTBNvnbF6z4vkeJKe+GymzHxC7j/eJRRzY1
+80PEI0N1HXjgdxzPG9NqYwRAxPAlsH1aZd6KTxSmwG90MdD33yhTfUU5hwthfPsXAfdBbFCPTuCr
+I1YbV4AQx/oOPZsPmG6dY0lV67Pf09fo
+      </X509Certificate>
+    </X509Data>
+  </KeyInfo>
+
+
+
+</tp:Certificate>
+
+    <tp:Certificate tp:certId="GOVs_SSLServerCert">
+      <!-- Change-It [Add Your Certificate With KeyInfo]-->
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <KeyValue>
+      <RSAKeyValue>
+        <Modulus>
+          pHVdVkHRyRMchdwRlWASFuD9nLnGvFgBTvHBNKUqsGR/fUN1dXN6yS1tAjPKIhFZH4
+          2F1ImUQzHDJTeIzVdFThqNuWWa1KndFP6rUqmzysafcp9c703nMdHbkXlcdbKgvTC9
+          LIz+FFbClW9Qr+CayJ+JtikLTBuvgHTlXt+/Csk6h5nja0zkeJ0UfG2hwx2V0FH7us
+          fb3ghA+Hc6b2f9Qf7/b32zoOok7zxqfoKD8V0Kr7ocMT4Dtek6/XRpFLMWVGZXe93L
+          PiV6A49dPZeL+6+1t9jR4UO7kZl35yXJmO0gCVvxE7mtKZqomOA+rqz7BhLE1fSZmx
+          u6VD2DSWcCoQ==
+        </Modulus>
+        <Exponent>AQAB</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+    <X509Data>
+      <X509IssuerSerial>
+        <X509IssuerName>CN=production.itrade.tradesiam.com,OU=Service Provider,O=TradeSiam Companany Limited,L=Klongtoey,ST=Bangkok,C=TH</X509IssuerName>
+        <X509SerialNumber>2013290241</X509SerialNumber>
+      </X509IssuerSerial>
+      <X509SKI>HSC9lUvKtdpP0aS69V31RfzN</X509SKI>
+      <X509SubjectName>CN=production.itrade.tradesiam.com,OU=Service Provider,O=TradeSiam Companany Limited,L=Klongtoey,ST=Bangkok,C=TH</X509SubjectName>
+      <X509Certificate>
+MIID3TCCAsWgAwIBAgIEeABfATANBgkqhkiG9w0BAQsFADCBnjELMAkGA1UEBhMCVEgxEDAOBgNV
+BAgTB0Jhbmdrb2sxEjAQBgNVBAcTCUtsb25ndG9leTEkMCIGA1UEChMbVHJhZGVTaWFtIENvbXBh
+bmFueSBMaW1pdGVkMRkwFwYDVQQLExBTZXJ2aWNlIFByb3ZpZGVyMSgwJgYDVQQDEx9wcm9kdWN0
+aW9uLml0cmFkZS50cmFkZXNpYW0uY29tMB4XDTE4MTEwNjEzNDMwMloXDTIzMTEwNTEzNDMwMlow
+gZ4xCzAJBgNVBAYTAlRIMRAwDgYDVQQIEwdCYW5na29rMRIwEAYDVQQHEwlLbG9uZ3RvZXkxJDAi
+BgNVBAoTG1RyYWRlU2lhbSBDb21wYW5hbnkgTGltaXRlZDEZMBcGA1UECxMQU2VydmljZSBQcm92
+aWRlcjEoMCYGA1UEAxMfcHJvZHVjdGlvbi5pdHJhZGUudHJhZGVzaWFtLmNvbTCCASIwDQYJKoZI
+hvcNAQEBBQADggEPADCCAQoCggEBAKR1XVZB0ckTHIXcEZVgEhbg/Zy5xrxYAU7xwTSlKrBkf31D
+dXVzesktbQIzyiIRWR+NhdSJlEMxwyU3iM1XRU4ajbllmtSp3RT+q1Kps8rGn3KfXO9N5zHR25F5
+XHWyoL0wvSyM/hRWwpVvUK/gmsifibYpC0wbr4B05V7fvwrJOoeZ42tM5HidFHxtocMdldBR+7rH
+294IQPh3Om9n/UH+/299s6DqJO88an6Cg/FdCq+6HDE+A7XpOv10aRSzFlRmV3vdyz4legOPXT2X
+i/uvtbfY0eFDu5GZd+clyZjtIAlb8RO5rSmaqJjgPq6s+wYSxNX0mZsbulQ9g0lnAqECAwEAAaMh
+MB8wHQYDVR0OBBYEFBrCHSC9lUvKtdpP0aS69V31RfzNMA0GCSqGSIb3DQEBCwUAA4IBAQAnUmjG
+0LwNQVAE//T37Aj10aExhVOp8y6MgNCGbeKdCw+C8ThEXL4+O6cSRrTRhfU93BX7G3hoNR/lohrS
+cdb+Kgm0EoyGEw6fJMGAj6H17AiZilQC+OFHbFRvHtIgJvuJ+H7DiQg5eifiygEwcqKejS+E/yEA
+dReX3kRjiSTce9PYuYj+xmfBwfdFM9YuuHVQ51GzxrTBNvnbF6z4vkeJKe+GymzHxC7j/eJRRzY1
+80PEI0N1HXjgdxzPG9NqYwRAxPAlsH1aZd6KTxSmwG90MdD33yhTfUU5hwthfPsXAfdBbFCPTuCr
+I1YbV4AQx/oOPZsPmG6dY0lV67Pf09fo
+      </X509Certificate>
+    </X509Data>
+  </KeyInfo>
+
+
+    </tp:Certificate>
+
+    <tp:SecurityDetails tp:securityId="GOVs_TransportSecurity">
+      <tp:TrustAnchors>
+        <tp:AnchorCertificateRef tp:certId="GOVs_SSLClientCert"/>
+        <tp:AnchorCertificateRef tp:certId="GOVs_SSLServerCert"/>
+      </tp:TrustAnchors>
+    </tp:SecurityDetails>
+
+	<!-- ======================== -->
+	<!-- ======================== -->
+	<!-- Delivery channels 					   -->
+	<!-- ======================== -->
+	<!-- ======================== -->
+	<tp:DeliveryChannel 
+		tp:channelId="ebMS2MshSignalChannel_A01"
+		tp:transportId="Transport_A01.HTTP"
+		tp:docExchangeId="docExchange_A01">
+		<tp:MessagingCharacteristics 
+			tp:syncReplyMode="mshSignalsOnly"
+			tp:ackRequested="always"
+			tp:ackSignatureRequested="never"
+			tp:duplicateElimination="always"
+			tp:actor="urn:oasis:names:tc:ebxml-msg:actor:nextMSH"/>
+	</tp:DeliveryChannel>
+
+    <tp:DeliveryChannel
+		tp:channelId="ebMS2MshSignalChannel_A02"
+		tp:transportId="Transport_A02.HTTP.SSL"
+		tp:docExchangeId="GOVs_docExchangeSSL">
+		<tp:MessagingCharacteristics
+			tp:syncReplyMode="mshSignalsOnly"
+			tp:ackRequested="always"
+			tp:ackSignatureRequested="never"
+			tp:duplicateElimination="always"
+			tp:actor="urn:oasis:names:tc:ebxml-msg:actor:nextMSH"/>
+    </tp:DeliveryChannel>
+
+	<!-- ======================== -->
+	<!-- ======================== -->
+	<!-- Transports 			  -->
+	<!-- ======================== -->
+	<!-- ======================== -->
+    <!-- Change-It [https://Exchange_URL_GOVs_HTTP] -->
+		<tp:Transport tp:transportId="Transport_A01.HTTP">
+			<tp:TransportSender>
+				<tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+			</tp:TransportSender>
+			<tp:TransportReceiver>
+				<tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+        <tp:Endpoint tp:uri="http://thts.prodins.com:8080/ebMS" tp:type="allPurpose"/>
+			</tp:TransportReceiver>
+		</tp:Transport>
+
+    <!-- Change-It [https://Exchange_URL_GOVs_HTTPS] -->
+    <tp:Transport tp:transportId="Transport_A02.HTTP.SSL">
+      <tp:TransportSender>
+        <tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+        <tp:TransportClientSecurity>
+			<tp:TransportSecurityProtocol tp:version="3.0">SSL</tp:TransportSecurityProtocol>
+		  	<tp:ClientCertificateRef tp:certId="GOVs_SSLClientCert"/>
+			<tp:ServerSecurityDetailsRef tp:securityId="GOVs_TransportSecurity"/>
+        </tp:TransportClientSecurity>
+      </tp:TransportSender>
+      <tp:TransportReceiver>
+        <tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+        <tp:Endpoint tp:type="allPurpose" tp:uri="https://thts.prodins.com:4181/ebMS"/>
+        <tp:TransportServerSecurity>
+          <tp:TransportSecurityProtocol tp:version="3.0">SSL</tp:TransportSecurityProtocol>
+          <tp:ServerCertificateRef tp:certId="GOVs_SSLServerCert"/>
+          <tp:ClientSecurityDetailsRef tp:securityId="GOVs_TransportSecurity"/>
+        </tp:TransportServerSecurity>
+      </tp:TransportReceiver>
+    </tp:Transport>
+
+	<!-- Basic DocExchange -->
+	<tp:DocExchange tp:docExchangeId="docExchange_A01">
+		<tp:ebXMLSenderBinding tp:version="2.0">
+			<tp:ReliableMessaging>
+				<tp:Retries>2</tp:Retries>
+				<tp:RetryInterval>PT1M</tp:RetryInterval>
+				<tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+			</tp:ReliableMessaging>
+			<tp:PersistDuration>P1D</tp:PersistDuration>
+		</tp:ebXMLSenderBinding>
+		<tp:ebXMLReceiverBinding tp:version="2.0">
+			<tp:ReliableMessaging>
+				<tp:Retries>2</tp:Retries>
+				<tp:RetryInterval>PT1M</tp:RetryInterval>
+				<tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+			</tp:ReliableMessaging>
+			<tp:PersistDuration>P1D</tp:PersistDuration>
+		</tp:ebXMLReceiverBinding>
+	</tp:DocExchange>
+    
+    <tp:DocExchange tp:docExchangeId="GOVs_docExchangeSSL">
+      <tp:ebXMLSenderBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLSenderBinding>
+      <tp:ebXMLReceiverBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLReceiverBinding>
+    </tp:DocExchange>
+	</tp:PartyInfo>
+
+	<!-- 000000000000000000000000000 -->
+	<!-- 000000000000000000000000000 -->
+	<!-- 0000                   0000 -->
+	<!-- 0000 00000 0000  00000 0000 -->
+	<!-- 0000 00000 00000 00 00 0000 -->
+	<!-- 0000 00000 00 00 00000 0000 -->
+	<!-- 0000 00    00000 00 00 0000 -->
+	<!-- 0000 00    0000  00 00 0000 -->
+	<!-- 0000                   0000 -->
+	<!-- 000000000000000000000000000 -->
+	<!-- 000000000000000000000000000 -->
+	<tp:PartyInfo tp:defaultMshChannelId=	"ebMS2MshSignalChannel_Z02" 
+		tp:partyName=	"Thailand NSW" 
+		tp:defaultMshPackageId=	"ebMS2MshSignalPackage">
+		<!-- Change-It [Other_Government _ID ]-->
+		<tp:PartyId tp:type="string">THNSW</tp:PartyId>
+		<tp:PartyRef xlink:type="simple" xlink:href="http://www.thainsw.net/INSW/index.jsp"/>
+
+<!-- ############################################## -->
+<!-- ############################################## -->
+<!-- ### Service Name [THNSW.THMINS:Insurance]		-->
+<!-- ############################################## -->
+<!-- ############################################## -->
+<tp:CollaborationRole>
+	<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+	<tp:Role xlink:href="" xlink:type="simple" tp:name="SingleWindow"/>
+	<tp:ServiceBinding>
+		<tp:Service tp:type="string">THNSW.THMINS:Insurance</tp:Service>
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanSend Document  [INSRequest]				-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Send.INSRequest" tp:action="INSRequest" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Recv.INSRequest</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanSend Document  [INSConfirm]				-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Send.INSConfirm" tp:action="INSConfirm" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Recv.INSConfirm</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanSend Document  [INSCancel]				-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Send.INSCancel" tp:action="INSCancel" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Recv.INSCancel</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+		
+		
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanReceive Document  [INSPolicy]		-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Recv.INSPolicy" tp:action="INSPolicy" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Send.INSPolicy</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanReceive Document  [INSResponse]		-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Recv.INSResponse" tp:action="INSResponse" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Send.INSResponse</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanReceive Document  [INSRequest_ERR]		-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Recv.INSRequest_ERR" tp:action="INSRequest_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Send.INSRequest_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanReceive Document  [INSConfirm_ERR]		-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Recv.INSConfirm_ERR" tp:action="INSConfirm_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Send.INSConfirm_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanReceive Document  [INSCancel_ERR]		-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.THMINS.Insurance.Recv.INSCancel_ERR" tp:action="INSCancel_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics tp:isNonRepudiationRequired="false" tp:isNonRepudiationReceiptRequired="false" tp:isConfidential="transient" tp:isAuthenticated="transient" tp:isTamperProof="transient" tp:isAuthorizationRequired="true" tp:timeToAcknowledgeReceipt="PT1M" tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.THMINS.Insurance.Send.INSCancel_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+		
+	</tp:ServiceBinding>
+</tp:CollaborationRole>
+
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<!-- ### Service Name [THNSWRegister]			   -->
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+
+	<tp:CollaborationRole>
+		<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+		<tp:Role xlink:href="" xlink:type="simple" tp:name="SingleWindow"/>
+		<tp:ServiceBinding>
+			<tp:Service tp:type="string">THNSWRegister</tp:Service>
+
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<!-- tp:CanSend Document  [NewUser]						-->
+		<!-- ================================================== -->
+		<!-- ================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Send.NewUser" tp:action="NewUser" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSWRegister.Recv.NewUser</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+		
+		<!-- ======================================	-->
+		<!-- ======================================	-->
+		<!-- tp:CanSend Document  [NSWConfirmStatus] 	-->
+		<!-- ======================================	-->
+		<!-- ======================================	-->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Send.NSWConfirmStatus" tp:action="NSWConfirmStatus" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSWRegister.Recv.NSWConfirmStatus</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ======================================	-->
+		<!-- ======================================	-->
+		<!-- tp:CanSend Document  [UpdateUser]		-->
+		<!-- ======================================	-->
+		<!-- ======================================	-->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Send.UpdateUser" tp:action="UpdateUser" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSWRegister.Recv.UpdateUser</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+					  
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive Document  [ConfirmStatus]		   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Recv.ConfirmStatus" tp:action="ConfirmStatus" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSWRegister.Send.ConfirmStatus</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive Document  [ApprovStatus]			   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Recv.ApprovStatus" tp:action="ApprovStatus" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSWRegister.Send.ApprovStatus</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive Document  [NSWREGIS_ERR]			   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSWRegister.Recv.NSWREGIS_ERR" tp:action="NSWREGIS_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSWRegister.Send.NSWREGIS_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+	   </tp:ServiceBinding>
+	</tp:CollaborationRole>
+
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<!-- ### Service Name [THNSW.Loopback_HTTP]			-->
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<tp:CollaborationRole>
+		<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+		<tp:Role xlink:href="" xlink:type="simple" tp:name="SingleWindow"/>
+			<tp:ServiceBinding>
+				<tp:Service tp:type="string">THNSW.Loopback_HTTP</tp:Service>
+
+			<!-- ============================================= -->
+			<!-- ============================================= -->
+			<!-- tp:CanSend LoopbackxError Message Document	   -->
+			<!-- ============================================= -->
+			<!-- ============================================= -->
+			<tp:CanSend>
+				<tp:ThisPartyActionBinding 
+					tp:id="NSW.LoopbackxError_Send"  tp:action="LoopbackxError"  tp:packageId="Dummy_Package">
+					<tp:BusinessTransactionCharacteristics
+						tp:isNonRepudiationRequired="false"
+						tp:isNonRepudiationReceiptRequired="false"
+						tp:isConfidential="none"
+						tp:isAuthenticated="none"
+						tp:isTamperProof="none" 
+						tp:isAuthorizationRequired="false"
+						tp:timeToAcknowledgeReceipt="PT1M"
+						tp:timeToPerform="PT30M"/>
+					<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+				</tp:ThisPartyActionBinding>
+				<tp:OtherPartyActionBinding>NSW.LoopbackxError_Recv</tp:OtherPartyActionBinding>
+			</tp:CanSend>
+
+		<!-- ============================================= -->
+		<!-- ============================================= -->
+		<!-- tp:CanSend LoopbackError Message Document  	 -->
+		<!-- ============================================= -->
+		<!-- ============================================= -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding 
+				tp:id="NSW.LoopbackError_Send"  tp:action="LoopbackError"  tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="none" tp:isAuthenticated="none" 
+					tp:isTamperProof="none" 
+					tp:isAuthorizationRequired="false" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="PT30M"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>NSW.LoopbackError_Recv</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ============================================= -->
+		<!-- ============================================= -->
+		<!-- tp:CanSend LoopbackResponse Message Document  -->
+		<!-- ============================================= -->
+		<!-- ============================================= -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding 
+				tp:id="NSW.LoopbackResponse_Send"  tp:action="LoopbackResponse"  tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="none" tp:isAuthenticated="none" 
+					tp:isTamperProof="none" 
+					tp:isAuthorizationRequired="false" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="PT30M"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>NSW.LoopbackResponse_Recv</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanReceive Loopback Message Document    -->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding  tp:id="NSW.Loopback_Recv" tp:action="Loopback" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="none" 
+					tp:isAuthenticated="none" 
+					tp:isTamperProof="none" 
+					tp:isAuthorizationRequired="false" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z01</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>NSW.Loopback_Send</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+	  </tp:ServiceBinding>
+	</tp:CollaborationRole>
+
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<!-- ### Service Name [THNSW.LoopbackSecure]	   -->
+	<!-- ############################################# -->
+	<!-- ############################################# -->
+	<tp:CollaborationRole>
+		<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+		<tp:Role xlink:href="" xlink:type="simple" tp:name="SingleWindow"/>
+		<tp:ServiceBinding>
+			<tp:Service tp:type="string">THNSW.LoopbackSecure</tp:Service>
+
+		<!-- ============================================== -->
+		<!-- ============================================== -->
+		<!-- tp:CanSend SSL LoopbackxError Message Document  -->
+		<!-- ============================================== -->
+		<!-- ============================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="LoopbackSSLxError_Send" tp:action="LoopbackxError" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z02</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		  <tp:OtherPartyActionBinding>LoopbackSSLxError_Recv</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ============================================== -->
+		<!-- ============================================== -->
+		<!-- tp:CanSend SSL LoopbackError Message Document  -->
+		<!-- ============================================== -->
+		<!-- ============================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="LoopbackSSLError_Send" tp:action="LoopbackError" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z02</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		  <tp:OtherPartyActionBinding>LoopbackSSLError_Recv</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ============================================== -->
+		<!-- ============================================== -->
+		<!-- tp:CanSend LoopbackResponseSSL Message Document  -->
+		<!-- ============================================== -->
+		<!-- ============================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="LoopbackResponseSSL_Send" tp:action="LoopbackResponse" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z02</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		  <tp:OtherPartyActionBinding>LoopbackResponseSSL_Recv</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<!-- tp:CanReceive LoopbackSSL Message Document -->
+		<!-- ========================================== -->
+		<!-- ========================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="LoopbackSSL_Recv" tp:action="Loopback" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z02</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		  <tp:OtherPartyActionBinding>LoopbackSSL_Send</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+	  </tp:ServiceBinding>
+	</tp:CollaborationRole>
+
+	<!-- ========================================== -->
+	<!-- ========================================== -->
+	<!-- Security & Certificate Path 				-->
+	<!-- ========================================== -->
+	<!-- ========================================== -->
+    <tp:Certificate tp:certId="THNSW_SSLClientCert">
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <KeyValue>
+      <RSAKeyValue>
+        <Modulus>
+          z51qwbJokin5xAudZuXzsAPrUgt+HJt/v9zu3oFTt4J6LvD5ZkSs8b0drgFLM5UX3v
+          WD+vGbzg9hny1RFu7bPwOefq1BdHPeyXAra50GfsyDJjwSARG2JBXrslHR7g693nfP
+          6qtzFwPtEZRBoJ/Otn9tfaCKi63UaA/yRCtiHjvtn/BjXh+xNN9DZKurxMy6Gt8ysO
+          b2nmErjRFq8zK4YQCRGIn+Zsy5T6cpkeupIRr5J6fZRgzRtL2nj8XakrYYdsQb8JVG
+          YzniMPIRmjRhcNjK3fD3L0Wxr4cWvoApdPBX8U9BsvRrYPkdBbp8tD2siLPurgmm4y
+          v8pKEKf9vzRw==
+        </Modulus>
+        <Exponent>AQAB</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+    <X509Data>
+      <X509IssuerSerial>
+        <X509IssuerName>CN=exchange.thainsw.net for VAN_PAYMENT PRD</X509IssuerName>
+        <X509SerialNumber>321555527371870651823490288803642203917</X509SerialNumber>
+      </X509IssuerSerial>
+      <X509SKI>KN87zk+tsvL3tF8x7DcqadHc</X509SKI>
+      <X509SubjectName>CN=exchange.thainsw.net for VAN_PAYMENT PRD</X509SubjectName>
+      <X509Certificate>
+MIIDsTCCApmgAwIBAgIRAPHpV4ZsG9Kwb8T7mxvN3w0wDQYJKoZIhvcNAQELBQAwWzFZMFcGA1UE
+Ax5QAGUAeABjAGgAYQBuAGcAZQAuAHQAaABhAGkAbgBzAHcALgBuAGUAdAAgAGYAbwByACAAVgBB
+AE4AXwBQAEEAWQBNAEUATgBUACAAUABSAEQwHhcNMTkxMjA0MDYzMjE3WhcNMjQxMjA0MDYzMjE3
+WjBbMVkwVwYDVQQDHlAAZQB4AGMAaABhAG4AZwBlAC4AdABoAGEAaQBuAHMAdwAuAG4AZQB0ACAA
+ZgBvAHIAIABWAEEATgBfAFAAQQBZAE0ARQBOAFQAIABQAFIARDCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAM+dasGyaJIp+cQLnWbl87AD61ILfhybf7/c7t6BU7eCei7w+WZErPG9Ha4B
+SzOVF971g/rxm84PYZ8tURbu2z8Dnn6tQXRz3slwK2udBn7MgyY8EgERtiQV67JR0e4Ovd53z+qr
+cxcD7RGUQaCfzrZ/bX2giout1GgP8kQrYh477Z/wY14fsTTfQ2Srq8TMuhrfMrDm9p5hK40RavMy
+uGEAkRiJ/mbMuU+nKZHrqSEa+Sen2UYM0bS9p4/F2pK2GHbEG/CVRmM54jDyEZo0YXDYyt3w9y9F
+sa+HFr6AKXTwV/FPQbL0a2D5HQW6fLQ9rIiz7q4JpuMr/KShCn/b80cCAwEAAaNwMG4wHQYDVR0l
+BBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAsGA1UdDwQEAwIA4DAdBgNVHQ4EFgQUeVko3zvOT62y
+8ve0XzHsNypp0dwwIQYDVR0jBBowGKAWBBR5WSjfO85PrbLy97RfMew3KmnR3DANBgkqhkiG9w0B
+AQsFAAOCAQEAYBHvsm78PrkXgfZL/RttuNkCDBJx9bhPwIvWzQfKa687X27so/bXsiFu81uBE7IG
+IDTyDHwIFWE7PfVUf5H8QrjQg7JkG7ZDE06hgR7C2VF2xCrfX/TunZzCTDoUbkCBFlQLFixNLK6g
+oQ4DIPYzNYXWcQ02IKHGIpg/12QDPbN5kw2i3tXCpR/sZPnvm383Sv5rKS5XpLBL4Q/1XwLpPN3b
+8skDu+4SxAKUSpiHjoR95r6rCEeO8ts707At3X62y9AjlRZ4qTAw8C4C5VeOrnr/s4h8Lc02tXbJ
+eaB5BJShgVLuyN55+WhGRn2eJQ/CjzUmWnLPsN5iC2ZiDDrTLw==
+      </X509Certificate>
+    </X509Data>
+  </KeyInfo>
+
+    </tp:Certificate>
+    
+    <tp:Certificate tp:certId="THNSW_SSLServerCert">
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <KeyValue>
+      <RSAKeyValue>
+        <Modulus>
+          z51qwbJokin5xAudZuXzsAPrUgt+HJt/v9zu3oFTt4J6LvD5ZkSs8b0drgFLM5UX3v
+          WD+vGbzg9hny1RFu7bPwOefq1BdHPeyXAra50GfsyDJjwSARG2JBXrslHR7g693nfP
+          6qtzFwPtEZRBoJ/Otn9tfaCKi63UaA/yRCtiHjvtn/BjXh+xNN9DZKurxMy6Gt8ysO
+          b2nmErjRFq8zK4YQCRGIn+Zsy5T6cpkeupIRr5J6fZRgzRtL2nj8XakrYYdsQb8JVG
+          YzniMPIRmjRhcNjK3fD3L0Wxr4cWvoApdPBX8U9BsvRrYPkdBbp8tD2siLPurgmm4y
+          v8pKEKf9vzRw==
+        </Modulus>
+        <Exponent>AQAB</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+    <X509Data>
+      <X509IssuerSerial>
+        <X509IssuerName>CN=exchange.thainsw.net for VAN_PAYMENT PRD</X509IssuerName>
+        <X509SerialNumber>321555527371870651823490288803642203917</X509SerialNumber>
+      </X509IssuerSerial>
+      <X509SKI>KN87zk+tsvL3tF8x7DcqadHc</X509SKI>
+      <X509SubjectName>CN=exchange.thainsw.net for VAN_PAYMENT PRD</X509SubjectName>
+      <X509Certificate>
+MIIDsTCCApmgAwIBAgIRAPHpV4ZsG9Kwb8T7mxvN3w0wDQYJKoZIhvcNAQELBQAwWzFZMFcGA1UE
+Ax5QAGUAeABjAGgAYQBuAGcAZQAuAHQAaABhAGkAbgBzAHcALgBuAGUAdAAgAGYAbwByACAAVgBB
+AE4AXwBQAEEAWQBNAEUATgBUACAAUABSAEQwHhcNMTkxMjA0MDYzMjE3WhcNMjQxMjA0MDYzMjE3
+WjBbMVkwVwYDVQQDHlAAZQB4AGMAaABhAG4AZwBlAC4AdABoAGEAaQBuAHMAdwAuAG4AZQB0ACAA
+ZgBvAHIAIABWAEEATgBfAFAAQQBZAE0ARQBOAFQAIABQAFIARDCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAM+dasGyaJIp+cQLnWbl87AD61ILfhybf7/c7t6BU7eCei7w+WZErPG9Ha4B
+SzOVF971g/rxm84PYZ8tURbu2z8Dnn6tQXRz3slwK2udBn7MgyY8EgERtiQV67JR0e4Ovd53z+qr
+cxcD7RGUQaCfzrZ/bX2giout1GgP8kQrYh477Z/wY14fsTTfQ2Srq8TMuhrfMrDm9p5hK40RavMy
+uGEAkRiJ/mbMuU+nKZHrqSEa+Sen2UYM0bS9p4/F2pK2GHbEG/CVRmM54jDyEZo0YXDYyt3w9y9F
+sa+HFr6AKXTwV/FPQbL0a2D5HQW6fLQ9rIiz7q4JpuMr/KShCn/b80cCAwEAAaNwMG4wHQYDVR0l
+BBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAsGA1UdDwQEAwIA4DAdBgNVHQ4EFgQUeVko3zvOT62y
+8ve0XzHsNypp0dwwIQYDVR0jBBowGKAWBBR5WSjfO85PrbLy97RfMew3KmnR3DANBgkqhkiG9w0B
+AQsFAAOCAQEAYBHvsm78PrkXgfZL/RttuNkCDBJx9bhPwIvWzQfKa687X27so/bXsiFu81uBE7IG
+IDTyDHwIFWE7PfVUf5H8QrjQg7JkG7ZDE06hgR7C2VF2xCrfX/TunZzCTDoUbkCBFlQLFixNLK6g
+oQ4DIPYzNYXWcQ02IKHGIpg/12QDPbN5kw2i3tXCpR/sZPnvm383Sv5rKS5XpLBL4Q/1XwLpPN3b
+8skDu+4SxAKUSpiHjoR95r6rCEeO8ts707At3X62y9AjlRZ4qTAw8C4C5VeOrnr/s4h8Lc02tXbJ
+eaB5BJShgVLuyN55+WhGRn2eJQ/CjzUmWnLPsN5iC2ZiDDrTLw==
+      </X509Certificate>
+    </X509Data>
+  </KeyInfo>
+
+    </tp:Certificate>
+    <tp:SecurityDetails tp:securityId="THNSW_TransportSecurity">
+      <tp:TrustAnchors>
+        <tp:AnchorCertificateRef tp:certId="THNSW_SSLClientCert"/>
+        <tp:AnchorCertificateRef tp:certId="THNSW_SSLServerCert"/>
+      </tp:TrustAnchors>
+    </tp:SecurityDetails>
+    <!-- Delivery channels -->
+    <tp:DeliveryChannel
+			tp:channelId="ebMS2MshSignalChannel_Z01"
+			tp:transportId="Transport_Z01.HTTP"
+			tp:docExchangeId="docExchange_Z01">
+      <tp:MessagingCharacteristics
+				tp:syncReplyMode="mshSignalsOnly"
+				tp:ackRequested="always"
+				tp:ackSignatureRequested="never"
+				tp:duplicateElimination="always"
+				tp:actor="urn:oasis:names:tc:ebxml-msg:actor:nextMSH"/>
+    </tp:DeliveryChannel>
+    <tp:DeliveryChannel
+      tp:channelId="ebMS2MshSignalChannel_Z02"
+      tp:transportId="Transport_Z02.HTTP.SSL"
+      tp:docExchangeId="THNSW_docExchangeSSL">
+      <tp:MessagingCharacteristics
+				tp:syncReplyMode="mshSignalsOnly"
+				tp:ackRequested="always"
+				tp:ackSignatureRequested="never"
+				tp:duplicateElimination="always"
+				tp:actor="urn:oasis:names:tc:ebxml-msg:actor:nextMSH"/>
+    </tp:DeliveryChannel>
+
+    <!-- ================== -->
+    <!-- ================== -->
+    <!-- Transports 				   -->
+    <!-- ================== -->
+    <!-- ================== -->
+    <tp:Transport tp:transportId="Transport_Z01.HTTP">
+      <tp:TransportSender>
+        <tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+      </tp:TransportSender>
+      <tp:TransportReceiver>
+        <tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+        <!-- Change-It [http://Exchange_URL_THNSW_HTTP]-->
+        <tp:Endpoint tp:uri="http://exchange.thainsw.net:15301/exchange/NSWsTHxChange" tp:type="allPurpose"/>
+      </tp:TransportReceiver>
+    </tp:Transport>
+    <!-- Change-It [http://Exchange_URL_THNSW_HTTPs]-->
+    <tp:Transport tp:transportId="Transport_Z02.HTTP.SSL">
+      <tp:TransportSender>
+        <tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+        <tp:TransportClientSecurity>
+          <tp:TransportSecurityProtocol tp:version="3.0">SSL</tp:TransportSecurityProtocol>
+          <tp:ClientCertificateRef tp:certId="THNSW_SSLClientCert"/>
+          <tp:ServerSecurityDetailsRef tp:securityId="THNSW_TransportSecurity"/>
+        </tp:TransportClientSecurity>
+      </tp:TransportSender>
+      <tp:TransportReceiver>
+        <tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+        <tp:Endpoint tp:type="allPurpose" tp:uri="https://exchange.thainsw.net:21050/exchange/NSWsTHxChange"/>
+        <tp:TransportServerSecurity>
+          <tp:TransportSecurityProtocol tp:version="3.0">SSL</tp:TransportSecurityProtocol>
+          <tp:ServerCertificateRef tp:certId="THNSW_SSLServerCert"/>
+          <tp:ClientSecurityDetailsRef tp:securityId="THNSW_TransportSecurity"/>
+        </tp:TransportServerSecurity>
+      </tp:TransportReceiver>
+    </tp:Transport>
+    <!-- Basic DocExchange -->
+    <tp:DocExchange tp:docExchangeId="docExchange_Z01">
+      <tp:ebXMLSenderBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLSenderBinding>
+      <tp:ebXMLReceiverBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLReceiverBinding>
+    </tp:DocExchange>
+    <tp:DocExchange tp:docExchangeId="THNSW_docExchangeSSL">
+      <tp:ebXMLSenderBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLSenderBinding>
+      <tp:ebXMLReceiverBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLReceiverBinding>
+    </tp:DocExchange>
+	</tp:PartyInfo>
+	<!-- SimplePart corresponding to the SOAP Envelope -->
+	<tp:SimplePart tp:id="ebMS2MessageHeader_SimplePart" tp:mimetype="text/xml">
+		<tp:NamespaceSupported 
+			tp:location="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" 
+			tp:version="2.0">
+			  http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd
+		 </tp:NamespaceSupported>
+	</tp:SimplePart>
+	<!-- SimplePart For Dummy Message action -->
+	<tp:SimplePart tp:id="DummyMessage_SimplePart" tp:mimetype="text/xml">
+		<tp:NamespaceSupported tp:location=" http://www.THNSW.or.th/public/schemas/DummyMessage.xsd" tp:version="1.0">
+      http://www.THNSW.or.th/public/schemas/DummyMessage.xsd
+    </tp:NamespaceSupported>
+	</tp:SimplePart>
+	<tp:Packaging tp:id="ebMS2MshSignalPackage">
+		<tp:ProcessingCapabilities tp:parse="true" tp:generate="true"/>
+		<tp:CompositeList>
+			<tp:Composite 
+				tp:id="ebMS2MshSignal" 
+				tp:mimetype="multipart/related" 
+				tp:mimeparameters="type=application/xml">
+				<tp:Constituent tp:idref="ebMS2MessageHeader_SimplePart"/>
+			</tp:Composite>
+		</tp:CompositeList>
+	</tp:Packaging>
+	<tp:Packaging tp:id="Dummy_Package">
+		<tp:ProcessingCapabilities tp:parse="true" tp:generate="true"/>
+		<tp:CompositeList>
+			<tp:Composite tp:id="Dummy_RequestMsg" tp:mimetype="multipart/related" tp:mimeparameters="type=application/xml">
+				<tp:Constituent tp:idref="ebMS2MessageHeader_SimplePart"/>
+				<tp:Constituent tp:idref="DummyMessage_SimplePart"/>
+			</tp:Composite>
+		</tp:CompositeList>
+	</tp:Packaging>
+</tp:CollaborationProtocolAgreement>

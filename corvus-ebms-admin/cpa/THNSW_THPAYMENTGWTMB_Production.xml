@@ -1,0 +1,2500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright UN/CEFACT and OASIS, 2001. All Rights Reserved					-->
+<!-- ========================================================================== -->
+<!-- Version : 1.00					 											-->
+<!-- Created Date	: 2013-02-26 												-->
+<!-- Created CPA by : Smart Alliance Co., Ltd.									-->
+<!-- CPAID = THNSW_THPAYMENTGWTMB_Production_1_00								-->
+<!-- port 21030 for receiving messages from THPAYMENTGWTMB						-->
+<!-- ========================================================================== -->
+<!-- Support new documents for eTax Incenstives									-->
+<!-- ========================================================================== -->
+<!-- Updated Date	: 2013-07-01 												-->
+<!-- Updated service for ePayment to support ORRAF payment						-->
+<!-- Updated CPA by : Smart Alliance Co., Ltd.									-->
+<!-- ========================================================================== -->
+<!-- Version : 1.01					 											-->
+<!-- Updated Date	: 2014-12-25 												-->
+<!-- CPAID = THNSW_THPAYMENTGWTMB_Production_1_01								-->
+<!-- Updated NSW SSL Client& Server Certificates								-->
+<!-- Updated CPA by : Smart Alliance Co., Ltd.									-->
+<!-- ========================================================================== -->
+<!-- Version : 1.02 				 											-->
+<!-- Updated Date	: 2016-07-20												-->
+<!-- CPAID = THNSW_THPAYMENTGWTMB_Production_1_02									-->
+<!-- add new document (PAIN001)from ORRAF										-->
+<!-- Updated CPA by : Smart Alliance Co., Ltd.									-->
+<!-- ========================================================================== -->
+<!-- Version : 1.03					 											-->
+<!-- Updated Date	: 2019-12-04 												-->
+<!-- CPAID = THNSW_THPAYMENTGWTMB_Production_1_03										-->
+<!-- Chang  SSLClientCert	&  SSLServerCert	 for THNSW 								-->
+<!-- Updated CPA by : Smart Alliance Co., Ltd.									-->
+<!-- ========================================================================== -->
+
+<tp:CollaborationProtocolAgreement 
+	xmlns:tp="http://www.oasis-open.org/committees/ebxml-cppa/schema/cpp-cpa-2_0.xsd"
+	xmlns:tns="http://www.oasis-open.org/committees/ebxml-cppa/schema/cpp-cpa-2_0.xsd"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+	xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	tp:version="1_03"
+	xsi:schemaLocation="http://www.oasis-open.org/committees/ebxml-cppa/schema/cpp-cpa-2_0.xsd X:\Schema\ebXML\Oasis\cpp-cpa-2_0b.xsd"
+	tns:cpaid="THNSW_THPAYMENTGWTMB_Production">
+	<tns:Status tns:value="agreed"/>
+	<tns:Start>2019-12-04T00:00:00Z</tns:Start>
+	<tns:End>2022-09-08T00:00:00Z</tns:End>
+	<tp:PartyInfo 
+		tp:defaultMshChannelId="ebMS2MshSignalChannel_A03" 
+		tp:partyName="Thailand Payment Gateway(TMB Bank)"
+		tp:defaultMshPackageId="ebMS2MshSignalPackage">
+		<!-- Change-It [Other_PaymentGateway_ID ]-->
+		<tp:PartyId tp:type="string">THPAYMENTGWTMB</tp:PartyId>
+		<tp:PartyRef xlink:type="simple" xlink:href="http://www.tmbbank.com/"/>
+
+	<!-- ########################################### -->
+	<!-- ########################################### -->
+	<!-- ### Service Name [xHNSWx.Develop:ePayment] -->
+	<!-- ### Service Name THNSW.Doc:ePayment -->
+	<!-- ########################################### -->
+	<!-- ########################################### -->
+	<tp:CollaborationRole>
+		<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+		<tp:Role xlink:href="" xlink:type="simple" tp:name="Provider"/>
+		<tp:ServiceBinding>
+			<tp:Service tp:type="string">THNSW.Doc:ePayment</tp:Service>
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document CAMT054 [PAIN002] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.PAIN002" tp:action="PAIN002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.PAIN002</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+		
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document CAMT054 [BankToCustomerDebitCreditNotification] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.CAMT054" tp:action="CAMT054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.CAMT054</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G1N002 [CustomerGuaranteeDeposit] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1N002" tp:action="G1N002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1N002</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G1N054 [BankToCustomerGuaranteeDepositNotification] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1N054" tp:action="G1N054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1N054</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G1C002[CustomerGuaranteeDepositCancelStatusReport] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1C002" tp:action="G1C002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1C002</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G1C054 [BankToCustomerGuaranteeDepositCancelNotification] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1C054" tp:action="G1C054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1C054</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G2N002[CustomerGuaranteeRefundStatusReport] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G2N002" tp:action="G2N002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G2N002</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G2N054 [BankToCustomerGuaranteeRefundNotification] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G2N054" tp:action="G2N054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G2N054</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents ePayment&eGuarantee(eTax Incenstives)-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [PAIN002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.PAIN002_ERR" tp:action="PAIN002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.PAIN002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [CAMT054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.CAMT054_ERR" tp:action="CAMT054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.CAMT054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1N002_ERR" tp:action="G1N002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1N002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1N054_ERR" tp:action="G1N054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1N054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1C002_ERR" tp:action="G1C002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1C002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1C054_ERR" tp:action="G1C054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1C054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G2N002_ERR" tp:action="G2N002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G2N002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G2N054_ERR" tp:action="G2N054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G2N054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents Recv from TCD						-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [PAIN008] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.PAIN008" tp:action="PAIN008" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.PAIN008</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N008] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1N008" tp:action="G1N008" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1N008</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C007] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1C007" tp:action="G1C007" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1C007</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N007] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G2N007" tp:action="G2N007" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G2N007</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents send from ORRAF receive by Bank		-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [PAIN001] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.PAIN001" tp:action="PAIN001" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.PAIN001</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+      </tp:ServiceBinding>
+	</tp:CollaborationRole>
+
+
+	<!-- ########################################### -->
+	<!-- ########################################### -->
+	<!-- ### Service Name [TCD0.eCustoms] 		 -->
+	<!-- ########################################### -->
+	<!-- ########################################### -->
+	<tp:CollaborationRole>
+		<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+		<tp:Role xlink:href="" xlink:type="simple" tp:name="Provider"/>
+		<tp:ServiceBinding>
+			<tp:Service tp:type="string">TCD0.eCustoms</tp:Service>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents ePayment&eGuarantee(eTax Incenstives)-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document PAIN002 [CustomerPaymentStatusReport] -->
+		<!-- ====================================================== -->
+		<!-- ======================================================= -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.PAIN002" tp:action="PAIN002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.PAIN002</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document CAMT054 [BankToCustomerDebitCreditNotification] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.CAMT054" tp:action="CAMT054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.CAMT054</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G1N002 [CustomerGuaranteeDeposit] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1N002" tp:action="G1N002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1N002</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G1N054 [BankToCustomerGuaranteeDepositNotification] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1N054" tp:action="G1N054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1N054</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G1C002[CustomerGuaranteeDepositCancelStatusReport] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1C002" tp:action="G1C002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1C002</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G1C054 [BankToCustomerGuaranteeDepositCancelNotification] -->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1C054" tp:action="G1C054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1C054</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G2N002[CustomerGuaranteeRefundStatusReport] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G2N002" tp:action="G2N002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G2N002</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document G2N054 [BankToCustomerGuaranteeRefundNotification] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G2N054" tp:action="G2N054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G2N054</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents ePayment&eGuarantee(eTax Incenstives)-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [PAIN002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.PAIN002_ERR" tp:action="PAIN002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.PAIN002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [CAMT054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.CAMT054_ERR" tp:action="CAMT054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.CAMT054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1N002_ERR" tp:action="G1N002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1N002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1N054_ERR" tp:action="G1N054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1N054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1C002_ERR" tp:action="G1C002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1C002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1C054_ERR" tp:action="G1C054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1C054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G2N002_ERR" tp:action="G2N002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G2N002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G2N054_ERR" tp:action="G2N054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G2N054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents Recv from TCD						-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [PAIN008] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.PAIN008" tp:action="PAIN008" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.PAIN008</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N008] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1N008" tp:action="G1N008" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1N008</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C007] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1C007" tp:action="G1C007" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1C007</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N007] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G2N007" tp:action="G2N007" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G2N007</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+
+      </tp:ServiceBinding>
+	</tp:CollaborationRole>
+		
+    <!-- ############################################# -->
+    <!-- ############################################# -->
+    <!-- ### Service Name [THNSW.LoopbackSecure] 								-->
+    <!-- ############################################# -->
+    <!-- ############################################# -->
+    <tp:CollaborationRole>
+      <tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+      <tp:Role xlink:href="" xlink:type="simple" tp:name="Provider"/>
+      <tp:ServiceBinding>
+    <tp:Service tp:type="string">THNSW.LoopbackSecure</tp:Service>
+
+    <!-- ========================================== -->
+    <!-- ========================================== -->
+    <!-- tp:CanSend LoopbackSSL Message Document  		   -->
+    <!-- ========================================== -->
+    <!-- ========================================== -->
+        <tp:CanSend>
+      <tp:ThisPartyActionBinding tp:id="LoopbackSSL_Send" tp:action="Loopback" tp:packageId="Dummy_Package">
+        <tp:BusinessTransactionCharacteristics
+			tp:isNonRepudiationRequired="false"
+			tp:isNonRepudiationReceiptRequired="false"
+			tp:isConfidential="transient"
+			tp:isAuthenticated="transient"
+			tp:isTamperProof="transient"							
+			tp:isAuthorizationRequired="false"
+			tp:timeToAcknowledgeReceipt="PT1M"
+			tp:timeToPerform="P1D"/>
+        <tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+      </tp:ThisPartyActionBinding>
+      <tp:OtherPartyActionBinding>LoopbackSSL_Recv</tp:OtherPartyActionBinding>
+    </tp:CanSend>
+
+    <!-- ================================================= -->
+    <!-- ================================================= -->
+    <!-- tp:CanReceive LoopbackResponseSSL Message Document   -->
+    <!-- ================================================= -->
+    <!-- ================================================= -->
+        <tp:CanReceive>
+          <tp:ThisPartyActionBinding tp:id="LoopbackResponseSSL_Recv" tp:action="LoopbackResponse" tp:packageId="Dummy_Package">
+            <tp:BusinessTransactionCharacteristics
+				tp:isNonRepudiationRequired="false"
+				tp:isNonRepudiationReceiptRequired="false"
+				tp:isConfidential="transient"
+				tp:isAuthenticated="transient"
+				tp:isTamperProof="transient"							
+				tp:isAuthorizationRequired="false"
+				tp:timeToAcknowledgeReceipt="PT1M"
+				tp:timeToPerform="P1D"/>
+            <tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+          </tp:ThisPartyActionBinding>
+          <tp:OtherPartyActionBinding>LoopbackResponseSSL_Send</tp:OtherPartyActionBinding>
+        </tp:CanReceive>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive LoopbackSSLError Message Document   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+			<tp:CanReceive>
+			  <tp:ThisPartyActionBinding tp:id="LoopbackSSLError_Recv" tp:action="LoopbackError" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			  </tp:ThisPartyActionBinding>
+			  <tp:OtherPartyActionBinding>LoopbackSSLError_Send</tp:OtherPartyActionBinding>
+			</tp:CanReceive>
+
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+		<!-- tp:CanReceive LoopbackSSLxError Message Document   -->
+		<!-- ================================================= -->
+		<!-- ================================================= -->
+			<tp:CanReceive>
+			  <tp:ThisPartyActionBinding tp:id="LoopbackSSLxError_Recv" tp:action="LoopbackxError" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="false"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_A03</tp:ChannelId>
+			  </tp:ThisPartyActionBinding>
+			  <tp:OtherPartyActionBinding>LoopbackSSLxError_Send</tp:OtherPartyActionBinding>
+			</tp:CanReceive>
+
+    </tp:ServiceBinding>
+    </tp:CollaborationRole>
+
+		<!-- ======================== -->
+		<!-- ======================== -->
+		<!-- Security & Certificate Path 	   -->
+		<!-- ======================== -->
+		<!-- ======================== -->
+    <tp:Certificate tp:certId="SPs_SSLClientCert">
+      <!-- Change-It [Add Your Certificate With KeyInfo]-->
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <KeyValue>
+      <RSAKeyValue>
+        <Modulus>
+          1RzkFF1Os4+r4OA36VeautmHQ2cnJ0b6Aot3y96aZCwbU2/Q6K1aA+H6Dj4ZHYO3NW
+          NlGC0PA3UnvEHMYCPmfAdqVXokbT6hyEt9cZHJ/izB08yDALCaAvFww7WVPPXPRize
+          HWc7pGL2fnJA3YO15zOD1l35/HknsvusFQnfdJ9FiSlHDK3O7St+0+tzNZk6vCM0v9
+          ETrwNyJuyJX4GsgkPa1Uy7EDj0w1Kk/JCYDuE2qGmmHGqr4/JYBzDCNkYRXuBJd67J
+          fchaRPDgzBLWCY+YCr6Mq7yGIgPBXfoBQAO13RxZ5Nq7+KvzrrgUrOHh+zVg5mUbFJ
+          Fi++r4w3DD7mXrzSPPZWSzsw51UFQVblitp8PDN1+mJU7Mc4S/Z6A+Bip7ySu4JUZW
+          W4zCG81k5i/LmpZgoviD5c4VmZ7iqW/F/oX4+2Yr6cjzqLnHoVGsNznUTbRPi0YStC
+          oLewgpiCMLBqcfCZTJcXHt6TXK6okxougc4gEKJNM/TeuzmlveR9JoUt7XhiUJWty5
+          ZQviLhpmM9YjA0NW4+gk6oCyKpsJTa7J5IYbHY1vGklMgrSgNYfhVj0AWx1cPbIEWZ
+          7MYN9mX/iVrRWn6szV8U5A1icERr+dtSruNsAY2mam1xWAarHWEYfVZxB3pK0FS8ya
+          qsK42YuPpKwgTO/a1gkEA+c=
+        </Modulus>
+        <Exponent>AQAB</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+    <X509Data>
+      <X509IssuerSerial>
+        <X509IssuerName>emailAddress=support@cubicle.co.th,CN=gateway.thailandpaymentgateway.com,OU=e-Payment,O=Thailand Payment Gateway,L=Bangna,ST=Bangkok,C=TH</X509IssuerName>
+        <X509SerialNumber>17215893777895782548</X509SerialNumber>
+      </X509IssuerSerial>
+      <X509SubjectName>emailAddress=support@cubicle.co.th,CN=gateway.thailandpaymentgateway.com,OU=e-Payment,O=Thailand Payment Gateway,L=Bangna,ST=Bangkok,C=TH</X509SubjectName>
+      <X509Certificate>
+MIIF8jCCA9oCCQDu6yQtYlX4lDANBgkqhkiG9w0BAQUFADCBujELMAkGA1UEBhMCVEgxEDAOBgNV
+BAgTB0Jhbmdrb2sxDzANBgNVBAcTBkJhbmduYTEhMB8GA1UEChMYVGhhaWxhbmQgUGF5bWVudCBH
+YXRld2F5MRIwEAYDVQQLEwllLVBheW1lbnQxKzApBgNVBAMTImdhdGV3YXkudGhhaWxhbmRwYXlt
+ZW50Z2F0ZXdheS5jb20xJDAiBgkqhkiG9w0BCQEWFXN1cHBvcnRAY3ViaWNsZS5jby50aDAeFw0x
+MjA5MTAwNjQ0NTJaFw0yMjA5MDgwNjQ0NTJaMIG6MQswCQYDVQQGEwJUSDEQMA4GA1UECBMHQmFu
+Z2tvazEPMA0GA1UEBxMGQmFuZ25hMSEwHwYDVQQKExhUaGFpbGFuZCBQYXltZW50IEdhdGV3YXkx
+EjAQBgNVBAsTCWUtUGF5bWVudDErMCkGA1UEAxMiZ2F0ZXdheS50aGFpbGFuZHBheW1lbnRnYXRl
+d2F5LmNvbTEkMCIGCSqGSIb3DQEJARYVc3VwcG9ydEBjdWJpY2xlLmNvLnRoMIICIjANBgkqhkiG
+9w0BAQEFAAOCAg8AMIICCgKCAgEA1RzkFF1Os4+r4OA36VeautmHQ2cnJ0b6Aot3y96aZCwbU2/Q
+6K1aA+H6Dj4ZHYO3NWNlGC0PA3UnvEHMYCPmfAdqVXokbT6hyEt9cZHJ/izB08yDALCaAvFww7WV
+PPXPRizeHWc7pGL2fnJA3YO15zOD1l35/HknsvusFQnfdJ9FiSlHDK3O7St+0+tzNZk6vCM0v9ET
+rwNyJuyJX4GsgkPa1Uy7EDj0w1Kk/JCYDuE2qGmmHGqr4/JYBzDCNkYRXuBJd67JfchaRPDgzBLW
+CY+YCr6Mq7yGIgPBXfoBQAO13RxZ5Nq7+KvzrrgUrOHh+zVg5mUbFJFi++r4w3DD7mXrzSPPZWSz
+sw51UFQVblitp8PDN1+mJU7Mc4S/Z6A+Bip7ySu4JUZWW4zCG81k5i/LmpZgoviD5c4VmZ7iqW/F
+/oX4+2Yr6cjzqLnHoVGsNznUTbRPi0YStCoLewgpiCMLBqcfCZTJcXHt6TXK6okxougc4gEKJNM/
+TeuzmlveR9JoUt7XhiUJWty5ZQviLhpmM9YjA0NW4+gk6oCyKpsJTa7J5IYbHY1vGklMgrSgNYfh
+Vj0AWx1cPbIEWZ7MYN9mX/iVrRWn6szV8U5A1icERr+dtSruNsAY2mam1xWAarHWEYfVZxB3pK0F
+S8yaqsK42YuPpKwgTO/a1gkEA+cCAwEAATANBgkqhkiG9w0BAQUFAAOCAgEAMgbhyag6Md1VLVU5
+NPN2dcpiqKaW4dwV4wfFA09gvi1H1RQEXk3zAyi7fX7c+cW8kEYZH7cj8pHPkdHto5txKQEifZ9c
+rjO9vDkb/1/NwXLRegbR74SBRcGcOhfcIHIihfQCA+sTID3mbDeplYliIM2zi6yheUNsJ6S7XLQW
+WSJQnUgug+Ppbbwuki8tToMQULbsOKH9csxRZSR1mtfw8bSm8umyk/Z27se++o6/ytTkUeceGy0Y
+6W3PD3sH66eatYBadRsUl+uNjguVhNMfe/0Lddm0cZ1KA4J00yeZKSGVih99FmvJ0GBsP+Uam1E0
+W5n0mZO0s+dbPLQbbrPeECAqKryw5EgV2eorHWOubaElWVxSeKczn19zeOc8XHMITTk3BW6ZQKN5
+qv65Vs8GUq3hhaNJzxuBsFGmbdqy7Hew07fHDD24GSqb1FD+W2ggT9ZT/2GgpgdcSNLmJgegThrI
+/ylHkiZsV9BpGXPgxbXp30JnnwUwW/VcnlwjUUyByURz5NORzxdGoExvR6hTKZId3ZEWgFBIMitf
+yYWKpLF/4GvjZR9nkQDJlpwmDGPTW8DxNppbxvXErZ9JDa5+geM2HQxbhjrAkrQ3GN9uQNWn4BAc
+i1R0U5pqcOLcOrRV2xr/jrH5j8yd6lZUrOoK34pKCYk1yFxTxbqO4yxpZRI=
+      </X509Certificate>
+    </X509Data>
+  </KeyInfo>
+
+</tp:Certificate>
+
+    <tp:Certificate tp:certId="SPs_SSLServerCert">
+      <!-- Change-It [Add Your Certificate With KeyInfo]-->
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <KeyValue>
+      <RSAKeyValue>
+        <Modulus>
+          1RzkFF1Os4+r4OA36VeautmHQ2cnJ0b6Aot3y96aZCwbU2/Q6K1aA+H6Dj4ZHYO3NW
+          NlGC0PA3UnvEHMYCPmfAdqVXokbT6hyEt9cZHJ/izB08yDALCaAvFww7WVPPXPRize
+          HWc7pGL2fnJA3YO15zOD1l35/HknsvusFQnfdJ9FiSlHDK3O7St+0+tzNZk6vCM0v9
+          ETrwNyJuyJX4GsgkPa1Uy7EDj0w1Kk/JCYDuE2qGmmHGqr4/JYBzDCNkYRXuBJd67J
+          fchaRPDgzBLWCY+YCr6Mq7yGIgPBXfoBQAO13RxZ5Nq7+KvzrrgUrOHh+zVg5mUbFJ
+          Fi++r4w3DD7mXrzSPPZWSzsw51UFQVblitp8PDN1+mJU7Mc4S/Z6A+Bip7ySu4JUZW
+          W4zCG81k5i/LmpZgoviD5c4VmZ7iqW/F/oX4+2Yr6cjzqLnHoVGsNznUTbRPi0YStC
+          oLewgpiCMLBqcfCZTJcXHt6TXK6okxougc4gEKJNM/TeuzmlveR9JoUt7XhiUJWty5
+          ZQviLhpmM9YjA0NW4+gk6oCyKpsJTa7J5IYbHY1vGklMgrSgNYfhVj0AWx1cPbIEWZ
+          7MYN9mX/iVrRWn6szV8U5A1icERr+dtSruNsAY2mam1xWAarHWEYfVZxB3pK0FS8ya
+          qsK42YuPpKwgTO/a1gkEA+c=
+        </Modulus>
+        <Exponent>AQAB</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+    <X509Data>
+      <X509IssuerSerial>
+        <X509IssuerName>emailAddress=support@cubicle.co.th,CN=gateway.thailandpaymentgateway.com,OU=e-Payment,O=Thailand Payment Gateway,L=Bangna,ST=Bangkok,C=TH</X509IssuerName>
+        <X509SerialNumber>17215893777895782548</X509SerialNumber>
+      </X509IssuerSerial>
+      <X509SubjectName>emailAddress=support@cubicle.co.th,CN=gateway.thailandpaymentgateway.com,OU=e-Payment,O=Thailand Payment Gateway,L=Bangna,ST=Bangkok,C=TH</X509SubjectName>
+      <X509Certificate>
+MIIF8jCCA9oCCQDu6yQtYlX4lDANBgkqhkiG9w0BAQUFADCBujELMAkGA1UEBhMCVEgxEDAOBgNV
+BAgTB0Jhbmdrb2sxDzANBgNVBAcTBkJhbmduYTEhMB8GA1UEChMYVGhhaWxhbmQgUGF5bWVudCBH
+YXRld2F5MRIwEAYDVQQLEwllLVBheW1lbnQxKzApBgNVBAMTImdhdGV3YXkudGhhaWxhbmRwYXlt
+ZW50Z2F0ZXdheS5jb20xJDAiBgkqhkiG9w0BCQEWFXN1cHBvcnRAY3ViaWNsZS5jby50aDAeFw0x
+MjA5MTAwNjQ0NTJaFw0yMjA5MDgwNjQ0NTJaMIG6MQswCQYDVQQGEwJUSDEQMA4GA1UECBMHQmFu
+Z2tvazEPMA0GA1UEBxMGQmFuZ25hMSEwHwYDVQQKExhUaGFpbGFuZCBQYXltZW50IEdhdGV3YXkx
+EjAQBgNVBAsTCWUtUGF5bWVudDErMCkGA1UEAxMiZ2F0ZXdheS50aGFpbGFuZHBheW1lbnRnYXRl
+d2F5LmNvbTEkMCIGCSqGSIb3DQEJARYVc3VwcG9ydEBjdWJpY2xlLmNvLnRoMIICIjANBgkqhkiG
+9w0BAQEFAAOCAg8AMIICCgKCAgEA1RzkFF1Os4+r4OA36VeautmHQ2cnJ0b6Aot3y96aZCwbU2/Q
+6K1aA+H6Dj4ZHYO3NWNlGC0PA3UnvEHMYCPmfAdqVXokbT6hyEt9cZHJ/izB08yDALCaAvFww7WV
+PPXPRizeHWc7pGL2fnJA3YO15zOD1l35/HknsvusFQnfdJ9FiSlHDK3O7St+0+tzNZk6vCM0v9ET
+rwNyJuyJX4GsgkPa1Uy7EDj0w1Kk/JCYDuE2qGmmHGqr4/JYBzDCNkYRXuBJd67JfchaRPDgzBLW
+CY+YCr6Mq7yGIgPBXfoBQAO13RxZ5Nq7+KvzrrgUrOHh+zVg5mUbFJFi++r4w3DD7mXrzSPPZWSz
+sw51UFQVblitp8PDN1+mJU7Mc4S/Z6A+Bip7ySu4JUZWW4zCG81k5i/LmpZgoviD5c4VmZ7iqW/F
+/oX4+2Yr6cjzqLnHoVGsNznUTbRPi0YStCoLewgpiCMLBqcfCZTJcXHt6TXK6okxougc4gEKJNM/
+TeuzmlveR9JoUt7XhiUJWty5ZQviLhpmM9YjA0NW4+gk6oCyKpsJTa7J5IYbHY1vGklMgrSgNYfh
+Vj0AWx1cPbIEWZ7MYN9mX/iVrRWn6szV8U5A1icERr+dtSruNsAY2mam1xWAarHWEYfVZxB3pK0F
+S8yaqsK42YuPpKwgTO/a1gkEA+cCAwEAATANBgkqhkiG9w0BAQUFAAOCAgEAMgbhyag6Md1VLVU5
+NPN2dcpiqKaW4dwV4wfFA09gvi1H1RQEXk3zAyi7fX7c+cW8kEYZH7cj8pHPkdHto5txKQEifZ9c
+rjO9vDkb/1/NwXLRegbR74SBRcGcOhfcIHIihfQCA+sTID3mbDeplYliIM2zi6yheUNsJ6S7XLQW
+WSJQnUgug+Ppbbwuki8tToMQULbsOKH9csxRZSR1mtfw8bSm8umyk/Z27se++o6/ytTkUeceGy0Y
+6W3PD3sH66eatYBadRsUl+uNjguVhNMfe/0Lddm0cZ1KA4J00yeZKSGVih99FmvJ0GBsP+Uam1E0
+W5n0mZO0s+dbPLQbbrPeECAqKryw5EgV2eorHWOubaElWVxSeKczn19zeOc8XHMITTk3BW6ZQKN5
+qv65Vs8GUq3hhaNJzxuBsFGmbdqy7Hew07fHDD24GSqb1FD+W2ggT9ZT/2GgpgdcSNLmJgegThrI
+/ylHkiZsV9BpGXPgxbXp30JnnwUwW/VcnlwjUUyByURz5NORzxdGoExvR6hTKZId3ZEWgFBIMitf
+yYWKpLF/4GvjZR9nkQDJlpwmDGPTW8DxNppbxvXErZ9JDa5+geM2HQxbhjrAkrQ3GN9uQNWn4BAc
+i1R0U5pqcOLcOrRV2xr/jrH5j8yd6lZUrOoK34pKCYk1yFxTxbqO4yxpZRI=
+      </X509Certificate>
+    </X509Data>
+  </KeyInfo>
+    </tp:Certificate>
+   
+    <tp:SecurityDetails tp:securityId="SPs_TransportSecurity">
+      <tp:TrustAnchors>
+        <tp:AnchorCertificateRef tp:certId="SPs_SSLClientCert"/>
+        <tp:AnchorCertificateRef tp:certId="SPs_SSLServerCert"/>
+      </tp:TrustAnchors>
+    </tp:SecurityDetails>
+
+	<!-- ======================== -->
+	<!-- ======================== -->
+	<!-- Delivery channels 	      -->
+	<!-- ======================== -->
+	<!-- ======================== -->
+    <tp:DeliveryChannel
+		tp:channelId="ebMS2MshSignalChannel_A03"
+		tp:transportId="Transport_A03.HTTP.SSL"
+		tp:docExchangeId="SPs_docExchangeSSL">
+		<tp:MessagingCharacteristics
+			tp:syncReplyMode="mshSignalsOnly"
+			tp:ackRequested="always"
+			tp:ackSignatureRequested="never"
+			tp:duplicateElimination="always"
+			tp:actor="urn:oasis:names:tc:ebxml-msg:actor:nextMSH"/>
+    </tp:DeliveryChannel>
+
+	<!-- ======================== -->
+	<!-- ======================== -->
+	<!-- Transports 							   -->
+	<!-- ======================== -->
+	<!-- ======================== -->
+	<!-- Change-It [https://Exchange_URL_SPs_HTTP] -->
+
+	<!-- Change-It [https://Exchange_URL_SPs_HTTPS] -->
+	<tp:Transport tp:transportId="Transport_A03.HTTP.SSL">
+	  <tp:TransportSender>
+		<tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+		<tp:TransportClientSecurity>
+		  <tp:TransportSecurityProtocol tp:version="3.0">SSL</tp:TransportSecurityProtocol>
+		  <tp:ClientCertificateRef tp:certId="SPs_SSLClientCert"/>
+		  <tp:ServerSecurityDetailsRef tp:securityId="SPs_TransportSecurity"/>
+		</tp:TransportClientSecurity>
+	  </tp:TransportSender>
+	  <tp:TransportReceiver>
+		<tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+			<tp:Endpoint	tp:type="allPurpose" 
+					tp:uri="https://gateway.thailandpaymentgateway.com:44083/cubems/msh/ebms/inbound"/>
+		<tp:TransportServerSecurity>
+		  <tp:TransportSecurityProtocol tp:version="3.0">SSL</tp:TransportSecurityProtocol>
+		  <tp:ServerCertificateRef tp:certId="SPs_SSLServerCert"/>
+		  <tp:ClientSecurityDetailsRef tp:securityId="SPs_TransportSecurity"/>
+		</tp:TransportServerSecurity>
+	  </tp:TransportReceiver>
+	</tp:Transport>
+
+	<!-- Basic DocExchange -->
+    
+    <tp:DocExchange tp:docExchangeId="SPs_docExchangeSSL">
+      <tp:ebXMLSenderBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLSenderBinding>
+      <tp:ebXMLReceiverBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+	</tp:ebXMLReceiverBinding>
+    </tp:DocExchange>
+
+	</tp:PartyInfo>
+	<!-- 000000000000000000000000000 -->
+	<!-- 000000000000000000000000000 -->
+	<!-- 0000                   0000 -->
+	<!-- 0000 00000 0000  00000 0000 -->
+	<!-- 0000 00000 00000 00 00 0000 -->
+	<!-- 0000 00000 00 00 00000 0000 -->
+	<!-- 0000 00    00000 00 00 0000 -->
+	<!-- 0000 00    0000  00 00 0000 -->
+	<!-- 0000                   0000 -->
+	<!-- 000000000000000000000000000 -->
+	<!-- 000000000000000000000000000 -->
+	<tp:PartyInfo tp:defaultMshChannelId=	"ebMS2MshSignalChannel_Z03" 
+		tp:partyName=	"Thailand NSW" 
+		tp:defaultMshPackageId=	"ebMS2MshSignalPackage">
+		<!-- Change-It [Other_Provider _ID ]-->
+		<tp:PartyId tp:type="string">THNSW</tp:PartyId>
+		<tp:PartyRef xlink:type="simple" xlink:href="http://www.thainsw.net/INSW/index.jsp"/>
+
+		<!-- ############################################## -->
+		<!-- ############################################## -->
+		<!-- ### Service Name [THNSW.Doc:ePayment]		  -->
+		<!-- ############################################## -->
+		<!-- ############################################## -->
+		<tp:CollaborationRole>
+			<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+			<tp:Role xlink:href="" xlink:type="simple" tp:name="SingleWindow"/>
+			<tp:ServiceBinding>
+				<tp:Service tp:type="string">THNSW.Doc:ePayment</tp:Service>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents ePayment&eGuarantee(eTax Incenstives)-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [PAIN002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.PAIN002_ERR" tp:action="PAIN002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.PAIN002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [CAMT054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.CAMT054_ERR" tp:action="CAMT054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.CAMT054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1N002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1N002_ERR" tp:action="G1N002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1N002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1N054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1N054_ERR" tp:action="G1N054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1N054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1C002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1C002_ERR" tp:action="G1C002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1C002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1C054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1C054_ERR" tp:action="G1C054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1C054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G2N002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G2N002_ERR" tp:action="G2N002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G2N002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G2N054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G2N054_ERR" tp:action="G2N054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G2N054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents send from TCD						-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [PAIN008] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.PAIN008" tp:action="PAIN008" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.PAIN008</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1N008] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1N008" tp:action="G1N008" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1N008</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1C007] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G1C007" tp:action="G1C007" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G1C007</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G2N007] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.G2N007" tp:action="G2N007" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.G2N007</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents send from ORRAF						-->
+		<!-- ====================================================== -->
+
+		<!-- =================================================== -->
+		<!-- =================================================== -->
+		<!-- tp:CanSend Document  [PAIN001] 	-->
+		<!-- =================================================== -->
+		<!-- =================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Send.PAIN001" tp:action="PAIN001" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT5M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Recv.PAIN001</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents ePayment&eGuarantee(eTax Incenstives)-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [PAIN002] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.PAIN002" tp:action="PAIN002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.PAIN002</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [CAMT054] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.CAMT054" tp:action="CAMT054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.CAMT054</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N002] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1N002" tp:action="G1N002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1N002</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N054] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1N054" tp:action="G1N054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1N054</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C002] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1C002" tp:action="G1C002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1C002</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C054] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G1C054" tp:action="G1C054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G1C054</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N002] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G2N002" tp:action="G2N002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G2N002</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N054] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="THNSW.Doc.ePayment.Recv.G2N054" tp:action="G2N054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>THNSW.Doc.ePayment.Send.G2N054</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+			</tp:ServiceBinding>
+		</tp:CollaborationRole>
+
+		<!-- ############################################## -->
+		<!-- ############################################## -->
+		<!-- ### Service Name [TCD0.eCustoms]										  -->
+		<!-- ############################################## -->
+		<!-- ############################################## -->
+		<tp:CollaborationRole>
+			<tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+			<tp:Role xlink:href="" xlink:type="simple" tp:name="SingleWindow"/>
+			<tp:ServiceBinding>
+				<tp:Service tp:type="string">TCD0.eCustoms</tp:Service>
+
+
+		<!-- ====================================================== -->
+		<!-- Add new documents ePayment&eGuarantee(eTax Incenstives)-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [PAIN002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.PAIN002_ERR" tp:action="PAIN002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.PAIN002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [CAMT054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.CAMT054_ERR" tp:action="CAMT054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.CAMT054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1N002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1N002_ERR" tp:action="G1N002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1N002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1N054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1N054_ERR" tp:action="G1N054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1N054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1C002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1C002_ERR" tp:action="G1C002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1C002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1C054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1C054_ERR" tp:action="G1C054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1C054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G2N002_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G2N002_ERR" tp:action="G2N002_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G2N002_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G2N054_ERR] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G2N054_ERR" tp:action="G2N054_ERR" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G2N054_ERR</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents send from TCD						-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [PAIN008] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.PAIN008" tp:action="PAIN008" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.PAIN008</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1N008] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1N008" tp:action="G1N008" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1N008</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G1C007] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G1C007" tp:action="G1C007" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G1C007</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanSend Document  [G2N007] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanSend>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Send.G2N007" tp:action="G2N007" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics 
+					tp:isNonRepudiationRequired="false" 
+					tp:isNonRepudiationReceiptRequired="false" 
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"							
+					tp:isAuthorizationRequired="true" 
+					tp:timeToAcknowledgeReceipt="PT1M" 
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Recv.G2N007</tp:OtherPartyActionBinding>
+		</tp:CanSend>
+
+		<!-- ====================================================== -->
+		<!-- Add new documents ePayment&eGuarantee(eTax Incenstives)-->
+		<!-- ====================================================== -->
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [PAIN002] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.PAIN002" tp:action="PAIN002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.PAIN002</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [CAMT054] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.CAMT054" tp:action="CAMT054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+		<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.CAMT054</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N002] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1N002" tp:action="G1N002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1N002</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1N054] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1N054" tp:action="G1N054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1N054</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C002] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1C002" tp:action="G1C002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1C002</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G1C054] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G1C054" tp:action="G1C054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G1C054</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N002] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G2N002" tp:action="G2N002" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G2N002</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<!-- tp:CanReceive Document  [G2N054] 	-->
+		<!-- ====================================================== -->
+		<!-- ====================================================== -->
+		<tp:CanReceive>
+			<tp:ThisPartyActionBinding tp:id="TCD0.eCustoms.Recv.G2N054" tp:action="G2N054" tp:packageId="Dummy_Package">
+				<tp:BusinessTransactionCharacteristics
+					tp:isNonRepudiationRequired="false"
+					tp:isNonRepudiationReceiptRequired="false"
+					tp:isConfidential="transient"
+					tp:isAuthenticated="transient"
+					tp:isTamperProof="transient"
+					tp:isAuthorizationRequired="true"
+					tp:timeToAcknowledgeReceipt="PT1M"
+					tp:timeToPerform="P1D"/>
+				<tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+			</tp:ThisPartyActionBinding>
+			<tp:OtherPartyActionBinding>TCD0.eCustoms.Send.G2N054</tp:OtherPartyActionBinding>
+		</tp:CanReceive>
+
+			</tp:ServiceBinding>
+		</tp:CollaborationRole>
+
+
+    <!-- ############################################# -->
+    <!-- ############################################# -->
+    <!-- ### Service Name [THNSW.LoopbackSecure] 	-->
+    <!-- ############################################# -->
+    <!-- ############################################# -->
+    <tp:CollaborationRole>
+      <tp:ProcessSpecification xlink:href="" tp:name="Thailand National Single Window" tp:version="1.00"/>
+      <tp:Role xlink:href="" xlink:type="simple" tp:name="SingleWindow"/>
+      <tp:ServiceBinding>
+        <tp:Service tp:type="string">THNSW.LoopbackSecure</tp:Service>
+
+        <!-- ============================================== -->
+        <!-- ============================================== -->
+        <!-- tp:CanSend LoopbackSSLError Message Document  -->
+        <!-- ============================================== -->
+        <!-- ============================================== -->
+        <tp:CanSend>
+          <tp:ThisPartyActionBinding tp:id="LoopbackSSLError_Send" tp:action="LoopbackError" tp:packageId="Dummy_Package">
+            <tp:BusinessTransactionCharacteristics
+				tp:isNonRepudiationRequired="false"
+				tp:isNonRepudiationReceiptRequired="false"
+				tp:isConfidential="transient"
+				tp:isAuthenticated="transient"
+				tp:isTamperProof="transient"							
+				tp:isAuthorizationRequired="false"
+				tp:timeToAcknowledgeReceipt="PT1M"
+				tp:timeToPerform="P1D"/>
+            <tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+          </tp:ThisPartyActionBinding>
+          <tp:OtherPartyActionBinding>LoopbackSSLError_Recv</tp:OtherPartyActionBinding>
+        </tp:CanSend>
+
+        <!-- ============================================== -->
+        <!-- ============================================== -->
+        <!-- tp:CanSend LoopbackSSLError Message Document  -->
+        <!-- ============================================== -->
+        <!-- ============================================== -->
+        <tp:CanSend>
+          <tp:ThisPartyActionBinding tp:id="LoopbackSSLxError_Send" tp:action="LoopbackxError" tp:packageId="Dummy_Package">
+            <tp:BusinessTransactionCharacteristics
+				tp:isNonRepudiationRequired="false"
+				tp:isNonRepudiationReceiptRequired="false"
+				tp:isConfidential="transient"
+				tp:isAuthenticated="transient"
+				tp:isTamperProof="transient"							
+				tp:isAuthorizationRequired="false"
+				tp:timeToAcknowledgeReceipt="PT1M"
+				tp:timeToPerform="P1D"/>
+            <tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+          </tp:ThisPartyActionBinding>
+          <tp:OtherPartyActionBinding>LoopbackSSLxError_Recv</tp:OtherPartyActionBinding>
+        </tp:CanSend>
+
+        <!-- ============================================== -->
+        <!-- ============================================== -->
+        <!-- tp:CanSend LoopbackResponseSSL Message Document  -->
+        <!-- ============================================== -->
+        <!-- ============================================== -->
+        <tp:CanSend>
+          <tp:ThisPartyActionBinding tp:id="LoopbackResponseSSL_Send" tp:action="LoopbackResponse" tp:packageId="Dummy_Package">
+            <tp:BusinessTransactionCharacteristics
+				tp:isNonRepudiationRequired="false"
+				tp:isNonRepudiationReceiptRequired="false"
+				tp:isConfidential="transient"
+				tp:isAuthenticated="transient"
+				tp:isTamperProof="transient"							
+				tp:isAuthorizationRequired="false"
+				tp:timeToAcknowledgeReceipt="PT1M"
+				tp:timeToPerform="P1D"/>
+            <tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+          </tp:ThisPartyActionBinding>
+          <tp:OtherPartyActionBinding>LoopbackResponseSSL_Recv</tp:OtherPartyActionBinding>
+        </tp:CanSend>
+
+        <!-- ========================================== -->
+        <!-- ========================================== -->
+        <!-- tp:CanReceive LoopbackSSL Message Document     -->
+        <!-- ========================================== -->
+        <!-- ========================================== -->
+        <tp:CanReceive>
+          <tp:ThisPartyActionBinding tp:id="LoopbackSSL_Recv" tp:action="Loopback" tp:packageId="Dummy_Package">
+            <tp:BusinessTransactionCharacteristics
+				tp:isNonRepudiationRequired="false"
+				tp:isNonRepudiationReceiptRequired="false"
+				tp:isConfidential="transient"
+				tp:isAuthenticated="transient"
+				tp:isTamperProof="transient"							
+				tp:isAuthorizationRequired="false"
+				tp:timeToAcknowledgeReceipt="PT1M"
+				tp:timeToPerform="P1D"/>
+            <tp:ChannelId>ebMS2MshSignalChannel_Z03</tp:ChannelId>
+          </tp:ThisPartyActionBinding>
+          <tp:OtherPartyActionBinding>LoopbackSSL_Send</tp:OtherPartyActionBinding>
+        </tp:CanReceive>
+
+      </tp:ServiceBinding>
+    </tp:CollaborationRole>
+
+        <!-- ========================================== -->
+        <!-- ========================================== -->
+		<!-- Security & Certificate Path 				 -->
+        <!-- ========================================== -->
+        <!-- ========================================== -->
+    <tp:Certificate tp:certId="THNSW_SSLClientCert">
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <KeyValue>
+      <RSAKeyValue>
+        <Modulus>
+          z51qwbJokin5xAudZuXzsAPrUgt+HJt/v9zu3oFTt4J6LvD5ZkSs8b0drgFLM5UX3v
+          WD+vGbzg9hny1RFu7bPwOefq1BdHPeyXAra50GfsyDJjwSARG2JBXrslHR7g693nfP
+          6qtzFwPtEZRBoJ/Otn9tfaCKi63UaA/yRCtiHjvtn/BjXh+xNN9DZKurxMy6Gt8ysO
+          b2nmErjRFq8zK4YQCRGIn+Zsy5T6cpkeupIRr5J6fZRgzRtL2nj8XakrYYdsQb8JVG
+          YzniMPIRmjRhcNjK3fD3L0Wxr4cWvoApdPBX8U9BsvRrYPkdBbp8tD2siLPurgmm4y
+          v8pKEKf9vzRw==
+        </Modulus>
+        <Exponent>AQAB</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+    <X509Data>
+      <X509IssuerSerial>
+        <X509IssuerName>CN=exchange.thainsw.net for VAN_PAYMENT PRD</X509IssuerName>
+        <X509SerialNumber>321555527371870651823490288803642203917</X509SerialNumber>
+      </X509IssuerSerial>
+      <X509SKI>KN87zk+tsvL3tF8x7DcqadHc</X509SKI>
+      <X509SubjectName>CN=exchange.thainsw.net for VAN_PAYMENT PRD</X509SubjectName>
+      <X509Certificate>
+MIIDsTCCApmgAwIBAgIRAPHpV4ZsG9Kwb8T7mxvN3w0wDQYJKoZIhvcNAQELBQAwWzFZMFcGA1UE
+Ax5QAGUAeABjAGgAYQBuAGcAZQAuAHQAaABhAGkAbgBzAHcALgBuAGUAdAAgAGYAbwByACAAVgBB
+AE4AXwBQAEEAWQBNAEUATgBUACAAUABSAEQwHhcNMTkxMjA0MDYzMjE3WhcNMjQxMjA0MDYzMjE3
+WjBbMVkwVwYDVQQDHlAAZQB4AGMAaABhAG4AZwBlAC4AdABoAGEAaQBuAHMAdwAuAG4AZQB0ACAA
+ZgBvAHIAIABWAEEATgBfAFAAQQBZAE0ARQBOAFQAIABQAFIARDCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAM+dasGyaJIp+cQLnWbl87AD61ILfhybf7/c7t6BU7eCei7w+WZErPG9Ha4B
+SzOVF971g/rxm84PYZ8tURbu2z8Dnn6tQXRz3slwK2udBn7MgyY8EgERtiQV67JR0e4Ovd53z+qr
+cxcD7RGUQaCfzrZ/bX2giout1GgP8kQrYh477Z/wY14fsTTfQ2Srq8TMuhrfMrDm9p5hK40RavMy
+uGEAkRiJ/mbMuU+nKZHrqSEa+Sen2UYM0bS9p4/F2pK2GHbEG/CVRmM54jDyEZo0YXDYyt3w9y9F
+sa+HFr6AKXTwV/FPQbL0a2D5HQW6fLQ9rIiz7q4JpuMr/KShCn/b80cCAwEAAaNwMG4wHQYDVR0l
+BBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAsGA1UdDwQEAwIA4DAdBgNVHQ4EFgQUeVko3zvOT62y
+8ve0XzHsNypp0dwwIQYDVR0jBBowGKAWBBR5WSjfO85PrbLy97RfMew3KmnR3DANBgkqhkiG9w0B
+AQsFAAOCAQEAYBHvsm78PrkXgfZL/RttuNkCDBJx9bhPwIvWzQfKa687X27so/bXsiFu81uBE7IG
+IDTyDHwIFWE7PfVUf5H8QrjQg7JkG7ZDE06hgR7C2VF2xCrfX/TunZzCTDoUbkCBFlQLFixNLK6g
+oQ4DIPYzNYXWcQ02IKHGIpg/12QDPbN5kw2i3tXCpR/sZPnvm383Sv5rKS5XpLBL4Q/1XwLpPN3b
+8skDu+4SxAKUSpiHjoR95r6rCEeO8ts707At3X62y9AjlRZ4qTAw8C4C5VeOrnr/s4h8Lc02tXbJ
+eaB5BJShgVLuyN55+WhGRn2eJQ/CjzUmWnLPsN5iC2ZiDDrTLw==
+      </X509Certificate>
+    </X509Data>
+  </KeyInfo>
+
+    </tp:Certificate>
+    
+    <tp:Certificate tp:certId="THNSW_SSLServerCert">
+<KeyInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+    <KeyValue>
+      <RSAKeyValue>
+        <Modulus>
+          z51qwbJokin5xAudZuXzsAPrUgt+HJt/v9zu3oFTt4J6LvD5ZkSs8b0drgFLM5UX3v
+          WD+vGbzg9hny1RFu7bPwOefq1BdHPeyXAra50GfsyDJjwSARG2JBXrslHR7g693nfP
+          6qtzFwPtEZRBoJ/Otn9tfaCKi63UaA/yRCtiHjvtn/BjXh+xNN9DZKurxMy6Gt8ysO
+          b2nmErjRFq8zK4YQCRGIn+Zsy5T6cpkeupIRr5J6fZRgzRtL2nj8XakrYYdsQb8JVG
+          YzniMPIRmjRhcNjK3fD3L0Wxr4cWvoApdPBX8U9BsvRrYPkdBbp8tD2siLPurgmm4y
+          v8pKEKf9vzRw==
+        </Modulus>
+        <Exponent>AQAB</Exponent>
+      </RSAKeyValue>
+    </KeyValue>
+    <X509Data>
+      <X509IssuerSerial>
+        <X509IssuerName>CN=exchange.thainsw.net for VAN_PAYMENT PRD</X509IssuerName>
+        <X509SerialNumber>321555527371870651823490288803642203917</X509SerialNumber>
+      </X509IssuerSerial>
+      <X509SKI>KN87zk+tsvL3tF8x7DcqadHc</X509SKI>
+      <X509SubjectName>CN=exchange.thainsw.net for VAN_PAYMENT PRD</X509SubjectName>
+      <X509Certificate>
+MIIDsTCCApmgAwIBAgIRAPHpV4ZsG9Kwb8T7mxvN3w0wDQYJKoZIhvcNAQELBQAwWzFZMFcGA1UE
+Ax5QAGUAeABjAGgAYQBuAGcAZQAuAHQAaABhAGkAbgBzAHcALgBuAGUAdAAgAGYAbwByACAAVgBB
+AE4AXwBQAEEAWQBNAEUATgBUACAAUABSAEQwHhcNMTkxMjA0MDYzMjE3WhcNMjQxMjA0MDYzMjE3
+WjBbMVkwVwYDVQQDHlAAZQB4AGMAaABhAG4AZwBlAC4AdABoAGEAaQBuAHMAdwAuAG4AZQB0ACAA
+ZgBvAHIAIABWAEEATgBfAFAAQQBZAE0ARQBOAFQAIABQAFIARDCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAM+dasGyaJIp+cQLnWbl87AD61ILfhybf7/c7t6BU7eCei7w+WZErPG9Ha4B
+SzOVF971g/rxm84PYZ8tURbu2z8Dnn6tQXRz3slwK2udBn7MgyY8EgERtiQV67JR0e4Ovd53z+qr
+cxcD7RGUQaCfzrZ/bX2giout1GgP8kQrYh477Z/wY14fsTTfQ2Srq8TMuhrfMrDm9p5hK40RavMy
+uGEAkRiJ/mbMuU+nKZHrqSEa+Sen2UYM0bS9p4/F2pK2GHbEG/CVRmM54jDyEZo0YXDYyt3w9y9F
+sa+HFr6AKXTwV/FPQbL0a2D5HQW6fLQ9rIiz7q4JpuMr/KShCn/b80cCAwEAAaNwMG4wHQYDVR0l
+BBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMAsGA1UdDwQEAwIA4DAdBgNVHQ4EFgQUeVko3zvOT62y
+8ve0XzHsNypp0dwwIQYDVR0jBBowGKAWBBR5WSjfO85PrbLy97RfMew3KmnR3DANBgkqhkiG9w0B
+AQsFAAOCAQEAYBHvsm78PrkXgfZL/RttuNkCDBJx9bhPwIvWzQfKa687X27so/bXsiFu81uBE7IG
+IDTyDHwIFWE7PfVUf5H8QrjQg7JkG7ZDE06hgR7C2VF2xCrfX/TunZzCTDoUbkCBFlQLFixNLK6g
+oQ4DIPYzNYXWcQ02IKHGIpg/12QDPbN5kw2i3tXCpR/sZPnvm383Sv5rKS5XpLBL4Q/1XwLpPN3b
+8skDu+4SxAKUSpiHjoR95r6rCEeO8ts707At3X62y9AjlRZ4qTAw8C4C5VeOrnr/s4h8Lc02tXbJ
+eaB5BJShgVLuyN55+WhGRn2eJQ/CjzUmWnLPsN5iC2ZiDDrTLw==
+      </X509Certificate>
+    </X509Data>
+  </KeyInfo>
+
+    </tp:Certificate>
+     
+    <tp:SecurityDetails tp:securityId="THNSW_TransportSecurity">
+      <tp:TrustAnchors>
+        <tp:AnchorCertificateRef tp:certId="THNSW_SSLClientCert"/>
+        <tp:AnchorCertificateRef tp:certId="THNSW_SSLServerCert"/>
+      </tp:TrustAnchors>
+    </tp:SecurityDetails>
+    <!-- Delivery channels -->
+    <tp:DeliveryChannel
+      tp:channelId="ebMS2MshSignalChannel_Z03"
+      tp:transportId="Transport_Z03.HTTP.SSL"
+      tp:docExchangeId="THNSW_docExchangeSSL">
+      <tp:MessagingCharacteristics
+				tp:syncReplyMode="mshSignalsOnly"
+				tp:ackRequested="always"
+				tp:ackSignatureRequested="never"
+				tp:duplicateElimination="always"
+				tp:actor="urn:oasis:names:tc:ebxml-msg:actor:nextMSH"/>
+    </tp:DeliveryChannel>
+
+    <!-- ================== -->
+    <!-- ================== -->
+    <!-- Transports 				   -->
+    <!-- ================== -->
+    <!-- ================== -->
+    <!-- Change-It [http://Exchange_URL_THNSW_HTTPs]-->
+    <tp:Transport tp:transportId="Transport_Z03.HTTP.SSL">
+      <tp:TransportSender>
+        <tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+        <tp:TransportClientSecurity>
+          <tp:TransportSecurityProtocol tp:version="3.0">SSL</tp:TransportSecurityProtocol>
+          <tp:ClientCertificateRef tp:certId="THNSW_SSLClientCert"/>
+          <tp:ServerSecurityDetailsRef tp:securityId="THNSW_TransportSecurity"/>
+        </tp:TransportClientSecurity>
+      </tp:TransportSender>
+      <tp:TransportReceiver>
+        <tp:TransportProtocol tp:version="1.1">HTTP</tp:TransportProtocol>
+        <tp:Endpoint tp:type="allPurpose" tp:uri="https://exchange.thainsw.net:21030/exchange/NSWsTHxChange"/>
+        <tp:TransportServerSecurity>
+          <tp:TransportSecurityProtocol tp:version="3.0">SSL</tp:TransportSecurityProtocol>
+          <tp:ServerCertificateRef tp:certId="THNSW_SSLServerCert"/>
+          <tp:ClientSecurityDetailsRef tp:securityId="THNSW_TransportSecurity"/>
+        </tp:TransportServerSecurity>
+      </tp:TransportReceiver>
+    </tp:Transport>
+    <!-- Basic DocExchange -->
+     <tp:DocExchange tp:docExchangeId="THNSW_docExchangeSSL">
+      <tp:ebXMLSenderBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLSenderBinding>
+      <tp:ebXMLReceiverBinding tp:version="2.0">
+        <tp:ReliableMessaging>
+          <tp:Retries>2</tp:Retries>
+          <tp:RetryInterval>PT1M</tp:RetryInterval>
+          <tp:MessageOrderSemantics>NotGuaranteed</tp:MessageOrderSemantics>
+        </tp:ReliableMessaging>
+        <tp:PersistDuration>P1D</tp:PersistDuration>
+      </tp:ebXMLReceiverBinding>
+    </tp:DocExchange>
+	</tp:PartyInfo>
+	<!-- SimplePart corresponding to the SOAP Envelope -->
+	<tp:SimplePart tp:id="ebMS2MessageHeader_SimplePart" tp:mimetype="text/xml">
+		<tp:NamespaceSupported 
+			tp:location="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" 
+			tp:version="2.0">
+			  http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd
+		 </tp:NamespaceSupported>
+	</tp:SimplePart>
+	<!-- SimplePart For Dummy Message action -->
+	<tp:SimplePart tp:id="DummyMessage_SimplePart" tp:mimetype="text/xml">
+		<tp:NamespaceSupported tp:location=" http://www.THNSW.or.th/public/schemas/DummyMessage.xsd" tp:version="1.0">
+      http://www.THNSW.or.th/public/schemas/DummyMessage.xsd
+    </tp:NamespaceSupported>
+	</tp:SimplePart>
+	<tp:Packaging tp:id="ebMS2MshSignalPackage">
+		<tp:ProcessingCapabilities tp:parse="true" tp:generate="true"/>
+		<tp:CompositeList>
+			<tp:Composite 
+				tp:id="ebMS2MshSignal" 
+				tp:mimetype="multipart/related" 
+				tp:mimeparameters="type=application/xml">
+				<tp:Constituent tp:idref="ebMS2MessageHeader_SimplePart"/>
+			</tp:Composite>
+		</tp:CompositeList>
+	</tp:Packaging>
+	<tp:Packaging tp:id="Dummy_Package">
+		<tp:ProcessingCapabilities tp:parse="true" tp:generate="true"/>
+		<tp:CompositeList>
+			<tp:Composite tp:id="Dummy_RequestMsg" tp:mimetype="multipart/related" tp:mimeparameters="type=application/xml">
+				<tp:Constituent tp:idref="ebMS2MessageHeader_SimplePart"/>
+				<tp:Constituent tp:idref="DummyMessage_SimplePart"/>
+			</tp:Composite>
+		</tp:CompositeList>
+	</tp:Packaging>
+</tp:CollaborationProtocolAgreement>
