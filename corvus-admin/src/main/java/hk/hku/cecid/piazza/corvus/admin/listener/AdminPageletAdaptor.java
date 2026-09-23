@@ -123,7 +123,7 @@ public class AdminPageletAdaptor extends BorderLayoutPageletAdaptor {
         Source componentSource = (Source)request.getAttribute(ATTR_PREFIX + type);
         if (componentSource == null) { 
             Collection tabs = generateMenuComponentSource(request, modules, getModuleId(request), -1, MENU_TYPE_MODULE);
-            generateMenuComponentSource(request, tabs, getTabId(request), 12, MENU_TYPE_TAB);
+            generateMenuComponentSource(request, tabs, getTabId(request), -1, MENU_TYPE_TAB);
             componentSource = (Source)request.getAttribute(ATTR_PREFIX + type);
         }
         return componentSource;

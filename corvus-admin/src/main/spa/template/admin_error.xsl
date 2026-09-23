@@ -3,19 +3,11 @@
 <xsl:output method="html"/>
 
 <xsl:template match="/error">
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
-  <tr>
-    <td width="30%"><b>Error</b></td>
-    <td width="70%">Error occurs when plugin <xsl:value-of select="./plugin" /> initiates.</td>
-  </tr>
-  <tr>
-    <td><b>Message</b></td>
-    <td>Please refer to the log in the directory <xsl:value-of select="./home_directory" /></td>
-  </tr>
-  <tr>
-    <td><b>Time</b></td>
-    <td><xsl:value-of select="./time" /></td>
-  </tr>
-</table>
+<div class="error-banner">
+  <h3>Plugin activation error</h3>
+  <div class="stat-row"><span class="label">Plugin</span><span class="value"><xsl:value-of select="./plugin" /></span></div>
+  <div class="stat-row"><span class="label">Details</span><span class="value">See the log in <xsl:value-of select="./home_directory" /></span></div>
+  <div class="stat-row"><span class="label">Time</span><span class="value"><xsl:value-of select="./time" /></span></div>
+</div>
 </xsl:template>
 </xsl:stylesheet>

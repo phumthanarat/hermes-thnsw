@@ -1,137 +1,489 @@
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Corvus Administration System</title>
 <style>
 <!--
-th                    { font-weight: bold; color: #000000; background-color: #ECE9D8 }
-td,th                 { font-family: Verdana,Arial; font-size: 10pt; }
-td a, 
-th a                  { color: #0000FF; text-decoration: none; }
-td a:hover,
-th a:hover            { color: #FF0000; text-decoration: none; }
-.module               { background-color: #ECE9D8; }
-.module_sel           { background-color: #6699FF; }
-.tab, 
-.tab_sel,
-.module,
-.module_sel           { font-family: Verdana,Arial; font-size: 10pt; padding-left: 5; padding-right: 5; }
-.tab a, 
-.tab_sel a,
-.module a,
-.module_sel a         { text-decoration: none }
-.tab, 
-.tab a, 
-.module, 
-.module a             { color: #000000 }
-.tab_sel, 
-.tab_sel a, 
-.module_sel, 
-.module_sel a         { color: #FFFFFF }
-.tab a:hover, 
-.module a:hover       { color: #FF0000 }
-.tab_sel a:hover,
-.module_sel a:hover   { color: #0000FF }
-.module_frame         { border: 2px solid #3A92FE; }
-.content_frame        { border: 2px solid #3A92FE; padding: 6; }
-.message_frame        { border: 2px solid #3A92FE; padding: 6; }
+:root {
+  --bg:        #f4f6fb;
+  --surface:   #ffffff;
+  --border:    #e3e7ef;
+  --text:      #1c2333;
+  --text-soft: #64748b;
+  --accent:    #4f46e5;
+  --accent-2:  #6366f1;
+  --accent-bg: #eef0fe;
+  --danger:    #dc2626;
+  --danger-bg: #fef2f2;
+  --radius:    10px;
+  --shadow:    0 1px 2px rgba(16,24,40,0.06), 0 1px 3px rgba(16,24,40,0.08);
+  --font:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-2); text-decoration: underline; }
+
+hr { display: none; }
+
+/* ---------- App shell ---------- */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-header .brand .mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.app-header .brand .titles { display: flex; flex-direction: column; }
+.app-header .brand .titles .name { font-weight: 700; font-size: 16px; color: var(--text); letter-spacing: -0.01em; }
+.app-header .brand .titles .tagline { font-size: 12px; color: var(--text-soft); }
+
+.app-header .console-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  padding: 5px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+}
+
+.app-body {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px 24px;
+}
+
+/* ---------- Sidebar / module list ---------- */
+
+.sidebar {
+  width: 232px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  padding: 0 10px;
+}
+
+.sidebar-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.sidebar-panel table { width: 100%; }
+.sidebar-panel td, .sidebar-panel th { border-bottom: none !important; padding: 0; background: transparent !important; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+}
+.nav-item:last-child { border-bottom: none; }
+.nav-item a { color: inherit; text-decoration: none; display: block; flex: 1; }
+.nav-item:hover { background: var(--bg); }
+.nav-item .avatar {
+  width: 24px; height: 24px; flex-shrink: 0;
+  border-radius: 7px;
+  background: var(--bg);
+  color: var(--text-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+}
+.nav-item.selected {
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-weight: 700;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+.nav-item.selected a { color: var(--accent); }
+.nav-item.selected .avatar { background: var(--accent); color: #fff; }
+
+/* ---------- Top tab bar ---------- */
+
+.tab-row { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.tab-link {
+  padding: 8px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-soft);
+}
+.tab-link a { color: inherit; text-decoration: none; }
+.tab-link:hover { background: var(--bg); color: var(--text); }
+.tab-link.selected { background: var(--accent-bg); color: var(--accent); }
+.tab-link.selected a { color: var(--accent); }
+
+/* ---------- Main column ---------- */
+
+.main-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tabbar-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 6px 10px;
+}
+
+.content-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 24px;
+  flex: 1;
+}
+
+/* ---------- Message / footer bar ---------- */
+
+.app-footer {
+  padding: 12px 24px 20px;
+}
+
+.message-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.message-bar.has-message {
+  border-color: #c7d2fe;
+  background: var(--accent-bg);
+  color: var(--text);
+}
+
+/* ================================================================
+   Global element styling — applies to every existing pagelet's
+   markup (plain <table>/<form>/<input> HTML) without needing to
+   touch each one individually.
+   ================================================================ */
+
+form { margin: 0; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 13px;
+}
+
+table + table,
+table + br + table { margin-top: 14px; }
+
+th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  color: var(--text-soft);
+  background: var(--bg) !important;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  background: transparent !important;
+  vertical-align: middle;
+}
+
+tr:last-child > td { border-bottom: none; }
+
+table table td, table table th { border-bottom: none; padding: 4px 6px; }
+
+/* Old pagelets mark section-header rows with a bgcolor attribute
+   (e.g. bgcolor="#6699ff"). Re-skin those as a modern label bar
+   instead of just stripping the color, so the section heading is
+   still visually distinct. */
+td[bgcolor] {
+  background: var(--accent-bg) !important;
+  color: var(--accent) !important;
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+td[bgcolor] font,
+td[bgcolor] b { color: var(--accent) !important; }
+
+font { color: inherit; }
+b, strong { color: var(--text); }
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px;
+  width: 100%;
+  max-width: 360px;
+}
+
+textarea.special { background: var(--bg) !important; }
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+input[type="button"],
+input[type="submit"],
+button {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 7px 14px;
+  cursor: pointer;
+}
+
+input[type="button"]:hover,
+input[type="submit"]:hover,
+button:hover { background: var(--accent-2); }
+
+input[value="Delete"],
+input[value="delete"] {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+input[value="Delete"]:hover,
+input[value="delete"]:hover { background: #b91c1c; }
+
+input[type="radio"], input[type="checkbox"] { accent-color: var(--accent); }
+
+pre {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 12px;
+  overflow-x: auto;
+}
+
+/* ---------- Dashboard cards (home page) ---------- */
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.stat-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  background: var(--surface);
+}
+
+.stat-card h3 {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.stat-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--border);
+  font-size: 13px;
+}
+.stat-row:last-of-type { border-bottom: none; }
+.stat-row .label { color: var(--text-soft); }
+.stat-row .value { font-weight: 600; color: var(--text); }
+.stat-row .value.big { font-size: 15px; color: var(--accent); }
+
+/* ---------- Status badges (message history, etc.) ---------- */
+
+.badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.badge-neutral  { background: var(--bg); color: var(--text-soft); }
+.badge-info     { background: var(--accent-bg); color: var(--accent); }
+.badge-success  { background: #dcfce7; color: #15803d; }
+.badge-danger   { background: var(--danger-bg); color: var(--danger); }
+
+.page-links { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+.page-links a { font-size: 13px; font-weight: 600; }
+
+.progress {
+  margin-top: 10px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+}
+
+.actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+
+/* ---------- Error banner ---------- */
+
+.error-banner {
+  border: 1px solid #fecaca;
+  background: var(--danger-bg);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+}
+.error-banner h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--danger);
+}
+.error-banner .stat-row { border-bottom: 1px dashed #fecaca; }
 -->
 </style>
 </head>
 
 <body>
+<div class="app-shell">
 
-<table border="0" cellpadding="0" cellspacing="6" width="100%" height="100%">
+  <header class="app-header">
+    <div class="brand">
+      <div class="mark">H2</div>
+      <div class="titles">
+        <span class="name">Hermes2+</span>
+        <span class="tagline">The Universal Messaging Gateway</span>
+      </div>
+    </div>
+    <span class="console-label">Administration Console</span>
+  </header>
 
-<tr>
-<td height="1" colspan="2">
+  <div class="app-body">
 
-   <!-- The header -->
-   <p>
-   <b>
-       <a href="/corvus/admin/home"><img border=0 src="?mode=raw&amp;pagelet=logo"></a>
-       <center><font color="#808080" size="2" face="Arial">[Administration Console]</font></center>
-   </b>
-   <hr width="100%" noshade="" color="#C0C0C0" size="1"/>
-   <font color="#808080" face="Arial">The Universal Messaging Gateway</font>
-   </p>
-   <br/>
+    <aside class="sidebar">
+      <div class="sidebar-label">Modules</div>
+      <div class="sidebar-panel">
+      <!-- template-west -->
+      </div>
+    </aside>
 
-</td>
-</tr>
+    <div class="main-column">
+      <div class="tabbar-panel">
+      <!-- template-north -->
+      </div>
+      <div class="content-panel">
+      <!-- template-&center -->
+      </div>
+    </div>
 
-<tr>
-<td width="25%">
-    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" height="100%">
-    <tr>
-	<td height="24">
-	
-	    <!-- The module tab -->
-	    <table width="100%" border="0" cellpadding="0" cellspacing="0">
-	    <tr>
-	        <td width="1"><img border="0" src="?mode=raw&amp;pagelet=tab_sel_open"/></td>
-	        <td background="?mode=raw&amp;pagelet=tab_sel_bg" class="tab_sel" nowrap="">
-	            <img border="0" src="?mode=raw&amp;pagelet=logo_icon" align="absmiddle"/>
-	            &nbsp; Module
-	        </td>
-	        <td width="1"><img border="0" src="?mode=raw&amp;pagelet=tab_sel_right"/></td>
-	        <td width="1"><img border="0" src="?mode=raw&amp;pagelet=tab_right"/></td>
-	    </tr>
-	    </table>
-	    
-	</td>
-	</tr>
-	
-	<tr>
-	<td>
-        
-         <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" height="100%">
-	    <tr>
-	        <td width="100%" class="module_frame" valign="top">
-            <!-- The module list -->
-            <!-- template-west -->
-            </td>
-	    </tr>
-	    </table>
-        
-	</td>
-	</tr>
-	</table>
+  </div>
 
-</td>
+  <footer class="app-footer">
+    <!-- template-south -->
+  </footer>
 
-<td width="75%">
-    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" height="100%">
-    <tr>
-	<td height="24">
-            <!-- The module tabs -->
-            <!-- template-north -->
-	</td>
-	</tr>
-	
-	<tr>
-	<td>
-	    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" height="100%">
-	    <tr>
-	        <td width="100%" class="content_frame" valign="top">
-            <!-- The module content -->
-            <!-- template-&center -->
-	        </td>
-	    </tr>
-	    </table>
-	</td>
-	</tr>
-	</table>
-</td>
-</tr>
-
-<tr>
-	<td colspan="2" height="1" class="message_frame">
-        <!-- template-south -->
-	</td>
-</tr>
-
-</table>
-
+</div>
 </body>
 </html>

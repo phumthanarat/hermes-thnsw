@@ -252,53 +252,36 @@ function showMDN(omid, ombox, reftype) {
 
 <br/>
 
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
-    <tr><td align="center" bgcolor="#6699ff"><font color="white"><b>Search Result:</b></font></td></tr>
-    <tr><td bgcolor="#6699ff"/></tr>
-</table>
-
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
-
-  <tr>
-    <td width="40%">Total Number of Messages</td>
-    <td width="60%"><xsl:value-of select="/message_history/total_no_of_messages" /></td>
-  </tr>
-  
-  <tr>
-    <td width="40%">Number of Messages Returned</td>
-    <td width="60%"><xsl:value-of select="count(message)" /></td>
-  </tr>
-
-</table>
+<div class="stat-grid">
+  <div class="stat-card">
+    <h3>Search Result</h3>
+    <div class="stat-row"><span class="label">Total Number of Messages</span><span class="value big"><xsl:value-of select="/message_history/total_no_of_messages" /></span></div>
+    <div class="stat-row"><span class="label">Number of Messages Returned</span><span class="value"><xsl:value-of select="count(message)" /></span></div>
+  </div>
+</div>
 
 <br/>
 
-<br/>
-
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
-<tr>
-    <td align="left">
+<div class="page-links">
+    <span>
         <xsl:if test="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages) >= 0">
             <a>
               <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" /></xsl:attribute>
-              <img border="0" src="?mode=raw&amp;pagelet=ebms.left_arrow" align="absmiddle"/>
-              Previous Page
-            </a>            
+              &#8249; Previous Page
+            </a>
         </xsl:if>
-    </td>
-    <td align="right"> 
-        <xsl:if test="(number(/message_history/search_criteria/offset) + number(/message_history/search_criteria/num_of_messages)) != number(/message_history/total_no_of_messages)">           
+    </span>
+    <span>
+        <xsl:if test="(number(/message_history/search_criteria/offset) + number(/message_history/search_criteria/num_of_messages)) != number(/message_history/total_no_of_messages)">
             <xsl:if test="count(message) = number(/message_history/search_criteria/num_of_messages)">
                 <a>
                   <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) + count(message)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" /></xsl:attribute>
-                  Next Page
-                  <img border="0" src="?mode=raw&amp;pagelet=ebms.right_arrow" align="absmiddle"/>
-                </a>            
+                  Next Page &#8250;
+                </a>
             </xsl:if>
         </xsl:if>
-    </td>
-</tr>
-</table>
+    </span>
+</div>
 
 <form name="viewMessageForm" method="post" action="./repository">
     <input type="hidden" name="message_id" value="" />
@@ -440,40 +423,40 @@ function showMDN(omid, ombox, reftype) {
     <td width="40%">Status</td>
     <td width="60%">
     	<xsl:if test="./status = 'HS'">
-            Handshaking
+            <span class="badge badge-neutral">Handshaking</span>
         </xsl:if>
         <xsl:if test="./status = 'PK'">
-            Packaging
+            <span class="badge badge-neutral">Packaging</span>
         </xsl:if>
         <xsl:if test="./status = 'PKD'">
-            Packaged
+            <span class="badge badge-neutral">Packaged</span>
         </xsl:if>
         <xsl:if test="./status = 'ST'">
-            Segmenting
+            <span class="badge badge-info">Segmenting</span>
         </xsl:if>
         <xsl:if test="./status = 'PD'">
-            Pending
+            <span class="badge badge-neutral">Pending</span>
         </xsl:if>
         <xsl:if test="./status = 'PR'">
-            Processing
-        </xsl:if>    
+            <span class="badge badge-info">Processing</span>
+        </xsl:if>
         <xsl:if test="./status = 'PS'">
-            Processed
+            <span class="badge badge-success">Processed</span>
         </xsl:if>
         <xsl:if test="./status = 'PE'">
-            Processed Error
+            <span class="badge badge-danger">Processed Error</span>
         </xsl:if>
         <xsl:if test="./status = 'DL'">
-            Delivered
+            <span class="badge badge-success">Delivered</span>
         </xsl:if>
         <xsl:if test="./status = 'DF'">
-        	Delivery Failure
+        	<span class="badge badge-danger">Delivery Failure</span>
         </xsl:if>
         <xsl:if test="./status = 'UK'">
-        	Unpacking
+        	<span class="badge badge-info">Unpacking</span>
         </xsl:if>
         <xsl:if test="./status = 'SD'">
-        	Suspended
+        	<span class="badge badge-neutral">Suspended</span>
         </xsl:if>
     </td>
   </tr>
@@ -490,30 +473,26 @@ function showMDN(omid, ombox, reftype) {
   <!-- Loop the message history - end-->
 <br/>
 
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
-<tr>
-    <td align="left">
+<div class="page-links">
+    <span>
         <xsl:if test="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages) >= 0">
             <a>
               <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" /></xsl:attribute>
-              <img border="0" src="?mode=raw&amp;pagelet=ebms.left_arrow" align="absmiddle"/>
-              Previous Page
-            </a>            
+              &#8249; Previous Page
+            </a>
         </xsl:if>
-    </td>
-    <td align="right"> 
-        <xsl:if test="(number(/message_history/search_criteria/offset) + number(/message_history/search_criteria/num_of_messages)) != number(/message_history/total_no_of_messages)">           
+    </span>
+    <span>
+        <xsl:if test="(number(/message_history/search_criteria/offset) + number(/message_history/search_criteria/num_of_messages)) != number(/message_history/total_no_of_messages)">
             <xsl:if test="count(message) = number(/message_history/search_criteria/num_of_messages)">
                 <a>
                   <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) + count(message)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" /></xsl:attribute>
-                  Next Page
-                  <img border="0" src="?mode=raw&amp;pagelet=ebms.right_arrow" align="absmiddle"/>
-                </a>            
+                  Next Page &#8250;
+                </a>
             </xsl:if>
         </xsl:if>
-    </td>
-</tr>
-</table>
+    </span>
+</div>
 
 </xsl:template>
 </xsl:stylesheet>

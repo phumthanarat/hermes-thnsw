@@ -4,30 +4,23 @@
 
 <xsl:template match="/message">
 
-	  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" width="100%" height="100%">
-	    <tr>
-	        <td>
-	          <a name="message"/>
-	          <xsl:choose>
-	            <xsl:when test="./description">
-	              <b>Message: </b>
-	              <font color="blue"><xsl:value-of select="./description"/></font>
-	            </xsl:when>
-	            <xsl:otherwise>
-	              <b>Ready</b>
-	            </xsl:otherwise>
-	          </xsl:choose>
-	        </td>
-	        <td align="right">
-	          <a href="#">Top</a>
-	        </td>
-	    </tr>
-	  </table>  
+  <a name="message"/>
+  <xsl:choose>
+    <xsl:when test="./description">
+      <div class="message-bar has-message">
+        <span><b>Message:</b>&#160;<xsl:value-of select="./description"/></span>
+        <a href="#">Top</a>
+      </div>
+      <script>document.location='#message';</script>
+    </xsl:when>
+    <xsl:otherwise>
+      <div class="message-bar">
+        <span>Ready</span>
+        <a href="#">Top</a>
+      </div>
+    </xsl:otherwise>
+  </xsl:choose>
 
-      <xsl:if test="./description">
-        <script>document.location='#message';</script>
-      </xsl:if>
-	
 </xsl:template>
 
 </xsl:stylesheet>

@@ -4,9 +4,15 @@ import hk.hku.cecid.piazza.commons.servlet.http.HttpDispatcherContext;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Source;
@@ -20,13 +26,31 @@ import javax.xml.transform.Source;
  */
 public class HttpdPageletAdaptor extends AdminPageletAdaptor {
 
+    // Tomcat has no "disabled" attribute for a Connector -- the only way to turn
+    // one off is to remove it from server.xml. These sentinel comments let the
+    // Connector element stay in place (so its configured attributes aren't lost)
+    // while making it invisible to Tomcat's XML parser.
+    private static final String HTTP_DISABLED_START = "<!--HERMES-PORT:HTTP:DISABLED-START-->";
+    private static final String HTTP_DISABLED_END = "<!--HERMES-PORT:HTTP:DISABLED-END-->";
+    private static final String HTTPS_DISABLED_START = "<!--HERMES-PORT:HTTPS:DISABLED-START-->";
+    private static final String HTTPS_DISABLED_END = "<!--HERMES-PORT:HTTPS:DISABLED-END-->";
+
+    // Matches only the live Connector element (port= immediately follows
+    // "Connector"), never the pre-existing commented-out "shared executor"
+    // example a few lines below it, which starts with executor= instead.
+    private static final Pattern HTTP_CONNECTOR = Pattern.compile(
+            "<Connector\\s+port=\"(\\d+)\"\\s+protocol=\"HTTP/1\\.1\".*?/>", Pattern.DOTALL);
+    private static final Pattern HTTPS_CONNECTOR = Pattern.compile(
+            "<Connector\\s+port=\"(\\d+)\"\\s+protocol=\"org\\.apache\\.coyote\\.http11\\.Http11NioProtocol\".*?/>",
+            Pattern.DOTALL);
+
     /**
      * Generates the transformation source of the default HTTP dispatcher.
-     * 
+     *
      * @see hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor#getCenterSource(javax.servlet.http.HttpServletRequest)
      */
     protected Source getCenterSource(HttpServletRequest request) {
-        
+
         PropertyTree dom = new PropertyTree();
         dom.setProperty("/httpd", "");
 
@@ -39,6 +63,12 @@ public class HttpdPageletAdaptor extends AdminPageletAdaptor {
         }
         else if ("resume".equals(chstatus)) {
             HttpDispatcherContext.getDefaultContext().resume();
+        }
+        else if ("toggle_connector".equals(chstatus)) {
+            toggleConnector(request.getParameter("connector"));
+        }
+        else if ("update_connector_port".equals(chstatus)) {
+            updateConnectorPort(request.getParameter("connector"), request.getParameter("port"));
         }
 
         HttpDispatcherContext dispatcherContext = HttpDispatcherContext.getDefaultContext();
@@ -76,7 +106,177 @@ public class HttpdPageletAdaptor extends AdminPageletAdaptor {
             dom.setProperty("request-listeners/listener["+i+"]/context", pathInfo);
             dom.setProperty("request-listeners/listener["+i+"]/listener", listener);
         }
-        
-        return dom.getSource(); 
+
+        appendConnectorInfo(dom);
+
+        return dom.getSource();
+    }
+
+    /**
+     * Reads the live Tomcat server.xml and reports the current port number and
+     * enabled/disabled state of the HTTP and HTTPS connectors, so the admin can
+     * see and change which ports the console itself listens on (closed-by-default
+     * once disabled, matching the same "must be explicitly opened" posture as
+     * every other port type in the system).
+     */
+    private void appendConnectorInfo(PropertyTree dom) {
+        String content = readServerXml();
+        if (content == null) {
+            return;
+        }
+
+        appendOneConnector(dom, 1, "http", "HTTP", content, HTTP_CONNECTOR,
+                HTTP_DISABLED_START, HTTP_DISABLED_END);
+        appendOneConnector(dom, 2, "https", "HTTPS", content, HTTPS_CONNECTOR,
+                HTTPS_DISABLED_START, HTTPS_DISABLED_END);
+        dom.setProperty("restart-required", isRestartRequired() ? "true" : "false");
+    }
+
+    private void appendOneConnector(PropertyTree dom, int index, String id, String name, String content,
+            Pattern connectorPattern, String disabledStart, String disabledEnd) {
+        Matcher m = connectorPattern.matcher(content);
+        if (!m.find()) {
+            return;
+        }
+        String port = m.group(1);
+        boolean enabled = !content.contains(disabledStart);
+
+        dom.setProperty("connectors/connector[" + index + "]/id", id);
+        dom.setProperty("connectors/connector[" + index + "]/name", name);
+        dom.setProperty("connectors/connector[" + index + "]/port", port);
+        dom.setProperty("connectors/connector[" + index + "]/enabled", enabled ? "true" : "false");
+    }
+
+    private void toggleConnector(String connectorId) {
+        String content = readServerXml();
+        if (content == null || connectorId == null) {
+            return;
+        }
+
+        String disabledStart, disabledEnd;
+        Pattern connectorPattern;
+        if ("http".equals(connectorId)) {
+            disabledStart = HTTP_DISABLED_START;
+            disabledEnd = HTTP_DISABLED_END;
+            connectorPattern = HTTP_CONNECTOR;
+        } else if ("https".equals(connectorId)) {
+            disabledStart = HTTPS_DISABLED_START;
+            disabledEnd = HTTPS_DISABLED_END;
+            connectorPattern = HTTPS_CONNECTOR;
+        } else {
+            return;
+        }
+
+        boolean currentlyEnabled = !content.contains(disabledStart);
+        if (currentlyEnabled) {
+            // Refuse to disable the last remaining open port -- that would lock
+            // the console out entirely on next restart with no way back in
+            // short of editing server.xml by hand inside the container.
+            boolean otherEnabled = "http".equals(connectorId)
+                    ? !content.contains(HTTPS_DISABLED_START)
+                    : !content.contains(HTTP_DISABLED_START);
+            if (!otherEnabled) {
+                return;
+            }
+            Matcher m = connectorPattern.matcher(content);
+            if (!m.find()) {
+                return;
+            }
+            String tag = m.group();
+            String replacement = disabledStart + "\n    " + tag + "\n" + disabledEnd;
+            content = content.substring(0, m.start()) + replacement + content.substring(m.end());
+        } else {
+            int start = content.indexOf(disabledStart);
+            int end = content.indexOf(disabledEnd);
+            if (start < 0 || end < 0) {
+                return;
+            }
+            String inner = content.substring(start + disabledStart.length(), end).trim();
+            content = content.substring(0, start) + inner + content.substring(end + disabledEnd.length());
+        }
+
+        writeServerXml(content);
+    }
+
+    private void updateConnectorPort(String connectorId, String newPort) {
+        if (newPort == null || !newPort.matches("[0-9]{1,5}")) {
+            return;
+        }
+        String content = readServerXml();
+        if (content == null || connectorId == null) {
+            return;
+        }
+
+        Pattern connectorPattern = "http".equals(connectorId) ? HTTP_CONNECTOR
+                : "https".equals(connectorId) ? HTTPS_CONNECTOR : null;
+        if (connectorPattern == null) {
+            return;
+        }
+
+        Matcher m = connectorPattern.matcher(content);
+        if (!m.find()) {
+            return;
+        }
+        String tag = m.group();
+        String updatedTag = tag.replaceFirst("port=\"\\d+\"", "port=\"" + newPort + "\"");
+        content = content.substring(0, m.start()) + updatedTag + content.substring(m.end());
+
+        writeServerXml(content);
+    }
+
+    private File getServerXmlFile() {
+        String catalinaBase = System.getProperty("catalina.base");
+        if (catalinaBase == null) {
+            return null;
+        }
+        return new File(catalinaBase, "conf/server.xml");
+    }
+
+    private String readServerXml() {
+        File file = getServerXmlFile();
+        if (file == null || !file.isFile()) {
+            return null;
+        }
+        try {
+            return new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    private void writeServerXml(String content) {
+        File file = getServerXmlFile();
+        if (file == null) {
+            return;
+        }
+        try {
+            Files.write(file.toPath(), content.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            // Best-effort: if the file can't be written (e.g. read-only mount),
+            // the admin page simply keeps showing the previous state.
+        }
+    }
+
+    /**
+     * Tomcat only re-reads server.xml on startup, so a port/enabled change made
+     * through this page never matches the connector the JVM is actually running
+     * with until the container is restarted; this flags that gap for the UI.
+     */
+    private boolean isRestartRequired() {
+        String content = readServerXml();
+        if (content == null) {
+            return false;
+        }
+        String httpPort = firstGroup(HTTP_CONNECTOR, content);
+        String httpsPort = firstGroup(HTTPS_CONNECTOR, content);
+        boolean httpEnabled = !content.contains(HTTP_DISABLED_START);
+        boolean httpsEnabled = !content.contains(HTTPS_DISABLED_START);
+
+        return !"8080".equals(httpPort) || !"8443".equals(httpsPort) || !httpEnabled || !httpsEnabled;
+    }
+
+    private String firstGroup(Pattern pattern, String content) {
+        Matcher m = pattern.matcher(content);
+        return m.find() ? m.group(1) : null;
     }
 }

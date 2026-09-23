@@ -3,21 +3,16 @@
 <xsl:output method="html"/>
 <xsl:template match="/registry">
 
+<div class="stat-grid">
+  <div class="stat-card">
+    <h3>Plugin Registry</h3>
+    <div class="stat-row"><span class="label">Location</span><span class="value" style="font-size:12px;"><xsl:value-of select="./location" /></span></div>
+    <div class="stat-row"><span class="label">Activation</span><span class="value"><xsl:value-of select="./activation" /></span></div>
+    <div class="stat-row"><span class="label">Registered Plugins</span><span class="value big"><xsl:value-of select="count(plugins/plugin)" /></span></div>
+  </div>
+</div>
+
 <form>
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
-  <tr>
-    <td width="30%">Location</td>
-    <td width="70%"><xsl:value-of select="./location" /></td>
-  </tr>
-  <tr>
-    <td>Activation</td>
-    <td><xsl:value-of select="./activation" /></td>
-  </tr>
-  <tr>
-    <td>Number of plugins</td>
-    <td><xsl:value-of select="count(plugins/plugin)" /></td>
-  </tr>
-</table>
 <br/>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
   <tr>

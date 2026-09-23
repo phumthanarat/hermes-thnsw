@@ -5,46 +5,55 @@
 <xsl:template match="/partnerships">
 	<br/>
 	<xsl:if test="count(partnership)>0">
-	    
-	    <table border="0" cellpadding="2" cellspacing="2" width="100%">
-	        <tr><td align="center" bgcolor="#6699ff"><font color="white"><b>Registered Partnerships</b></font></td></tr>
-	        <tr><td bgcolor="#6699ff"/></tr>
-	    </table>
-	    
+
+	    <div class="stat-grid">
+	      <div class="stat-card">
+	        <h3>Registered Partnerships</h3>
+	        <div class="stat-row"><span class="label">Total Registered</span><span class="value big"><xsl:value-of select="count(partnership)" /></span></div>
+	      </div>
+	    </div>
+
 	    <form enctype='multipart/form-data' name="partnershipForm" method="post" action="partnership">
-	    
-	    <table border="0" cellpadding="2" cellspacing="2" width="100%">
-	      <tr>
-	        <td width="40%">Number of Partnerships</td>
-	        <td width="60%"><xsl:value-of select="count(partnership)" /></td>
-	      </tr>
-	      
-	      <tr>
-	        <td width="40%">Partnership</td>
-	        <td width="60%">
-	            <select name="selected_partnership_id">
-	            <xsl:for-each select="partnership">
-	                <xsl:element name="option">
-	                    <xsl:attribute name="value"><xsl:value-of select="./partnership_id" /></xsl:attribute>
-	                    <xsl:if test="./partnership_id=/partnerships/selected_partnership/partnership_id">
-	                        <xsl:attribute name="SELECTED"></xsl:attribute>
-	                    </xsl:if>
-	                    <xsl:value-of select="./partnership_id" /> (CPA ID: <xsl:value-of select="./cpa_id" />) (Service: <xsl:value-of select="./service" />) (Action: <xsl:value-of select="./action_id" />)
-	                </xsl:element>
-	            </xsl:for-each>
-	            </select>
-	        </td>
-	      </tr>
-	      <tr>
-	        <td width="40%"></td>
-	        <td width="60%"><input type="Submit" name="request_action" value="change"/></td>
-	      </tr>    
-	    </table>
-	    
+	    <input type="hidden" name="request_action" value="change" />
+	    <input type="hidden" name="selected_partnership_id" id="selectedPartnershipId" value="" />
 	    </form>
-	    
+
+	    <input type="text" id="pshipSearch" placeholder="Search by CPA ID, service or action..." onkeyup="filterPships()"
+	           style="width:100%; max-width: 100%; margin-bottom: 14px;" />
+
+	    <table border="0" cellpadding="2" cellspacing="2" width="100%" id="pshipTable">
+	      <tr>
+	        <th>CPA ID</th>
+	        <th>Service</th>
+	        <th>Action</th>
+	        <th>Partnership ID</th>
+	        <th></th>
+	      </tr>
+	      <xsl:for-each select="partnership">
+	        <tr>
+	          <xsl:attribute name="data-s"><xsl:value-of select="translate(concat(./cpa_id,' ',./service,' ',./action_id,' ',./partnership_id),'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz')" /></xsl:attribute>
+	          <xsl:if test="./partnership_id=/partnerships/selected_partnership/partnership_id">
+	            <xsl:attribute name="style">background: var(--accent-bg);</xsl:attribute>
+	          </xsl:if>
+	          <td><xsl:value-of select="./cpa_id" /></td>
+	          <td><xsl:value-of select="./service" /></td>
+	          <td><code><xsl:value-of select="./action_id" /></code></td>
+	          <td style="font-size:12px; color:var(--text-soft); max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+	            <xsl:attribute name="title"><xsl:value-of select="./partnership_id" /></xsl:attribute>
+	            <xsl:value-of select="./partnership_id" />
+	          </td>
+	          <td style="white-space:nowrap;">
+	            <a href="javascript:void(0)" onclick="selectPship(this.getAttribute('data-pid'))">
+	              <xsl:attribute name="data-pid"><xsl:value-of select="./partnership_id" /></xsl:attribute>
+	              Select
+	            </a>
+	          </td>
+	        </tr>
+	      </xsl:for-each>
+	    </table>
+
 	    <br/>
-	
+
 	</xsl:if>
 	
 	<!-- The selected partnership -->
@@ -76,6 +85,20 @@
 	</span>
 
 	<script>
+	function selectPship(id) {
+		document.getElementById('selectedPartnershipId').value = id;
+		document.partnershipForm.submit();
+	}
+	function filterPships() {
+		var q = document.getElementById('pshipSearch').value.toLowerCase();
+		var rows = document.getElementById('pshipTable').getElementsByTagName('tr');
+		for (var i = 1; i &lt; rows.length; i++) {
+			var s = rows[i].getAttribute('data-s');
+			if (s === null) { continue; }
+			rows[i].style.display = (s.indexOf(q) !== -1) ? '' : 'none';
+		}
+	}
+
 	var hiddenText = '';
 	
 	function showAddForm() {

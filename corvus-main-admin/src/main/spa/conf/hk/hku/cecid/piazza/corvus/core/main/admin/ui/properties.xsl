@@ -9,6 +9,28 @@
 		}
 </style>
 
+<div class="stat-grid">
+  <div class="stat-card">
+    <h3>
+      <xsl:choose>
+        <xsl:when test="page_type/text() = 'coreProps'">Core Properties</xsl:when>
+        <xsl:otherwise>JVM Properties</xsl:otherwise>
+      </xsl:choose>
+    </h3>
+    <div class="stat-row"><span class="label">Total Properties</span><span class="value big"><xsl:value-of select="count(property)" /></span></div>
+    <xsl:if test="page_type/text() = 'coreProps'">
+      <div class="stat-row"><span class="label">House Cleaning</span>
+        <span class="value">
+          <xsl:choose>
+            <xsl:when test="hc/on/text() = 'true'"><span class="badge badge-success">Enabled</span></xsl:when>
+            <xsl:otherwise><span class="badge badge-neutral">Disabled</span></xsl:otherwise>
+          </xsl:choose>
+        </span>
+      </div>
+    </xsl:if>
+  </div>
+</div>
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
   
   <xsl:if test="page_type/text() = 'coreProps'">

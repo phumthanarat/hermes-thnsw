@@ -12,21 +12,17 @@
   </xsl:template>
 
   <xsl:template match="/module-info">
-    <table border="0" cellpadding="2" cellspacing="2" width="100%">
-	  <tr>
-	    <td width="30%"><b>Module Group Name</b></td>
-	    <td width="70%"><b><xsl:value-of select="./module-group/name" /></b></td>
-	  </tr>
-	  <tr>
-	    <td>Numbder of Child Groups</td>
-	    <td><xsl:value-of select="./module-group/subgroups" /></td>
-	  </tr>
-	  <tr>
-	    <td>System Module</td>
-	    <td><xsl:value-of select="./module-group/sysmodule" /></td>
-	  </tr>
-	</table>
-	<br/>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <h3>Module Group</h3>
+        <div class="stat-row"><span class="label">Name</span><span class="value big"><xsl:value-of select="./module-group/name" /></span></div>
+        <div class="stat-row"><span class="label">Child Groups</span><span class="value"><xsl:value-of select="./module-group/subgroups" /></span></div>
+        <div class="stat-row"><span class="label">System Module</span><span class="value"><xsl:value-of select="./module-group/sysmodule" /></span></div>
+        <div class="stat-row"><span class="label">Modules</span><span class="value"><xsl:value-of select="count(module-group/module)" /></span></div>
+      </div>
+    </div>
+
+    <br/>
 	<table border="0" cellpadding="2" cellspacing="2" width="100%">
 	  <tr>
 	    <th colspan="2">Module Group Details</th>
