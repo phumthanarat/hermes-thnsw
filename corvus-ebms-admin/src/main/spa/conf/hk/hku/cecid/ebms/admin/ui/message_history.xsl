@@ -52,6 +52,63 @@ function showResendAsNewMessage(pmid) {
 <br/>
 
 <!-- search form - start -->
+<div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; margin-bottom:12px;">
+  <b>Columns shown:</b>
+  <span id="colToggles" style="margin-left:8px;">
+    <label style="margin-right:12px;"><input type="checkbox" class="col-toggle" data-col="message_id" checked="checked" /> Message ID</label>
+    <label style="margin-right:12px;"><input type="checkbox" class="col-toggle" data-col="cpa_id" checked="checked" /> CPA ID</label>
+    <label style="margin-right:12px;"><input type="checkbox" class="col-toggle" data-col="service" checked="checked" /> Service</label>
+    <label style="margin-right:12px;"><input type="checkbox" class="col-toggle" data-col="action" checked="checked" /> Action</label>
+    <label style="margin-right:12px;"><input type="checkbox" class="col-toggle" data-col="conv_id" checked="checked" /> Conversation ID</label>
+    <label style="margin-right:12px;"><input type="checkbox" class="col-toggle" data-col="acknowledgement" checked="checked" /> Acknowledgement</label>
+    <label style="margin-right:12px;"><input type="checkbox" class="col-toggle" data-col="timestamp" checked="checked" /> Timestamp</label>
+  </span>
+</div>
+
+<script>
+(function() {
+  var STORAGE_KEY = 'ebms_message_history_hidden_columns';
+  var hidden = [];
+  try {
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) { hidden = JSON.parse(saved); }
+  } catch (e) {}
+
+  function applyColumn(col, visible) {
+    var rows = document.getElementsByClassName('col-' + col);
+    for (var i = 0; i &lt; rows.length; i++) {
+      rows[i].style.display = visible ? '' : 'none';
+    }
+  }
+
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(hidden)); } catch (e) {}
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    var toggles = document.getElementsByClassName('col-toggle');
+    for (var i = 0; i &lt; toggles.length; i++) {
+      var t = toggles[i];
+      var col = t.getAttribute('data-col');
+      var isHidden = hidden.indexOf(col) !== -1;
+      t.checked = !isHidden;
+      applyColumn(col, !isHidden);
+      t.addEventListener('change', function(evt) {
+        var c = evt.target.getAttribute('data-col');
+        var idx = hidden.indexOf(c);
+        if (evt.target.checked) {
+          if (idx !== -1) { hidden.splice(idx, 1); }
+        } else {
+          if (idx === -1) { hidden.push(c); }
+        }
+        applyColumn(c, evt.target.checked);
+        save();
+      });
+    }
+  });
+})();
+</script>
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
     <tr><td align="center" bgcolor="#6699ff"><font color="white"><b>Search Message(s)</b></font></td></tr>
     <tr><td bgcolor="#6699ff"/></tr>
@@ -344,7 +401,7 @@ function showResendAsNewMessage(pmid) {
     <td width="40%"><xsl:value-of select="number(/message_history/search_criteria/offset) + position()" /></td>
     <td width="60%" align="right"><a href="#">Top</a></td>
   </tr>
-  <tr>
+  <tr class="col-message_id">
     <td width="40%"><b>Message ID</b></td>
     <td width="60%"><b>
         <xsl:value-of select="./message_id" />
@@ -368,19 +425,19 @@ function showResendAsNewMessage(pmid) {
         <td width="60%"><xsl:value-of select="./ref_to_message_id" /></td>
       </tr>
   </xsl:if>
-  <tr>
+  <tr class="col-cpa_id">
     <td width="40%">CPA ID</td>
     <td width="60%"><xsl:value-of select="./cpa_id" /></td>
   </tr>
-  <tr>
+  <tr class="col-service">
     <td width="40%">Service</td>
     <td width="60%"><xsl:value-of select="./service" /></td>
   </tr>
-  <tr>
+  <tr class="col-action">
     <td width="40%">Action</td>
     <td width="60%"><xsl:value-of select="./action" /></td>
   </tr>
-  <tr>
+  <tr class="col-conv_id">
     <td width="40%">Conversation ID</td>
     <td width="60%"><xsl:value-of select="./conv_id" /></td>
   </tr>
@@ -439,7 +496,7 @@ function showResendAsNewMessage(pmid) {
       </tr>
   </xsl:if>
   <xsl:if test="./ack_requested = 'true'">
-      <tr>
+      <tr class="col-acknowledgement">
         <td width="40%">Is Acknowledged</td>
         <td width="60%">
             <xsl:if test="./message_box = 'outbox'">
@@ -498,7 +555,7 @@ function showResendAsNewMessage(pmid) {
     <td width="60%"><span class="badge badge-info">Web Service API</span></td>
   </tr>
   </xsl:if>
-  <tr>
+  <tr class="col-timestamp">
     <td width="40%">Timestamp</td>
     <td width="60%"><xsl:value-of select="./time_stamp" /></td>
   </tr>
