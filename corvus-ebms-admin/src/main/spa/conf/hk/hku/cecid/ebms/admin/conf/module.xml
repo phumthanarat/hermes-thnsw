@@ -4,11 +4,11 @@
   <description>The Ebms Plugin SubSystem Module</description>
   <link>/admin/ebms/message_history</link>
   <tabs>
-    <!--tab id="ebms_properties">
+    <tab id="ebms_properties">
       <name>Ebms Properties</name>
       <description>The Ebms Plugin Properties</description>
       <link>/admin/ebms/ebms_properties</link>
-    </tab-->
+    </tab>
     <tab id="message_history">
       <name>Message History</name>
       <description>The Message History</description>
@@ -18,11 +18,16 @@
       <name>Partnership</name>
       <description>The Partnership</description>
       <link>/admin/ebms/partnership</link>
-    </tab>    
-    <!--tab id="agreement_upload">
+    </tab>
+    <tab id="documents">
+      <name>Documents</name>
+      <description>Document Catalog: what can be sent/received</description>
+      <link>/admin/ebms/documents</link>
+    </tab>
+    <tab id="agreement_upload">
       <name>Upload Agreement</name>
       <description>The Agreement Upload Page</description>
       <link>/admin/ebms/agreement_upload</link>
-    </tab-->
+    </tab>
   </tabs>
 </module>

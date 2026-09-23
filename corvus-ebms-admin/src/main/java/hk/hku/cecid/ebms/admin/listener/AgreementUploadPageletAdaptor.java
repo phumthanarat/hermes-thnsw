@@ -406,6 +406,7 @@ public class AgreementUploadPageletAdaptor extends AdminPageletAdaptor {
                     PartnershipDVO partnershipDVO = (PartnershipDVO) partnershipDAO
                             .createDVO();
                     partnershipDVO.setPartnershipId(cpaId + ","
+                            + service[serviceIndex] + ","
                             + channelId[channelIdIndex] + "," + action[actionIndex]);
                     partnershipDVO.setCpaId(cpaId);
                     partnershipDVO.setService(service[serviceIndex]);
