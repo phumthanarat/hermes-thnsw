@@ -78,3 +78,17 @@ CREATE TABLE IF NOT EXISTS partnership (
 	encrypt_algorithm varchar(5),
 	PRIMARY KEY (partnership_id)
 )ENGINE=INNODB;
+
+CREATE TABLE IF NOT EXISTS document_reference (
+	reference_id int NOT NULL AUTO_INCREMENT,
+	cpa_id varchar(50) NOT NULL,
+	service varchar(200) NOT NULL,
+	action varchar(200) NOT NULL,
+	filename varchar(255) NOT NULL,
+	file_type varchar(10) NOT NULL,
+	content LONGBLOB NOT NULL,
+	description varchar(500),
+	disabled boolean NOT NULL DEFAULT false,
+	uploaded_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (reference_id)
+)ENGINE=INNODB;

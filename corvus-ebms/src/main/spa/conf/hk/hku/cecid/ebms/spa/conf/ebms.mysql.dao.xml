@@ -155,6 +155,28 @@
 		<parameter type="column" name="time_stamp" value="timeStamp" />
 	</dao>
 
+	<dao name="hk.hku.cecid.ebms.spa.dao.DocumentReferenceDAO">
+		<class>hk.hku.cecid.ebms.spa.dao.DocumentReferenceDataSourceDAO</class>
+		<parameter name="table" value="document_reference" />
+		<parameter name="key" value="reference_id" />
+		<parameter type="column" name="reference_id" value="referenceId" />
+		<parameter type="column" name="cpa_id" value="cpaId" />
+		<parameter type="column" name="service" value="service" />
+		<parameter type="column" name="action" value="action" />
+		<parameter type="column" name="filename" value="filename" />
+		<parameter type="column" name="file_type" value="fileType" />
+		<parameter type="column" name="content" value="content" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="disabled" value="disabled" />
+		<parameter type="column" name="uploaded_timestamp" value="uploadedTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM document_reference WHERE reference_id = ?" />
+		<parameter type="finder" name="find_by_document_type"
+			value="SELECT * FROM document_reference WHERE cpa_id = ? AND service = ? AND action = ? ORDER BY uploaded_timestamp DESC" />
+		<parameter type="finder" name="find_all" value="SELECT * FROM document_reference ORDER BY uploaded_timestamp DESC" />
+	</dao>
+
 	<dao name="hk.hku.cecid.ebms.spa.dao.MessageServerDAO">
 		<class>hk.hku.cecid.ebms.spa.dao.MessageServerDataSourceDAO</class>			
 	</dao>

@@ -14,6 +14,21 @@
 <input type="text" id="docSearch" placeholder="Search by partner, service or document code..." onkeyup="filterDocs()"
        style="width:100%; max-width: 100%; margin-bottom: 14px;" />
 
+<form name="viewReferenceForm" method="post" action="./document_reference">
+    <input type="hidden" name="reference_id" value="" />
+    <input type="hidden" name="mode" value="" />
+</form>
+
+<form name="deleteReferenceForm" method="post" action="./documents">
+    <input type="hidden" name="action" value="delete_reference" />
+    <input type="hidden" name="reference_id" value="" />
+</form>
+
+<form name="toggleReferenceForm" method="post" action="./documents">
+    <input type="hidden" name="action" value="toggle_reference" />
+    <input type="hidden" name="reference_id" value="" />
+</form>
+
 <table border="0" cellpadding="2" cellspacing="2" width="100%" id="docTable">
   <tr>
     <th>Partner (CPA)</th>
@@ -21,6 +36,7 @@
     <th>Document / Action</th>
     <th>Endpoint</th>
     <th>Status</th>
+    <th>Reference Files</th>
   </tr>
   <xsl:for-each select="cpa">
     <xsl:variable name="cpaId" select="./id" />
@@ -39,11 +55,103 @@
               <xsl:otherwise>Active</xsl:otherwise>
             </xsl:choose>
           </td>
+          <td style="font-size:12px;">
+            <xsl:for-each select="reference">
+              <div style="white-space:nowrap;">
+                <span class="badge badge-info"><xsl:value-of select="./file_type" /></span>
+                <xsl:choose>
+                  <xsl:when test="./disabled = 'true'">
+                    <span class="badge badge-neutral">Disabled</span>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <span class="badge badge-success">Active</span>
+                  </xsl:otherwise>
+                </xsl:choose>
+                <a href="#1" style="margin-left:4px;">
+                  <xsl:attribute name="onclick">
+                    document.viewReferenceForm.reference_id.value='<xsl:value-of select="./id" />';
+                    document.viewReferenceForm.mode.value='view';
+                    document.viewReferenceForm.target='_blank';
+                    document.viewReferenceForm.submit();
+                  </xsl:attribute>
+                  <xsl:value-of select="./filename" />
+                </a>
+                <a href="#1" title="Download" style="margin-left:4px;">
+                  <xsl:attribute name="onclick">
+                    document.viewReferenceForm.reference_id.value='<xsl:value-of select="./id" />';
+                    document.viewReferenceForm.mode.value='';
+                    document.viewReferenceForm.target='';
+                    document.viewReferenceForm.submit();
+                  </xsl:attribute>
+                  &#8659;
+                </a>
+                <a href="#1" style="margin-left:4px;">
+                  <xsl:attribute name="title">
+                    <xsl:choose>
+                      <xsl:when test="./disabled = 'true'">Enable</xsl:when>
+                      <xsl:otherwise>Disable</xsl:otherwise>
+                    </xsl:choose>
+                  </xsl:attribute>
+                  <xsl:attribute name="onclick">
+                    document.toggleReferenceForm.reference_id.value='<xsl:value-of select="./id" />';
+                    document.toggleReferenceForm.submit();
+                  </xsl:attribute>
+                  <xsl:choose>
+                    <xsl:when test="./disabled = 'true'">&#9679;</xsl:when>
+                    <xsl:otherwise>&#9711;</xsl:otherwise>
+                  </xsl:choose>
+                </a>
+                <a href="#1" title="Remove" style="margin-left:4px; color:var(--danger);">
+                  <xsl:attribute name="onclick">
+                    if (confirm('Remove this reference file?')) {
+                      document.deleteReferenceForm.reference_id.value='<xsl:value-of select="./id" />';
+                      document.deleteReferenceForm.submit();
+                    }
+                  </xsl:attribute>
+                  &#10005;
+                </a>
+              </div>
+            </xsl:for-each>
+          </td>
         </tr>
       </xsl:for-each>
     </xsl:for-each>
   </xsl:for-each>
 </table>
+
+<br/>
+
+<form name="uploadReferenceForm" method="post" action="./documents" enctype="multipart/form-data">
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tr>
+    <th colspan="2" align="left">Attach a Reference File (.xsd / .wsdl / .xml)</th>
+  </tr>
+  <tr>
+    <td width="40%">CPA ID<br/><small><font color="gray">Copy the exact value from the "Partner (CPA)" column above</font></small></td>
+    <td width="60%"><input type="text" name="cpa_id" size="40" /></td>
+  </tr>
+  <tr>
+    <td width="40%">Service<br/><small><font color="gray">Copy the exact value from the "Service" column above</font></small></td>
+    <td width="60%"><input type="text" name="service" size="40" /></td>
+  </tr>
+  <tr>
+    <td width="40%">Action<br/><small><font color="gray">Copy the exact value from the "Document / Action" column above</font></small></td>
+    <td width="60%"><input type="text" name="doc_action" size="40" /></td>
+  </tr>
+  <tr>
+    <td width="40%">File</td>
+    <td width="60%"><input type="file" name="reference_file" accept=".xsd,.wsdl,.xml" /></td>
+  </tr>
+  <tr>
+    <td width="40%">Description</td>
+    <td width="60%"><input type="text" name="description" size="60" /></td>
+  </tr>
+  <tr>
+    <td width="40%"></td>
+    <td width="60%"><br/><input type="Submit" value="Attach File" /><br/></td>
+  </tr>
+</table>
+</form>
 
 <script>
 function filterDocs() {
