@@ -402,6 +402,14 @@ public class MessageDataSourceDVO extends DataSourceDVO implements MessageDVO {
         super.setString("statusDescription", statusDescription);
     }
 
+    public String getCreatedVia() {
+        return super.getString("createdVia");
+    }
+
+    public void setCreatedVia(String createdVia) {
+        super.setString("createdVia", createdVia);
+    }
+
     /**
      * @return The primalMessageID which represent the message triggered "Resend as New"
      */

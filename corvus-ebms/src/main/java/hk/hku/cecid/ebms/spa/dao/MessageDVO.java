@@ -266,9 +266,17 @@ public interface MessageDVO extends DVO {
     public void setStatus(String status);
     
     public String getStatusDescription();
-    
+
     public void setStatusDescription(String statusDescription);
-    
+
+    /**
+     * @return How the message was created, e.g. "webservice_api" when submitted
+     *         through the REST Web Service API. Null for ordinary messages.
+     */
+    public String getCreatedVia();
+
+    public void setCreatedVia(String createdVia);
+
     public void setPartnershipId(String partnershipId);
     
     public String getPartnershipId();

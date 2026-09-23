@@ -25,10 +25,10 @@
 	  <parameter name="context" value="/ebms/inbound" />
 	</extension>
 	
-	<!--extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="Ebms Plugin Outbound Listener">
+	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="Ebms Plugin Outbound Listener">
 	  <parameter name="class" value="hk.hku.cecid.ebms.spa.listener.EbmsOutboundListener" />
 	  <parameter name="context" value="/auth/ebms/outbound" />
-	</extension-->
+	</extension>
 	
 	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="Ebms Plugin Message Sender Service">
 	  <parameter name="class" value="hk.hku.cecid.ebms.spa.service.EbmsMessageSenderService" />
@@ -50,10 +50,10 @@
 	  <parameter name="context" value="/ebms/msg_history" />
 	</extension>
 
-	<!-- extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="Ebms Plugin Config Service">
+	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="Ebms Plugin Config Service">
 	  <parameter name="class" value="hk.hku.cecid.ebms.spa.service.EbmsConfigService" />
-	  <parameter name="context" value="/ebms/config" />
-	</extension -->
+	  <parameter name="context" value="/auth/ebms/config" />
+	</extension>
 	
 	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="Ebms Permit Redownload Service">
 	  <parameter name="class" value="hk.hku.cecid.ebms.spa.service.EbmsPermitRedownloadService" />

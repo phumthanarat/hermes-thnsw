@@ -23,7 +23,7 @@ CREATE TABLE partnership (
 	is_disabled varchar(5) NOT NULL,
 	is_hostname_verified varchar(5),
 	PRIMARY KEY (partnership_id)
-)TYPE= INNODB;
+)ENGINE=INNODB;
 
 CREATE TABLE message (
 	message_id varchar(255) NOT NULL,
@@ -42,8 +42,9 @@ CREATE TABLE message (
 	time_stamp timestamp NOT NULL,
 	status varchar(2) NOT NULL,
 	status_desc varchar(4000),
+	created_via varchar(20),
 	PRIMARY KEY (message_id, message_box)
-)TYPE= INNODB;
+)ENGINE=INNODB;
 
 CREATE TABLE repository (
 	message_id varchar(255) NOT NULL,
@@ -51,10 +52,10 @@ CREATE TABLE repository (
 	content LONGBLOB NOT NULL,
 	PRIMARY KEY (message_id, message_box)
 
-)TYPE= INNODB;
+)ENGINE=INNODB;
 
 CREATE TABLE raw_repository (
 	message_id varchar(255) NOT NULL,
 	content LONGBLOB NOT NULL,
 	PRIMARY KEY (message_id)
-)TYPE= INNODB;
+)ENGINE=INNODB;

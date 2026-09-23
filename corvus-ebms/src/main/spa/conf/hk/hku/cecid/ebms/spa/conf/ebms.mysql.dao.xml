@@ -66,6 +66,7 @@
 		<!-- <parameter type="column" name="principal_id" value="principalId" /> -->
 		<parameter type="column" name="status" value="status" />
 		<parameter type="column" name="status_description" value="statusDescription" />
+		<parameter type="column" name="created_via" value="createdVia" />
 		
 		<parameter type="finder" name="get_all_before_time" value="select * from message where time_stamp &lt; ?" />
 		<parameter type="finder" name="find_ref_to_message" value="select * from message where ref_to_message_id=? and message_box=? and message_type=?" />			

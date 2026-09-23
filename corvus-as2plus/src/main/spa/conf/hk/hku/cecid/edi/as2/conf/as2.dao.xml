@@ -40,6 +40,7 @@
 		<parameter type="column" name="time_stamp" value="timeStamp" />
 		<parameter type="column" name="status" value="status" />
 		<parameter type="column" name="status_desc" value="statusDesc" />
+		<parameter type="column" name="created_via" value="createdVia" />
 		
 		<parameter type="finder" name="get_all_before_time" value="select * from message where time_stamp &lt; ?" />
         <parameter type="finder" name="find_messages_by_original_message_id" value="select * from message where original_message_id=?  and message_box=? order by time_stamp desc" />

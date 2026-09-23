@@ -1,7 +1,7 @@
 package hk.hku.cecid.hermes.api.handler;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -14,18 +14,21 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.binary.Base64;
 
-import hk.hku.cecid.edi.as2.AS2Processor;
+import hk.hku.cecid.edi.as2.AS2PlusProcessor;
 import hk.hku.cecid.edi.as2.dao.MessageDAO;
 import hk.hku.cecid.edi.as2.dao.MessageDVO;
 import hk.hku.cecid.edi.as2.dao.PartnershipDAO;
 import hk.hku.cecid.edi.as2.dao.PartnershipDVO;
-import hk.hku.cecid.edi.as2.module.PayloadCache;
-import hk.hku.cecid.edi.as2.module.PayloadRepository;
+import hk.hku.cecid.edi.as2.dao.RepositoryDAO;
+import hk.hku.cecid.edi.as2.dao.RepositoryDVO;
+import hk.hku.cecid.edi.as2.pkg.AS2Message;
 import hk.hku.cecid.hermes.api.ErrorCode;
 import hk.hku.cecid.hermes.api.listener.HermesAbstractApiListener;
 import hk.hku.cecid.hermes.api.spa.ApiPlugin;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.io.IOHandler;
+import hk.hku.cecid.piazza.commons.security.KeyStoreManager;
+import hk.hku.cecid.piazza.commons.security.SMimeMessage;
 
 
 public class As2ReceiveMessageHandler extends MessageHandler implements ReceiveMessageHandler {
@@ -38,7 +41,7 @@ public class As2ReceiveMessageHandler extends MessageHandler implements ReceiveM
         ApiPlugin.core.log.debug("Parameters: partnership_id=" + partnershipId + ", include_read=" + includeRead);
 
         try {
-            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2Processor.core.dao.createDAO(PartnershipDAO.class);
+            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(PartnershipDAO.class);
             List<PartnershipDVO> partnerships = partnershipDAO.findAllPartnerships();
             boolean found = false;
             PartnershipDVO partnership = null;
@@ -56,14 +59,13 @@ public class As2ReceiveMessageHandler extends MessageHandler implements ReceiveM
                 return listener.createError(ErrorCode.ERROR_DATA_NOT_FOUND, errorMessage);
             }
 
-            MessageDAO messageDAO = (MessageDAO) AS2Processor.core.dao.createDAO(MessageDAO.class);
+            MessageDAO messageDAO = (MessageDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(MessageDAO.class);
             MessageDVO messageDVO = (MessageDVO) messageDAO.createDVO();
             messageDVO.setMessageId("%");
             messageDVO.setMessageBox(MessageDVO.MSGBOX_IN);
             // has to flip the as2 from / to here to correctly receive messages
             messageDVO.setAs2From(partnership.getAs2To());
             messageDVO.setAs2To(partnership.getAS2From());
-            messageDVO.setPrincipalId("%");
             if (!includeRead) {
                 messageDVO.setStatus(MessageDVO.STATUS_PROCESSED);
             }
@@ -109,13 +111,12 @@ public class As2ReceiveMessageHandler extends MessageHandler implements ReceiveM
         ApiPlugin.core.log.debug("Parameters: message_id=" + messageId);
 
         try {
-            MessageDAO msgDAO = (MessageDAO) AS2Processor.core.dao.createDAO(MessageDAO.class);
+            MessageDAO msgDAO = (MessageDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(MessageDAO.class);
             MessageDVO message = (MessageDVO) msgDAO.createDVO();
             message.setMessageId(messageId);
             message.setMessageBox(MessageDVO.MSGBOX_IN);
             message.setAs2From("%");
             message.setAs2To("%");
-            message.setPrincipalId("%");
             message.setStatus("%");
 
             List messagesFound = msgDAO.findMessagesByHistory(message, 1, 0);
@@ -130,40 +131,46 @@ public class As2ReceiveMessageHandler extends MessageHandler implements ReceiveM
                 returnObj.put("timestamp", message.getTimeStamp().getTime() / 1000);
                 returnObj.put("status", message.getStatus());
 
-                PayloadRepository repository = AS2Processor.getIncomingPayloadRepository();
-                Iterator payloadCachesIterator = repository.getPayloadCaches().iterator();
+                RepositoryDAO repositoryDAO = (RepositoryDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(RepositoryDAO.class);
+                RepositoryDVO repositoryDVO = (RepositoryDVO) repositoryDAO.createDVO();
+                repositoryDVO.setMessageId(message.getMessageId());
+                repositoryDVO.setMessageBox(MessageDVO.MSGBOX_IN);
 
-                int numPayload = 0;
                 ArrayList<Object> payloads = new ArrayList<Object>();
-                while (payloadCachesIterator.hasNext()) {
-                    PayloadCache cache = (PayloadCache) payloadCachesIterator.next();
-                    String cacheMessageID = cache.getMessageID();
-                    if (cacheMessageID.equals(message.getMessageId())) {
-                        try {
-                            FileInputStream fis = new FileInputStream(cache.getCache());
-                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                if (repositoryDAO.retrieve(repositoryDVO)) {
+                    try {
+                        // Decode the stored raw AS2/S-MIME envelope back into its business payload
+                        AS2Message rawMessage = new AS2Message(new ByteArrayInputStream(repositoryDVO.getContent()));
+                        KeyStoreManager keyman = AS2PlusProcessor.getInstance().getKeyStoreManager();
+                        SMimeMessage smime = new SMimeMessage(rawMessage.getBodyPart(),
+                                keyman.getX509Certificate(), keyman.getPrivateKey());
 
-                            if ("true".equals(getHeader(request, "is_compress"))) {
-                                DeflaterOutputStream dos = new DeflaterOutputStream(baos);
-                                IOHandler.pipe(fis, dos);
-                                dos.finish();
-                            }
-                            else {
-                                IOHandler.pipe(fis, baos);
-                            }
-
-                            numPayload++;
-                            Map<String, Object> payloadDict = new HashMap<String, Object>();
-                            payloadDict.put("payload-" + numPayload,
-                                            new String(Base64.encodeBase64(baos.toByteArray())));
-                            payloads.add(payloadDict);
-                        } catch (Exception e) {
-                            AS2Processor.core.log.error("Error in collecting message", e);
+                        if (smime.isEncrypted()) {
+                            smime = smime.decrypt();
                         }
-                    }
+                        if (smime.isCompressed()) {
+                            smime = smime.decompress();
+                        }
+                        if (smime.isSigned()) {
+                            smime = smime.verify();
+                        }
 
-                    if (numPayload > 0) {
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        if ("true".equals(getHeader(request, "is_compress"))) {
+                            DeflaterOutputStream dos = new DeflaterOutputStream(baos);
+                            IOHandler.pipe(smime.getBodyPart().getInputStream(), dos);
+                            dos.finish();
+                        }
+                        else {
+                            IOHandler.pipe(smime.getBodyPart().getInputStream(), baos);
+                        }
+
+                        Map<String, Object> payloadDict = new HashMap<String, Object>();
+                        payloadDict.put("payload-1", new String(Base64.encodeBase64(baos.toByteArray())));
+                        payloads.add(payloadDict);
                         returnObj.put("payloads", payloads);
+                    } catch (Exception e) {
+                        ApiPlugin.core.log.error("Error in collecting message", e);
                     }
                 }
 

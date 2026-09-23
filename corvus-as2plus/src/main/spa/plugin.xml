@@ -47,10 +47,10 @@
 		 <parameter name="context" value="/as2/msg_history" />
 	</extension>
 
-	<!-- extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="AS2 Config Service">
+	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="AS2 Config Service">
 	  <parameter name="class" value="hk.hku.cecid.edi.as2.service.AS2ConfigService" />
-	  <parameter name="context" value="/as2/config" />
-	</extension -->
+	  <parameter name="context" value="/auth/as2/config" />
+	</extension>
 	
 	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="AS2 Permit Redownload Service">
 		 <parameter name="class" value="hk.hku.cecid.edi.as2.service.AS2PermitRedownloadService" />

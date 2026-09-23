@@ -223,6 +223,14 @@ public class MessageDataSourceDVO extends DataSourceDVO implements
         return super.getString("statusDesc");
     }
 
+    public void setCreatedVia(String createdVia) {
+        super.setString("createdVia", createdVia);
+    }
+
+    public String getCreatedVia() {
+        return super.getString("createdVia");
+    }
+
     /**
      * @return The primalMessageID which represent the message triggered "Resend as New"
      */

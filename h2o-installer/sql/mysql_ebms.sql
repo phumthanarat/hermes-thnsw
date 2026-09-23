@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS message (
 	timeout_time_stamp timestamp null default null,
 	status varchar(2),
 	status_description varchar(4000),
+	created_via varchar(20),
 	PRIMARY KEY (message_id, message_box)
 )ENGINE=INNODB;
 

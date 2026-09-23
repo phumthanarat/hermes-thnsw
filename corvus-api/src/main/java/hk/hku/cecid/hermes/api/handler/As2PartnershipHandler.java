@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import hk.hku.cecid.edi.as2.AS2Processor;
+import hk.hku.cecid.edi.as2.AS2PlusProcessor;
 import hk.hku.cecid.edi.as2.dao.PartnershipDAO;
 import hk.hku.cecid.edi.as2.dao.PartnershipDVO;
 import hk.hku.cecid.hermes.api.listener.HermesAbstractApiListener;
@@ -27,7 +27,7 @@ public class As2PartnershipHandler extends MessageHandler implements Partnership
 
     public Map<String, Object> getPartnerships() {
         try {
-            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2Processor.core.dao.createDAO(PartnershipDAO.class);
+            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(PartnershipDAO.class);
             ArrayList<Object> partnershipList = new ArrayList<Object>();
             for (Iterator i = partnershipDAO.findAllPartnerships().iterator(); i.hasNext(); ) {
                 PartnershipDVO partnershipDVO = (PartnershipDVO) i.next();
@@ -222,7 +222,7 @@ public class As2PartnershipHandler extends MessageHandler implements Partnership
 
         try {
             // check if partnership id already exists
-            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2Processor.core.dao.createDAO(PartnershipDAO.class);
+            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(PartnershipDAO.class);
             PartnershipDVO partnershipDVO = (PartnershipDVO) partnershipDAO.createDVO();
             partnershipDVO.setPartnershipId(id);
             boolean editMode = false;
@@ -301,7 +301,7 @@ public class As2PartnershipHandler extends MessageHandler implements Partnership
 
         boolean success = false;
         try {
-            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2Processor.core.dao.createDAO(PartnershipDAO.class);
+            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(PartnershipDAO.class);
             PartnershipDVO partnershipDVO = (PartnershipDVO) partnershipDAO.createDVO();
             partnershipDVO.setPartnershipId(id);
             if (!partnershipDAO.retrieve(partnershipDVO)) {

@@ -180,6 +180,21 @@ public class EbmsSendMessageHandler extends MessageHandler implements SendMessag
             return listener.createError(ErrorCode.ERROR_SENDING_MESSAGE, errorMessage);
         }
 
+        // Mark the message as having been submitted through the Web Service API,
+        // so it can be told apart from genuine ebXML wire traffic or admin console actions.
+        try {
+            MessageDAO msgDAO = (MessageDAO) EbmsProcessor.core.dao.createDAO(MessageDAO.class);
+            MessageDVO createdMessage = (MessageDVO) msgDAO.createDVO();
+            createdMessage.setMessageId(messageId);
+            createdMessage.setMessageBox(MessageClassifier.MESSAGE_BOX_OUTBOX);
+            if (msgDAO.findMessage(createdMessage)) {
+                createdMessage.setCreatedVia("webservice_api");
+                msgDAO.persist(createdMessage);
+            }
+        } catch (DAOException e) {
+            ApiPlugin.core.log.error("Unable to tag message as created via webservice API", e);
+        }
+
         Map<String, Object> returnObj = new HashMap<String, Object>();
         returnObj.put("id", messageId);
         return returnObj;

@@ -9,7 +9,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import hk.hku.cecid.edi.as2.AS2Processor;
+import hk.hku.cecid.edi.as2.AS2PlusProcessor;
 import hk.hku.cecid.edi.as2.dao.MessageDAO;
 import hk.hku.cecid.edi.as2.dao.MessageDVO;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
@@ -88,14 +88,13 @@ public class As2MessageHistoryHandler extends MessageHandler implements MessageH
                                  ", status=" + status + ", limit=" + limit);
 
         try {
-            MessageDAO msgDAO = (MessageDAO) AS2Processor.core.dao.createDAO(MessageDAO.class);
+            MessageDAO msgDAO = (MessageDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(MessageDAO.class);
             MessageDVO criteriaDVO = (MessageDVO)msgDAO.createDVO();
             criteriaDVO.setMessageId(messageId);
             criteriaDVO.setMessageBox(messageBox);
             criteriaDVO.setAs2From(as2From);
             criteriaDVO.setAs2To(as2To);
             criteriaDVO.setStatus(status);
-            criteriaDVO.setPrincipalId("%");
 
             List results = msgDAO.findMessagesByHistory(criteriaDVO, limit, 0);
 
@@ -136,14 +135,13 @@ public class As2MessageHistoryHandler extends MessageHandler implements MessageH
         List results;
         MessageDAO msgDAO;
         try {
-            msgDAO = (MessageDAO) AS2Processor.core.dao.createDAO(MessageDAO.class);
+            msgDAO = (MessageDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(MessageDAO.class);
             MessageDVO criteriaDVO = (MessageDVO)msgDAO.createDVO();
             criteriaDVO.setMessageId(messageId);
             criteriaDVO.setMessageBox(MessageDVO.MSGBOX_IN);
             criteriaDVO.setAs2From("%");
             criteriaDVO.setAs2To("%");
             criteriaDVO.setStatus(MessageDVO.STATUS_DELIVERED);
-            criteriaDVO.setPrincipalId("%");
 
             results = msgDAO.findMessagesByHistory(criteriaDVO, MAX_NUMBER, 0);
         } catch (DAOException e) {

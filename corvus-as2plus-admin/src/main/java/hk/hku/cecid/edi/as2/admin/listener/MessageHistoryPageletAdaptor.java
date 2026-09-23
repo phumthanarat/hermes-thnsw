@@ -195,6 +195,8 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
                     .valueOf(returnData.isReceiptRequested()));
             dom.setProperty("message[" + pi + "]/has_resend_as_new",
                     checkNullAndReturnEmpty(returnData.getHasResendAsNew()));
+            dom.setProperty("message[" + pi + "]/created_via",
+                    checkNullAndReturnEmpty(returnData.getCreatedVia()));
 
             if (isDetail) {
                 dom.setProperty("message[" + pi + "]/receipt_url",

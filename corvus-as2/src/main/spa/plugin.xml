@@ -16,6 +16,14 @@
 		<library name="security/"/>
 	</runtime>
 
+	<!--
+	  These httpd.listener extensions are disabled because corvus-as2plus is deployed
+	  alongside this plugin and registers the same /as2/* context paths. Only one
+	  listener can be bound per path; as2plus's listeners are the active ones for
+	  live traffic. This plugin (and its AS2Processor/module/DAO wiring) is kept
+	  deployed because corvus-api and corvus-main-admin compile directly against
+	  hk.hku.cecid.edi.as2.AS2Processor and related classes.
+
 	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="AS2 Inbound Listener">
 	  <parameter name="class" value="hk.hku.cecid.edi.as2.listener.AS2InboundListener" />
 	  <parameter name="context" value="/as2/inbound" />
@@ -35,21 +43,22 @@
 	  <parameter name="class" value="hk.hku.cecid.edi.as2.service.AS2MessageReceiverListService" />
 	  <parameter name="context" value="/as2/receiver_list" />
 	</extension>
-	
+
 	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="AS2 Receiver Service">
 	  <parameter name="class" value="hk.hku.cecid.edi.as2.service.AS2MessageReceiverService" />
 	  <parameter name="context" value="/as2/receiver" />
 	  <parameter name="is_compress" value="false" />
 	</extension>
-	
+
 	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="AS2 Message History Service">
 		 <parameter name="class" value="hk.hku.cecid.edi.as2.service.AS2MessageHistoryService" />
 		 <parameter name="context" value="/as2/msg_history" />
 	</extension>
 
-	<!-- extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="AS2 Config Service">
+	<extension point="hk.hku.cecid.piazza.corvus.core.httpd.listener" name="AS2 Config Service">
 	  <parameter name="class" value="hk.hku.cecid.edi.as2.service.AS2ConfigService" />
 	  <parameter name="context" value="/as2/config" />
-	</extension -->
+	</extension>
+	-->
 
 </plugin>

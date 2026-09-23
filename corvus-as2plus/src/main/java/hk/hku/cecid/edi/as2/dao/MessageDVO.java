@@ -144,13 +144,25 @@ public interface MessageDVO extends DVO {
     public String getStatus();
     
     public void setStatusDescription(String desc);
-    
+
     public String getStatusDescription();
 
     /**
      * @param status The status to set.
      */
     public void setStatus(String status);
+
+    /**
+     * @param createdVia How the message was created, e.g. "webservice_api" when
+     *        submitted through the REST Web Service API rather than genuine
+     *        AS2 wire traffic or the admin console. Null for ordinary messages.
+     */
+    public void setCreatedVia(String createdVia);
+
+    /**
+     * @return How the message was created, or null if not recorded.
+     */
+    public String getCreatedVia();
 
     public boolean isReceiptRequested();
 

@@ -1,26 +1,20 @@
 package hk.hku.cecid.hermes.api.handler;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataHandler;
-import javax.servlet.http.HttpServletRequest;
-
-import hk.hku.cecid.edi.as2.AS2Processor;
+import hk.hku.cecid.edi.as2.AS2PlusProcessor;
 import hk.hku.cecid.edi.as2.dao.MessageDAO;
 import hk.hku.cecid.edi.as2.dao.MessageDVO;
 import hk.hku.cecid.edi.as2.dao.PartnershipDAO;
 import hk.hku.cecid.edi.as2.dao.PartnershipDVO;
 import hk.hku.cecid.edi.as2.pkg.AS2Message;
-import hk.hku.cecid.edi.as2.module.PayloadCache;
-import hk.hku.cecid.edi.as2.module.PayloadRepository;
 import hk.hku.cecid.hermes.api.ErrorCode;
 import hk.hku.cecid.hermes.api.listener.HermesAbstractApiListener;
 import hk.hku.cecid.hermes.api.spa.ApiPlugin;
+import hk.hku.cecid.piazza.commons.activation.ByteArrayDataSource;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.rest.RestRequest;
 
@@ -37,14 +31,13 @@ public class As2SendMessageHandler extends MessageHandler implements SendMessage
         ApiPlugin.core.log.debug("Parameters: id=" + messageId);
 
         try {
-            MessageDAO msgDAO = (MessageDAO) AS2Processor.core.dao.createDAO(MessageDAO.class);
+            MessageDAO msgDAO = (MessageDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(MessageDAO.class);
             MessageDVO message = (MessageDVO) msgDAO.createDVO();
             message.setMessageId(messageId);
             message.setMessageBox(MessageDVO.MSGBOX_OUT);
             message.setAs2From("%");
             message.setAs2To("%");
             message.setStatus("%");
-            message.setPrincipalId("%");
 
             List messages = msgDAO.findMessagesByHistory(message, MAX_NUMBER, 0);
             if (messages.size() > 0) {
@@ -116,23 +109,30 @@ public class As2SendMessageHandler extends MessageHandler implements SendMessage
 
         List<String> messageIds = new ArrayList<String>();
         try {
-            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2Processor.core.dao.createDAO(PartnershipDAO.class);
-            if (partnershipDAO.findByParty(as2From, as2To) == null) {
+            PartnershipDAO partnershipDAO = (PartnershipDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(PartnershipDAO.class);
+            PartnershipDVO partnershipDVO = partnershipDAO.findByParty(as2From, as2To);
+            if (partnershipDVO == null) {
                 throw new DAOException("No partnership [" + as2From + ", " + as2To + "] is registered");
             }
 
-            PayloadRepository repository = AS2Processor.getOutgoingPayloadRepository();
+            MessageDAO msgDAO = (MessageDAO) AS2PlusProcessor.getInstance().getDAOFactory().createDAO(MessageDAO.class);
+
             if (payloads.size() > 0) {
                 for (byte[] payload : payloads) {
-                    ByteArrayInputStream in = new ByteArrayInputStream(payload);
                     String messageId = AS2Message.generateID();
+                    ByteArrayDataSource dataSource = new ByteArrayDataSource(payload, type);
+                    AS2PlusProcessor.getInstance().getOutgoingMessageProcessor()
+                            .storeOutgoingMessage(messageId, type, partnershipDVO, dataSource);
                     messageIds.add(messageId);
-                    PayloadCache cache = repository.createPayloadCache(messageId, as2From, as2To, type);
-                    cache.save(in);
-                    if (!cache.checkIn()) {
-                        String errorMessage = "Error persisting payloads";
-                        ApiPlugin.core.log.error(errorMessage);
-                        return listener.createError(ErrorCode.ERROR_WRITING_MESSAGE, errorMessage);
+
+                    // Mark the message as having been submitted through the Web Service API,
+                    // so it can be told apart from genuine AS2 wire traffic or admin console actions.
+                    MessageDVO createdMessage = (MessageDVO) msgDAO.createDVO();
+                    createdMessage.setMessageId(messageId);
+                    createdMessage.setMessageBox(MessageDVO.MSGBOX_OUT);
+                    if (msgDAO.retrieve(createdMessage)) {
+                        createdMessage.setCreatedVia("webservice_api");
+                        msgDAO.persist(createdMessage);
                     }
                 }
             }
@@ -142,10 +142,10 @@ public class As2SendMessageHandler extends MessageHandler implements SendMessage
             ApiPlugin.core.log.error(errorMessage, e);
             return listener.createError(ErrorCode.ERROR_READING_DATABASE, errorMessage);
         }
-        catch (IOException e) {
-            String errorMessage = "Error reading input";
+        catch (Exception e) {
+            String errorMessage = "Error persisting payloads";
             ApiPlugin.core.log.error(errorMessage, e);
-            return listener.createError(ErrorCode.ERROR_DATA_NOT_FOUND, errorMessage);
+            return listener.createError(ErrorCode.ERROR_WRITING_MESSAGE, errorMessage);
         }
 
         Map<String, Object> returnObj = new HashMap<String, Object>();
