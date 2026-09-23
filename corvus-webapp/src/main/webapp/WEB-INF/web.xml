@@ -106,20 +106,10 @@
     </user-data-constraint>
   </security-constraint>
 
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>Restricted API resources</web-resource-name>
-      <description>No description</description>
-      <url-pattern>/api/*</url-pattern>
-    </web-resource-collection>
-    <auth-constraint>
-      <role-name>api</role-name>
-    </auth-constraint>
-    <user-data-constraint>
-      <description>No description</description>
-      <transport-guarantee>NONE</transport-guarantee>
-    </user-data-constraint>
-  </security-constraint>
+  <!-- /api/* is no longer gated by container-managed Basic Auth; it is
+       authenticated per-request via the X-API-Key header, checked against
+       the api_key table (see HermesAbstractApiListener), so that keys can
+       be issued/revoked without a Tomcat user/redeploy. -->
 
   <security-constraint>
     <web-resource-collection>
