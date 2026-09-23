@@ -4,8 +4,13 @@ import hk.hku.cecid.piazza.commons.servlet.http.HttpDispatcherContext;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Enumeration;
@@ -70,6 +75,9 @@ public class HttpdPageletAdaptor extends AdminPageletAdaptor {
         else if ("update_connector_port".equals(chstatus)) {
             updateConnectorPort(request.getParameter("connector"), request.getParameter("port"));
         }
+        else if ("ping_test".equals(chstatus)) {
+            runPingTest(request, dom);
+        }
 
         HttpDispatcherContext dispatcherContext = HttpDispatcherContext.getDefaultContext();
         String status = dispatcherContext.isHalted()? (dispatcherContext.isHalting()? "Being ":"")+STATUS_HALTED:STATUS_RUNNING;
@@ -109,7 +117,83 @@ public class HttpdPageletAdaptor extends AdminPageletAdaptor {
 
         appendConnectorInfo(dom);
 
+        // request.getServerName()/getServerPort() reflect whatever host:port
+        // the browser used to reach this page -- behind Docker's port
+        // mapping (e.g. host 18443 -> container 8443), that's not reachable
+        // from inside the container the ping actually runs from. Use the
+        // real internal port (the same system property server.xml's
+        // Connector itself resolves, see deploy/app_server/setenv.sh) and
+        // localhost, since a self-ping never needs to leave the container.
+        String internalPort = System.getProperty("catalina.https.port", "8443");
+        dom.setProperty("ping_test/default_target", "https://localhost:" + internalPort + "/corvus/httpd/wsping");
+
         return dom.getSource();
+    }
+
+    /**
+     * Ping-pongs {@code target_url} (defaults to this same gateway's own
+     * WSPingService, but can point at another Hermes instance to check
+     * server-to-server reachability) by POSTing a SOAP ping request and
+     * checking for the "pong" reply the service always sends back --
+     * https://.../corvus/httpd/wsping, see corvus-main's WSPingService.
+     */
+    private void runPingTest(HttpServletRequest request, PropertyTree dom) {
+        String targetUrl = request.getParameter("target_url");
+        if (targetUrl == null || targetUrl.trim().length() == 0) {
+            dom.setProperty("ping_test/result", "error");
+            dom.setProperty("ping_test/message", "Target URL cannot be empty");
+            return;
+        }
+        targetUrl = targetUrl.trim();
+        dom.setProperty("ping_test/target", targetUrl);
+
+        String soapRequest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                + "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\">"
+                + "<soapenv:Body><action xmlns=\"http://service.main.core.corvus.piazza.cecid.hku.hk/\">ping</action>"
+                + "</soapenv:Body></soapenv:Envelope>";
+
+        long start = System.currentTimeMillis();
+        try {
+            URL url = new URL(targetUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            conn.setRequestProperty("Content-Type", "text/xml; charset=UTF-8");
+            conn.setRequestProperty("SOAPAction", "\"\"");
+
+            OutputStream out = conn.getOutputStream();
+            out.write(soapRequest.getBytes("UTF-8"));
+            out.close();
+
+            int responseCode = conn.getResponseCode();
+            InputStream in = responseCode < 400 ? conn.getInputStream() : conn.getErrorStream();
+            ByteArrayOutputStream buf = new ByteArrayOutputStream();
+            byte[] chunk = new byte[4096];
+            int read;
+            while (in != null && (read = in.read(chunk)) != -1) {
+                buf.write(chunk, 0, read);
+            }
+            String responseBody = buf.toString("UTF-8");
+            long elapsed = System.currentTimeMillis() - start;
+
+            dom.setProperty("ping_test/latency_ms", String.valueOf(elapsed));
+            dom.setProperty("ping_test/http_status", String.valueOf(responseCode));
+
+            if (responseCode == 200 && responseBody.indexOf("pong") >= 0) {
+                dom.setProperty("ping_test/result", "success");
+                dom.setProperty("ping_test/message", "pong received in " + elapsed + " ms");
+            } else {
+                dom.setProperty("ping_test/result", "error");
+                dom.setProperty("ping_test/message", "Unexpected response (HTTP " + responseCode + ")");
+            }
+        } catch (Exception e) {
+            long elapsed = System.currentTimeMillis() - start;
+            dom.setProperty("ping_test/result", "error");
+            dom.setProperty("ping_test/latency_ms", String.valueOf(elapsed));
+            dom.setProperty("ping_test/message", "Unable to reach target: " + e.getMessage());
+        }
     }
 
     /**

@@ -74,6 +74,44 @@
   <small>Port changes are saved to server.xml immediately but only take effect after the container is restarted (<code>docker compose restart app</code>). A port cannot be disabled while it is the only one enabled, to avoid locking the console out entirely.</small>
 </p>
 
+<xsl:if test="ping_test/result">
+<div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:12px 16px; margin-bottom:12px;">
+  <xsl:choose>
+    <xsl:when test="ping_test/result = 'success'">
+      <span class="badge badge-success">pong</span>
+    </xsl:when>
+    <xsl:otherwise>
+      <span class="badge badge-danger">Failed</span>
+    </xsl:otherwise>
+  </xsl:choose>
+  <xsl:text> </xsl:text>
+  <span style="font-size:13px;"><xsl:value-of select="ping_test/target" /> -- <xsl:value-of select="ping_test/message" /></span>
+</div>
+</xsl:if>
+
+<form name="pingTestForm" method="post" action="httpd">
+<input type="hidden" name="action" value="ping_test" />
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tr>
+    <th colspan="2" align="left">Ping Test</th>
+  </tr>
+  <tr>
+    <td width="30%">Target<br/><small><font color="gray">Defaults to this gateway's own WSPingService; point it at another Hermes instance's /corvus/httpd/wsping to check server-to-server reachability</font></small></td>
+    <td width="70%">
+      <input type="text" name="target_url" size="60">
+        <xsl:attribute name="value"><xsl:value-of select="ping_test/target" /><xsl:if test="not(ping_test/target)"><xsl:value-of select="ping_test/default_target" /></xsl:if></xsl:attribute>
+      </input>
+    </td>
+  </tr>
+  <tr>
+    <td width="30%"></td>
+    <td width="70%"><br/><input type="Submit" value="Ping" /><br/></td>
+  </tr>
+</table>
+</form>
+
+<br/>
+
 <form>
 <br/>
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
