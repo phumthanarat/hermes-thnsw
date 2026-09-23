@@ -8,6 +8,8 @@ services:
       dockerfile: deploy/db/Dockerfile
     environment:
       MYSQL_ROOT_PASSWORD: h2o_db_password
+    volumes:
+      - h2o_db_data:/var/lib/mysql
   app:
     container_name: h2o_app
     image: h2o/app:1.0
@@ -19,5 +21,97 @@ services:
       - db
     expose:
       - 8080
+      - 8443
     ports:
       - "18080:8080"
+      - "18443:8443"
+    volumes:
+      - h2o_app_logs:/hermes_home/logs
+      - h2o_app_repository:/hermes_home/repository
+
+  db2:
+    container_name: h2o_db2
+    image: h2o/db:1.0
+    environment:
+      MYSQL_ROOT_PASSWORD: h2o_db_password
+    volumes:
+      - h2o_db2_data:/var/lib/mysql
+
+  app2:
+    container_name: h2o_app2
+    image: h2o/app:1.0
+    privileged: true
+    links:
+      - db2:db
+    expose:
+      - 8080
+      - 8443
+    ports:
+      - "28080:8080"
+      - "28443:8443"
+    volumes:
+      - h2o_app2_logs:/hermes_home/logs
+      - h2o_app2_repository:/hermes_home/repository
+
+  testftp:
+    container_name: h2o_testftp
+    image: stilliard/pure-ftpd:hardened
+    environment:
+      PUBLICHOST: testftp
+      FTP_USER_NAME: testuser
+      FTP_USER_PASS: testpass
+      FTP_USER_HOME: /home/testuser
+      ADDED_FLAGS: "--tls=0"
+    expose:
+      - 21
+      - "30000-30009"
+    volumes:
+      - h2o_testftp_data:/home/testuser
+
+  testftps:
+    container_name: h2o_testftps
+    image: stilliard/pure-ftpd:hardened
+    environment:
+      PUBLICHOST: testftps
+      FTP_USER_NAME: testuser
+      FTP_USER_PASS: testpass
+      FTP_USER_HOME: /home/testuser
+      TLS_CN: testftps
+      TLS_ORG: Hermes2plus Test
+      TLS_C: HK
+      ADDED_FLAGS: "--tls=1"
+    expose:
+      - 21
+      - "30010-30019"
+    volumes:
+      - h2o_testftps_data:/home/testuser
+
+  testsftp:
+    container_name: h2o_testsftp
+    image: atmoz/sftp
+    command: testuser:testpass:::upload
+    expose:
+      - 22
+    volumes:
+      - h2o_testsftp_data:/home/testuser
+
+  testmail:
+    container_name: h2o_testmail
+    image: greenmail/standalone:2.0.1
+    environment:
+      GREENMAIL_OPTS: "-Dgreenmail.setup.test.all -Dgreenmail.hostname=0.0.0.0 -Dgreenmail.users=testuser:testpass@testmail.local -Dgreenmail.auth.disabled"
+    expose:
+      - 3110
+      - 3143
+      - 3025
+
+volumes:
+  h2o_db_data:
+  h2o_app_logs:
+  h2o_app_repository:
+  h2o_db2_data:
+  h2o_app2_logs:
+  h2o_app2_repository:
+  h2o_testftp_data:
+  h2o_testftps_data:
+  h2o_testsftp_data:

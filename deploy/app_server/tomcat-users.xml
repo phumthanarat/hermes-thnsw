@@ -3,6 +3,7 @@
   <role rolename="tomcat"/>
   <role rolename="admin"/>
   <role rolename="api"/>
-  <user username="corvus" password="corvus" roles="tomcat,admin"/>
+  <role rolename="user"/>
+  <user username="corvus" password="corvus" roles="tomcat,admin,user"/>
   <user username="apiuser" password="corvus" roles="api"/>
 </tomcat-users>
