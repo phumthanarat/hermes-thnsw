@@ -4,8 +4,6 @@ import hk.hku.cecid.edi.sfrm.dao.FilePollingChannelDAO;
 import hk.hku.cecid.edi.sfrm.dao.FilePollingChannelDVO;
 import hk.hku.cecid.edi.sfrm.dao.FtpChannelDAO;
 import hk.hku.cecid.edi.sfrm.dao.FtpChannelDVO;
-import hk.hku.cecid.edi.sfrm.dao.HttpChannelDAO;
-import hk.hku.cecid.edi.sfrm.dao.HttpChannelDVO;
 import hk.hku.cecid.edi.sfrm.dao.MailChannelDAO;
 import hk.hku.cecid.edi.sfrm.dao.MailChannelDVO;
 import hk.hku.cecid.edi.sfrm.dao.SftpChannelDAO;
@@ -75,13 +73,11 @@ public class FilePollingPageletAdaptor extends AdminPageletAdaptor {
             updateFtpChannels(request);
             updateSftpChannels(request);
             updateMailChannels(request);
-            updateHttpChannels(request);
             resultDom = getSettings();
             appendChannels(resultDom);
             appendFtpChannels(resultDom);
             appendSftpChannels(resultDom);
             appendMailChannels(resultDom);
-            appendHttpChannels(resultDom);
         } catch (Exception e) {
             request.setAttribute(ATTR_MESSAGE,
                     "Unable to process the request: " + e.getMessage());
@@ -620,97 +616,4 @@ public class FilePollingPageletAdaptor extends AdminPageletAdaptor {
         }
     }
 
-    private void updateHttpChannels(HttpServletRequest request) throws Exception {
-
-        String requestAction = request.getParameter(REQ_PARAM_ACTION);
-
-        if (!"post".equalsIgnoreCase(request.getMethod())) {
-            return;
-        }
-
-        HttpChannelDAO dao = (HttpChannelDAO)
-                SFRMProcessor.getInstance().getDAOFactory().createDAO(HttpChannelDAO.class);
-
-        if ("add_http_channel".equalsIgnoreCase(requestAction)) {
-            String channelId = trimOrNull(request.getParameter("http_channel_id"));
-            String name = trimOrNull(request.getParameter("http_name"));
-            String bindAddress = trimOrNull(request.getParameter("http_bind_address"));
-            String portStr = trimOrNull(request.getParameter("http_port"));
-            boolean useTls = request.getParameter("http_use_tls") != null;
-            String targetService = trimOrNull(request.getParameter("http_target_service"));
-            String description = request.getParameter("http_description");
-
-            if (channelId == null) {
-                request.setAttribute(ATTR_MESSAGE, "HTTP Channel ID cannot be empty");
-                return;
-            }
-            if (name == null) {
-                request.setAttribute(ATTR_MESSAGE, "HTTP Channel Name cannot be empty");
-                return;
-            }
-            if (!isPositiveInteger(portStr)) {
-                request.setAttribute(ATTR_MESSAGE, "HTTP Port must be a positive integer");
-                return;
-            }
-            if (!"ebms".equals(targetService) && !"as2".equals(targetService) && !"sfrm".equals(targetService)) {
-                request.setAttribute(ATTR_MESSAGE, "HTTP Target Service must be one of ebms, as2, sfrm");
-                return;
-            }
-            if (dao.findChannelById(channelId) != null) {
-                request.setAttribute(ATTR_MESSAGE, "HTTP Channel ID '" + channelId + "' already exists");
-                return;
-            }
-
-            HttpChannelDVO dvo = (HttpChannelDVO) dao.createDVO();
-            dvo.setChannelId(channelId);
-            dvo.setName(name);
-            dvo.setBindAddress(bindAddress == null ? "0.0.0.0" : bindAddress);
-            dvo.setPort(Integer.parseInt(portStr));
-            dvo.setIsUseTls(useTls);
-            dvo.setTargetService(targetService);
-            dvo.setIsDisabled(false);
-            dvo.setDescription(description);
-            dao.create(dvo);
-            request.setAttribute(ATTR_MESSAGE, "HTTP channel '" + channelId + "' added successfully");
-
-        } else if ("toggle_http_channel".equalsIgnoreCase(requestAction)) {
-            String channelId = request.getParameter("channel_id");
-            HttpChannelDVO dvo = dao.findChannelById(channelId);
-            if (dvo != null) {
-                dvo.setIsDisabled(!dvo.isDisabled());
-                dao.persist(dvo);
-                request.setAttribute(ATTR_MESSAGE,
-                        "HTTP channel '" + channelId + "' " + (dvo.isDisabled() ? "disabled" : "enabled"));
-            }
-
-        } else if ("delete_http_channel".equalsIgnoreCase(requestAction)) {
-            String channelId = request.getParameter("channel_id");
-            HttpChannelDVO dvo = dao.findChannelById(channelId);
-            if (dvo != null) {
-                dao.remove(dvo);
-                request.setAttribute(ATTR_MESSAGE, "HTTP channel '" + channelId + "' deleted");
-            }
-        }
-    }
-
-    private void appendHttpChannels(PropertyTree resultDom) throws DAOException {
-        HttpChannelDAO dao = (HttpChannelDAO)
-                SFRMProcessor.getInstance().getDAOFactory().createDAO(HttpChannelDAO.class);
-        List channels = dao.findAllChannels();
-
-        int i = 1;
-        for (Iterator it = channels.iterator(); it.hasNext(); i++) {
-            HttpChannelDVO dvo = (HttpChannelDVO) it.next();
-            String prefix = ROOT + "/http_channels/channel[" + i + "]";
-            resultDom.setProperty(prefix + "/channel_id", dvo.getChannelId());
-            resultDom.setProperty(prefix + "/name", dvo.getName());
-            resultDom.setProperty(prefix + "/bind_address", dvo.getBindAddress());
-            resultDom.setProperty(prefix + "/port", String.valueOf(dvo.getPort()));
-            resultDom.setProperty(prefix + "/use_tls", String.valueOf(dvo.isUseTls()));
-            resultDom.setProperty(prefix + "/target_service", dvo.getTargetService());
-            resultDom.setProperty(prefix + "/is_disabled", String.valueOf(dvo.isDisabled()));
-            resultDom.setProperty(prefix + "/description",
-                    dvo.getDescription() == null ? "" : dvo.getDescription());
-        }
-    }
 }

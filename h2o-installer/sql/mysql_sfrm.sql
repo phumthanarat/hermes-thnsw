@@ -64,19 +64,6 @@ CREATE TABLE IF NOT EXISTS sfrm_mail_channel (
 	PRIMARY KEY (channel_id)
 )ENGINE=INNODB;
 
-CREATE TABLE IF NOT EXISTS sfrm_http_channel (
-	channel_id varchar(50) NOT NULL,
-	name varchar(200) NOT NULL,
-	bind_address varchar(100) NOT NULL DEFAULT '0.0.0.0',
-	port int NOT NULL,
-	use_tls boolean NOT NULL DEFAULT false,
-	target_service varchar(20) NOT NULL,
-	is_disabled boolean NOT NULL DEFAULT false,
-	description varchar(500),
-	created_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	PRIMARY KEY (channel_id)
-)ENGINE=INNODB;
-
 CREATE TABLE IF NOT EXISTS sfrm_partnership (
 	partnership_seq int NOT NULL AUTO_INCREMENT,
 	partnership_id varchar(50) NOT NULL,

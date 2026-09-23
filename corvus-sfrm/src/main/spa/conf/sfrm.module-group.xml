@@ -39,11 +39,6 @@
 		<descriptor>sfrm.mail.channels.xml</descriptor>
 	</module>
 
-	<module>
-		<class>hk.hku.cecid.piazza.commons.module.ActiveTaskModule</class>
-		<descriptor>sfrm.http.channels.xml</descriptor>
-	</module>
-
 	<!-- Message Status Task -->
 <!--	
 	<module>

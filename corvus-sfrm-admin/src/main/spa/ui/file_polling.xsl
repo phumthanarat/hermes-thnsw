@@ -349,70 +349,6 @@
 <br/>
 </xsl:if>
 
-<div class="stat-grid">
-  <div class="stat-card">
-    <h3>HTTP Channels</h3>
-    <div class="stat-row"><span class="label">Total HTTP Channels</span><span class="value big"><xsl:value-of select="count(http_channels/channel)" /></span></div>
-  </div>
-</div>
-
-<xsl:if test="count(http_channels/channel) &gt; 0">
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
-  <tr>
-    <th>Channel ID</th>
-    <th>Name</th>
-    <th>Listens On</th>
-    <th>Target Service</th>
-    <th>Status</th>
-    <th></th>
-  </tr>
-  <xsl:for-each select="http_channels/channel">
-  <tr>
-    <td><code><xsl:value-of select="./channel_id" /></code></td>
-    <td><xsl:value-of select="./name" /><br/><small><font color="gray"><xsl:value-of select="./description" /></font></small></td>
-    <td style="font-size:12px; color:var(--text-soft);">
-      <xsl:choose>
-        <xsl:when test="./use_tls = 'true'">https://</xsl:when>
-        <xsl:otherwise>http://</xsl:otherwise>
-      </xsl:choose>
-      <xsl:value-of select="./bind_address" />:<xsl:value-of select="./port" />
-    </td>
-    <td><span class="badge badge-info"><xsl:value-of select="./target_service" /></span></td>
-    <td>
-      <xsl:choose>
-        <xsl:when test="./is_disabled = 'true'">
-          <span class="badge badge-neutral">Disabled</span>
-        </xsl:when>
-        <xsl:otherwise>
-          <span class="badge badge-success">Enabled</span>
-        </xsl:otherwise>
-      </xsl:choose>
-    </td>
-    <td style="white-space:nowrap;">
-      <form method="post" action="file_polling" style="display:inline;">
-        <input type="hidden" name="action" value="toggle_http_channel" />
-        <input type="hidden" name="channel_id"><xsl:attribute name="value"><xsl:value-of select="./channel_id" /></xsl:attribute></input>
-        <xsl:choose>
-          <xsl:when test="./is_disabled = 'true'">
-            <input type="submit" value="Enable" />
-          </xsl:when>
-          <xsl:otherwise>
-            <input type="submit" value="Disable" />
-          </xsl:otherwise>
-        </xsl:choose>
-      </form>
-      <form method="post" action="file_polling" style="display:inline;" onSubmit="return confirm('Delete this HTTP channel?');">
-        <input type="hidden" name="action" value="delete_http_channel" />
-        <input type="hidden" name="channel_id"><xsl:attribute name="value"><xsl:value-of select="./channel_id" /></xsl:attribute></input>
-        <input type="submit" value="Delete" />
-      </form>
-    </td>
-  </tr>
-  </xsl:for-each>
-</table>
-<br/>
-</xsl:if>
-
 <table border="0" cellpadding="2" cellspacing="2" width="100%">
   <tr>
     <th colspan="2" align="left">Add Port</th>
@@ -431,9 +367,6 @@
       </div>
       <div>
         <label><input type="radio" name="port_type" value="sftp" onclick="selectPortType('sftp')" /> SFTP</label>
-      </div>
-      <div>
-        <label><input type="radio" name="port_type" value="http" onclick="selectPortType('http')" /> HTTP / HTTPS</label>
       </div>
     </td>
   </tr>
@@ -662,67 +595,12 @@
 </form>
 </div>
 
-<div id="portTypeHttp" style="display:none;">
-  <div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px; margin-bottom:12px;">
-    <span style="font-size:13px; color:var(--text-soft);">
-      Every protocol module (ebMS, AS2, SFRM) already listens on the shared admin/web port under
-      <code>/corvus/httpd/...</code> -- adding a port here opens a separate, dedicated listener on its own
-      address/port that simply forwards whatever it receives to one of those same internal services, so
-      that traffic doesn't have to share the web management port.
-    </span>
-  </div>
-<form name="addHttpChannelForm" method="post" action="file_polling">
-<input type="hidden" name="action" value="add_http_channel" />
-<table border="0" cellpadding="2" cellspacing="2" width="100%">
-  <tr>
-    <td width="40%">Channel ID</td>
-    <td width="60%"><input type="text" name="http_channel_id" size="30" /></td>
-  </tr>
-  <tr>
-    <td width="40%">Name</td>
-    <td width="60%"><input type="text" name="http_name" size="40" /></td>
-  </tr>
-  <tr>
-    <td width="40%">Bind Address<br/><small><font color="gray">Leave as 0.0.0.0 to listen on every network interface</font></small></td>
-    <td width="60%"><input type="text" name="http_bind_address" size="30" value="0.0.0.0" /></td>
-  </tr>
-  <tr>
-    <td width="40%">Port</td>
-    <td width="60%"><input type="text" name="http_port" size="10" /></td>
-  </tr>
-  <tr>
-    <td width="40%">Use HTTPS (TLS)<br/><small><font color="gray">Uses the SFRM plugin's own configured certificate</font></small></td>
-    <td width="60%"><input type="checkbox" name="http_use_tls" /></td>
-  </tr>
-  <tr>
-    <td width="40%">Target Service<br/><small><font color="gray">Which internal service handles requests received on this port</font></small></td>
-    <td width="60%">
-      <select name="http_target_service">
-        <option value="ebms">ebMS</option>
-        <option value="as2">AS2</option>
-        <option value="sfrm">SFRM</option>
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <td width="40%">Description</td>
-    <td width="60%"><input type="text" name="http_description" size="60" /></td>
-  </tr>
-  <tr>
-    <td width="40%"></td>
-    <td width="60%"><br/><input type="Submit" value="Add Port" /><br/></td>
-  </tr>
-</table>
-</form>
-</div>
-
 <script>
 function selectPortType(type) {
 	document.getElementById('portTypeFilePolling').style.display = (type == 'file_polling') ? '' : 'none';
 	document.getElementById('portTypeMail').style.display = (type == 'mail') ? '' : 'none';
 	document.getElementById('portTypeFtp').style.display = (type == 'ftp') ? '' : 'none';
 	document.getElementById('portTypeSftp').style.display = (type == 'sftp') ? '' : 'none';
-	document.getElementById('portTypeHttp').style.display = (type == 'http') ? '' : 'none';
 }
 </script>
 
