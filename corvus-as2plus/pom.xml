@@ -41,7 +41,7 @@
 				<version>2.19.1</version>
 				<configuration>
 					<!-- For running RepositoryDataSourceDAOTest.java JUnit test, see message content more than 50MB  -->
-					<argLine>-Xmx256m</argLine>
+					<argLine>-Xmx256m -Djava.net.preferIPv4Stack=true --add-opens java.base/java.net=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.dom=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.jaxp=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.util=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.parsers=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.xni=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.xni.parser=ALL-UNNAMED --add-exports java.xml/com.sun.org.apache.xerces.internal.impl=ALL-UNNAMED</argLine>
 				</configuration>
 			</plugin>
 		</plugins>

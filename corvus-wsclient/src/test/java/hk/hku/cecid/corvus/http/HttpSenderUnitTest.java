@@ -18,7 +18,7 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-import sun.misc.BASE64Encoder;
+import java.util.Base64;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -171,7 +171,7 @@ public class HttpSenderUnitTest extends TestCase
 		this.assertSend();
 		
 		String auth = (String) this.monitor.getHeaders().get("Authorization");
-		String base64auth = "Basic " + new BASE64Encoder().encode((user + ":" + password).getBytes());
+		String base64auth = "Basic " + Base64.getEncoder().encodeToString((user + ":" + password).getBytes());
 		assertNotNull("Missing the Basic Authorization.", auth);	
 		assertEquals ("The Basic Authorization mis-match.", base64auth, auth);
 	}

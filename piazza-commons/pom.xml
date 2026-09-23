@@ -82,6 +82,66 @@
             </plugin>
         </plugins>
     </build>
+    <profiles>
+        <profile>
+            <id>xpath-provider-jdk8</id>
+            <activation>
+                <jdk>(,9)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-xpath-provider-source</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/main/java8</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>xpath-provider-jdk9-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>add-xpath-provider-source</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/main/java9</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <dependencies>
         <dependency>
             <groupId>org.bouncycastle</groupId>

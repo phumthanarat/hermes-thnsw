@@ -129,10 +129,10 @@ public class MessageStatusRequestData extends KVPairData {
 	public String getPassword(){
 		try{
 			return new String(
-				new sun.misc.BASE64Decoder()
-					.decodeBuffer((String) props.get(CONFIG_KEY_SET[2])));
-		}catch(java.io.IOException ioe){
-			ioe.printStackTrace(System.err);
+				java.util.Base64.getDecoder()
+					.decode((String) props.get(CONFIG_KEY_SET[2])));
+		}catch(IllegalArgumentException iae){
+			iae.printStackTrace(System.err);
 		}
 		return null;
 	}
@@ -142,7 +142,7 @@ public class MessageStatusRequestData extends KVPairData {
 	 */
 	public void setPassword(String password){
 		if (password != null){
-			String b64encode = new sun.misc.BASE64Encoder().encode(password.getBytes());
+			String b64encode = java.util.Base64.getEncoder().encodeToString(password.getBytes());
 			props.put(CONFIG_KEY_SET[2], b64encode);
 		}
 	}

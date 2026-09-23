@@ -28,6 +28,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
+import javax.xml.transform.stream.StreamSource;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.smime.SMIMECapability;
@@ -796,7 +797,7 @@ public class SFRMMessage implements Cloneable {
 	        while (dis.read(buf) != -1) {
 	        }
 	    
-	        return (new sun.misc.BASE64Encoder()).encode(dis.getMessageDigest().digest());
+	        return java.util.Base64.getEncoder().encodeToString(dis.getMessageDigest().digest());
 		} catch (Exception e) {
 			throw new SFRMMessageException("Unable to generate message digest", e);
 		}
@@ -806,7 +807,7 @@ public class SFRMMessage implements Cloneable {
 		try {
 			MessageDigest md = MessageDigest.getInstance("md5");
 			md.update(frds.getByteBuffer());
-			return (new sun.misc.BASE64Encoder()).encode(md.digest());
+			return java.util.Base64.getEncoder().encodeToString(md.digest());
 		} catch (Exception e) {
 			throw new SFRMMessageException("Unable to generate message digest", e);
 		}
@@ -824,13 +825,18 @@ public class SFRMMessage implements Cloneable {
 	public String digest() throws SFRMException {
 		try {
 			Object obj = this.getBodyPart().getContent();
-			if (obj instanceof InputStream) 
+			if (obj instanceof InputStream)
 				return digest((InputStream)obj);
 			else if (obj instanceof FileRegionDataSource)
 				return digest((FileRegionDataSource)obj);
 			else if (obj instanceof String)
 				return digest(this.bodyPart.getInputStream());
-			else 
+			else if (obj instanceof StreamSource)
+				// Some JVMs' javax.activation content handlers hand back a StreamSource
+				// (rather than a String) for text/xml acknowledgement request bodies.
+				// The digest only needs the raw underlying bytes, same as the String case.
+				return digest(this.bodyPart.getInputStream());
+			else
 				throw new SFRMMessageException("Message content object not supported to be digested - " + obj.getClass().getName());
 		} catch(Exception e){
 			throw new SFRMException("Unable to generate message digest", e);
