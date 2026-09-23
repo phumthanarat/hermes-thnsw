@@ -44,6 +44,14 @@ RUN mkdir -p /etc/tomcat8/ssl && \
 COPY deploy/app_server/server.xml /var/lib/tomcat8/conf/server.xml
 RUN chown tomcat8:tomcat8 /var/lib/tomcat8/conf/server.xml
 
+# server.xml's Connector ports are ${catalina.http.port}/${catalina.https.port}
+# system properties, not hardcoded numbers, so the listening ports can be
+# changed per-container via APP_HTTP_PORT/APP_HTTPS_PORT without an image
+# rebuild. catalina.sh sources bin/setenv.sh automatically if present.
+COPY deploy/app_server/setenv.sh /var/lib/tomcat8/bin/setenv.sh
+RUN chown tomcat8:tomcat8 /var/lib/tomcat8/bin/setenv.sh && \
+	chmod 750 /var/lib/tomcat8/bin/setenv.sh
+
 # Tomcat's own scratch/temp directory (used e.g. by commons-fileupload to
 # buffer multipart uploads to disk) isn't created by this stripped-down
 # package install.

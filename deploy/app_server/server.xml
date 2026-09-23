@@ -68,10 +68,10 @@
          APR (HTTP/AJP) Connector: /docs/apr.html
          Define a non-SSL/TLS HTTP/1.1 Connector on port 8080
     -->
-    <Connector port="8080" protocol="HTTP/1.1"
+    <Connector port="${catalina.http.port}" protocol="HTTP/1.1"
                connectionTimeout="20000"
                URIEncoding="UTF-8"
-               redirectPort="8443" />
+               redirectPort="${catalina.https.port}" />
     <!-- A "Connector" using the shared thread pool-->
     <!--
     <Connector executor="tomcatThreadPool"
@@ -84,7 +84,7 @@
          style configuration. When using the APR/native implementation, the
          OpenSSL style configuration is required as described in the APR/native
          documentation -->
-    <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+    <Connector port="${catalina.https.port}" protocol="org.apache.coyote.http11.Http11NioProtocol"
                maxThreads="150" SSLEnabled="true" scheme="https" secure="true"
                clientAuth="false" sslProtocol="TLS"
                keystoreFile="/etc/tomcat8/ssl/keystore.jks"

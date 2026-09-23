@@ -19,12 +19,15 @@ services:
     privileged: true
     links:
       - db
+    environment:
+      APP_HTTP_PORT: ${APP_HTTP_PORT:-8080}
+      APP_HTTPS_PORT: ${APP_HTTPS_PORT:-8443}
     expose:
-      - 8080
-      - 8443
+      - "${APP_HTTP_PORT:-8080}"
+      - "${APP_HTTPS_PORT:-8443}"
     ports:
-      - "18080:8080"
-      - "18443:8443"
+      - "${APP_HOST_HTTP_PORT:-18080}:${APP_HTTP_PORT:-8080}"
+      - "${APP_HOST_HTTPS_PORT:-18443}:${APP_HTTPS_PORT:-8443}"
     volumes:
       - h2o_app_logs:/hermes_home/logs
       - h2o_app_repository:/hermes_home/repository
@@ -43,12 +46,15 @@ services:
     privileged: true
     links:
       - db2:db
+    environment:
+      APP_HTTP_PORT: ${APP2_HTTP_PORT:-8080}
+      APP_HTTPS_PORT: ${APP2_HTTPS_PORT:-8443}
     expose:
-      - 8080
-      - 8443
+      - "${APP2_HTTP_PORT:-8080}"
+      - "${APP2_HTTPS_PORT:-8443}"
     ports:
-      - "28080:8080"
-      - "28443:8443"
+      - "${APP2_HOST_HTTP_PORT:-28080}:${APP2_HTTP_PORT:-8080}"
+      - "${APP2_HOST_HTTPS_PORT:-28443}:${APP2_HTTPS_PORT:-8443}"
     volumes:
       - h2o_app2_logs:/hermes_home/logs
       - h2o_app2_repository:/hermes_home/repository
