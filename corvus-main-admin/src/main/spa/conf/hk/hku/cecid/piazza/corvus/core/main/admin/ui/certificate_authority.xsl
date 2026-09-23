@@ -122,5 +122,63 @@
   </xsl:for-each>
 </table>
 
+<br/>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <h3>Trusted External CAs</h3>
+    <div class="stat-row"><span class="label">Total Trusted CAs</span><span class="value big"><xsl:value-of select="count(trusted_cas/ca)" /></span></div>
+  </div>
+</div>
+
+<span style="font-size:13px; color:var(--text-soft);">
+  Importing an external CA's root certificate here lets revocation checking validate partner
+  certificates that CA issued (not just this gateway's own certs and its internal CA's above)
+  -- it does not affect signature verification or encryption, only OCSP/CRL revocation status.
+</span>
+
+<xsl:if test="count(trusted_cas/ca) &gt; 0">
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tr>
+    <th>Subject</th>
+    <th>Expires</th>
+    <th>Fingerprint (SHA-1)</th>
+    <th></th>
+  </tr>
+  <xsl:for-each select="trusted_cas/ca">
+  <tr>
+    <td style="font-size:12px;"><xsl:value-of select="./subject" /></td>
+    <td><xsl:value-of select="./not_after" /></td>
+    <td style="font-size:11px; font-family:monospace;"><xsl:value-of select="./fingerprint" /></td>
+    <td>
+      <form method="post" action="ca" style="display:inline;" onSubmit="return confirm('Remove this trusted CA?');">
+        <input type="hidden" name="action" value="delete_trusted_ca" />
+        <input type="hidden" name="fingerprint"><xsl:attribute name="value"><xsl:value-of select="./fingerprint" /></xsl:attribute></input>
+        <input type="submit" value="Remove" />
+      </form>
+    </td>
+  </tr>
+  </xsl:for-each>
+</table>
+<br/>
+</xsl:if>
+
+<form name="importTrustedCaForm" method="post" action="ca">
+<input type="hidden" name="action" value="import_trusted_ca" />
+<table border="0" cellpadding="2" cellspacing="2" width="100%">
+  <tr>
+    <th colspan="2" align="left">Import External CA Root Certificate</th>
+  </tr>
+  <tr>
+    <td width="40%">Certificate (PEM)<br/><small><font color="gray">Paste a "CERTIFICATE" PEM block for the CA's root cert</font></small></td>
+    <td width="60%"><textarea name="trusted_ca_pem" rows="10" style="width:100%; font-family:monospace; font-size:12px;"></textarea></td>
+  </tr>
+  <tr>
+    <td width="40%"></td>
+    <td width="60%"><br/><input type="Submit" value="Import CA Certificate" /><br/></td>
+  </tr>
+</table>
+</form>
+
 </xsl:template>
 </xsl:stylesheet>

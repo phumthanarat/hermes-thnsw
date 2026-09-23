@@ -10,8 +10,10 @@ import java.security.cert.PKIXParameters;
 import java.security.cert.PKIXRevocationChecker;
 import java.security.cert.TrustAnchor;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 
 /**
  * RevocationChecker checks whether an X509Certificate has been revoked, via
@@ -70,15 +72,25 @@ public class RevocationChecker {
      */
     private static final String INTERNAL_CA_CERT_PATH = "/hermes_home/ca-cert.pem";
 
+    /**
+     * Directory an admin's imported external CA root certificates (see
+     * corvus-main-admin's Certificate Authority page, "Trusted External
+     * CAs") are published to, one .pem file each -- same rationale as
+     * {@link #INTERNAL_CA_CERT_PATH}: a shared file location rather than a
+     * Java API, to avoid a layering inversion.
+     */
+    private static final String TRUSTED_CAS_DIR = "/hermes_home/trusted-cas";
+
     private RevocationChecker() {
     }
 
     /**
      * Checks revocation of {@code cert} using whatever trust anchor can be
-     * established for it: itself, if self-signed, or this gateway's own
-     * internal CA, if that CA issued it. Returns {@link Result#NOT_CHECKABLE}
-     * for a certificate issued by any other (external) CA, since no anchor
-     * is available to validate the chain against.
+     * established for it: itself, if self-signed; this gateway's own
+     * internal CA, if that CA issued it; or an admin-imported external CA
+     * root certificate whose subject matches the issuer. Returns {@link
+     * Result#NOT_CHECKABLE} if none of those apply, since no anchor is
+     * available to validate the chain against.
      */
     public static Result checkRevocation(X509Certificate cert) {
         if (cert == null) {
@@ -87,16 +99,41 @@ public class RevocationChecker {
         if (cert.getSubjectX500Principal().equals(cert.getIssuerX500Principal())) {
             return checkRevocation(cert, cert);
         }
-        X509Certificate internalCa = loadInternalCaCert();
+
+        X509Certificate internalCa = loadCertFile(new File(INTERNAL_CA_CERT_PATH));
         if (internalCa != null && cert.getIssuerX500Principal().equals(internalCa.getSubjectX500Principal())) {
             return checkRevocation(cert, internalCa);
         }
+
+        List trustedCas = loadTrustedCaCerts();
+        for (int i = 0; i < trustedCas.size(); i++) {
+            X509Certificate trustedCa = (X509Certificate) trustedCas.get(i);
+            if (cert.getIssuerX500Principal().equals(trustedCa.getSubjectX500Principal())) {
+                return checkRevocation(cert, trustedCa);
+            }
+        }
+
         return Result.NOT_CHECKABLE;
     }
 
-    private static X509Certificate loadInternalCaCert() {
-        File file = new File(INTERNAL_CA_CERT_PATH);
-        if (!file.exists()) {
+    private static List loadTrustedCaCerts() {
+        List certs = new ArrayList();
+        File dir = new File(TRUSTED_CAS_DIR);
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return certs;
+        }
+        for (int i = 0; i < files.length; i++) {
+            X509Certificate cert = loadCertFile(files[i]);
+            if (cert != null) {
+                certs.add(cert);
+            }
+        }
+        return certs;
+    }
+
+    private static X509Certificate loadCertFile(File file) {
+        if (!file.exists() || !file.isFile()) {
             return null;
         }
         FileInputStream in = null;

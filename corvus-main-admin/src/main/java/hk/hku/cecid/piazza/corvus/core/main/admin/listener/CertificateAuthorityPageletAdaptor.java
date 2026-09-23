@@ -1,7 +1,13 @@
 package hk.hku.cecid.piazza.corvus.core.main.admin.listener;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.security.MessageDigest;
+import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
@@ -58,12 +64,101 @@ public class CertificateAuthorityPageletAdaptor extends AdminPageletAdaptor {
                 handleQuickIssue(request, dom);
             } else if ("revoke_cert".equalsIgnoreCase(action)) {
                 handleRevokeCert(request);
+            } else if ("import_trusted_ca".equalsIgnoreCase(action)) {
+                handleImportTrustedCa(request);
+            } else if ("delete_trusted_ca".equalsIgnoreCase(action)) {
+                handleDeleteTrustedCa(request);
             }
         }
 
         appendIssuedCerts(dom);
+        appendTrustedCas(dom);
 
         return dom.getSource();
+    }
+
+    private static final String TRUSTED_CAS_DIR = "/hermes_home/trusted-cas";
+
+    /**
+     * Imports a pasted external CA root certificate (e.g. a real-world CA
+     * like DigiCert, or a partner's own internal CA) as a trust anchor, so
+     * {@link hk.hku.cecid.piazza.commons.security.RevocationChecker} can
+     * validate revocation for partner certificates that CA issued -- not
+     * just this gateway's own certs and its internal CA's. Stored as a
+     * plain .pem file named by the cert's SHA-1 fingerprint under
+     * hermes_home/trusted-cas, the same shared-file mechanism
+     * CertificateAuthority uses to publish its own cert.
+     */
+    private void handleImportTrustedCa(HttpServletRequest request) {
+        String pem = request.getParameter("trusted_ca_pem");
+        if (pem == null || pem.trim().length() == 0) {
+            request.setAttribute(ATTR_MESSAGE, "Paste a CA root certificate (PEM) to import");
+            return;
+        }
+        try {
+            X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X.509")
+                    .generateCertificate(new ByteArrayInputStream(pem.getBytes("UTF-8")));
+
+            MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+            byte[] fingerprint = sha1.digest(cert.getEncoded());
+            StringBuilder hex = new StringBuilder();
+            for (int i = 0; i < fingerprint.length; i++) {
+                hex.append(String.format("%02x", new Object[] { new Byte(fingerprint[i]) }));
+            }
+
+            File dir = new File(TRUSTED_CAS_DIR);
+            dir.mkdirs();
+            File out = new File(dir, hex.toString() + ".pem");
+            FileOutputStream fos = new FileOutputStream(out);
+            fos.write(pem.getBytes("UTF-8"));
+            fos.close();
+
+            request.setAttribute(ATTR_MESSAGE, "Imported CA '" + cert.getSubjectX500Principal().getName()
+                    + "' as a trust anchor for revocation checking");
+        } catch (Exception e) {
+            request.setAttribute(ATTR_MESSAGE, "Unable to import CA certificate: " + e.getMessage());
+        }
+    }
+
+    private void handleDeleteTrustedCa(HttpServletRequest request) {
+        String fingerprint = request.getParameter("fingerprint");
+        if (fingerprint == null || fingerprint.indexOf('/') >= 0 || fingerprint.indexOf("..") >= 0) {
+            return;
+        }
+        File file = new File(TRUSTED_CAS_DIR, fingerprint + ".pem");
+        if (file.exists()) {
+            file.delete();
+            request.setAttribute(ATTR_MESSAGE, "Removed trusted CA " + fingerprint);
+        }
+    }
+
+    private void appendTrustedCas(PropertyTree dom) {
+        File dir = new File(TRUSTED_CAS_DIR);
+        File[] files = dir.listFiles();
+        if (files == null) {
+            return;
+        }
+        int i = 0;
+        for (int f = 0; f < files.length; f++) {
+            if (!files[f].getName().endsWith(".pem")) {
+                continue;
+            }
+            try {
+                FileInputStream in = new FileInputStream(files[f]);
+                X509Certificate cert = (X509Certificate) CertificateFactory.getInstance("X.509")
+                        .generateCertificate(in);
+                in.close();
+
+                i++;
+                String prefix = "trusted_cas/ca[" + i + "]";
+                String fingerprint = files[f].getName().substring(0, files[f].getName().length() - 4);
+                dom.setProperty(prefix + "/fingerprint", fingerprint);
+                dom.setProperty(prefix + "/subject", cert.getSubjectX500Principal().getName());
+                dom.setProperty(prefix + "/not_after", DATE_FORMAT.format(cert.getNotAfter()));
+            } catch (Exception e) {
+                // Skip an unreadable file rather than fail the whole page.
+            }
+        }
     }
 
     private String crlUrl(HttpServletRequest request) {
