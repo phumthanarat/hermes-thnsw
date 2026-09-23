@@ -40,6 +40,11 @@
 		<parameter name="center" value="sfrm.message_history"/>
 	</extension>
 
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Repository Adaptor">
+		<parameter name="class" value="hk.hku.cecid.edi.sfrm.admin.listener.RepositoryAdaptor"/>
+		<parameter name="context" value="/sfrm/repository"/>
+	</extension>
+
 	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="File Polling Pagelet Adaptor">
 		<parameter name="class" value="hk.hku.cecid.edi.sfrm.admin.listener.FilePollingPageletAdaptor"/>
 		<parameter name="context" value="/port/file_polling"/>

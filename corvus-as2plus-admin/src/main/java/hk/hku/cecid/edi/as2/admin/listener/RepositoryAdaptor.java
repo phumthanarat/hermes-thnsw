@@ -33,6 +33,7 @@ public class RepositoryAdaptor extends HttpRequestAdaptor {
         try {
             String messageId = request.getParameter("message_id");
             String messageBox = request.getParameter("message_box");
+            boolean view = "view".equalsIgnoreCase(request.getParameter("mode"));
             if (request.getParameter("is_download_receipt") != null) {
                 if (request.getParameter("is_download_receipt")
                         .equalsIgnoreCase("true")) {
@@ -62,10 +63,18 @@ public class RepositoryAdaptor extends HttpRequestAdaptor {
             repositoryDAOData.setMessageBox(messageBox);
             if (repositoryDAO.retrieve(repositoryDAOData)) {
                 response.setCharacterEncoding(null);
-                response.setContentType("application/download");
-                response.setHeader("Content-Disposition",
-                        "attachment;filename=\""
-                                + repositoryDAOData.getMessageId() + ".as2\"");
+                if (view) {
+                    // The stored content is the raw MIME wire message
+                    // (S/MIME headers wrapping the payload), not bare XML,
+                    // so text/plain displays it inline without a browser's
+                    // XML parser rejecting it for not starting with '<'.
+                    response.setContentType("text/plain; charset=UTF-8");
+                } else {
+                    response.setContentType("application/download");
+                    response.setHeader("Content-Disposition",
+                            "attachment;filename=\""
+                                    + repositoryDAOData.getMessageId() + ".as2\"");
+                }
 
                 ByteArrayInputStream bis = new ByteArrayInputStream(
                         repositoryDAOData.getContent());

@@ -18,6 +18,17 @@ function viewMessage(mid, mbox, receipt) {
     document.viewMessageForm.message_id.value=mid;
     document.viewMessageForm.message_box.value=mbox;
     document.viewMessageForm.is_download_receipt.value=receipt;
+    document.viewMessageForm.mode.value='';
+    document.viewMessageForm.target='';
+    document.viewMessageForm.submit();
+}
+
+function viewMessageInline(mid, mbox, receipt) {
+    document.viewMessageForm.message_id.value=mid;
+    document.viewMessageForm.message_box.value=mbox;
+    document.viewMessageForm.is_download_receipt.value=receipt;
+    document.viewMessageForm.mode.value='view';
+    document.viewMessageForm.target='_blank';
     document.viewMessageForm.submit();
 }
 
@@ -297,8 +308,9 @@ function showResendAsNewMessage(pmid) {
 <form name="viewMessageForm" method="post" action="./repository">
     <input type="hidden" name="message_id" value="" />
     <input type="hidden" name="message_box" value="" />
-    <input type="hidden" name="is_download_receipt" value="" />    
-</form> 
+    <input type="hidden" name="is_download_receipt" value="" />
+    <input type="hidden" name="mode" value="" />
+</form>
 
 <form name="showMDNForm" method="post" action="./message_history">
     <input type="hidden" name="original_message_id" value="" />
@@ -328,6 +340,10 @@ function showResendAsNewMessage(pmid) {
     <td width="40%"><b>Message ID</b></td>
     <td width="60%"><b>
         <xsl:value-of select="./message_id" />
+        <a href="#1" title="Click here to view the raw message content in a new tab" style="margin-left:8px;">
+            <xsl:attribute name="onclick">viewMessageInline('<xsl:value-of select="./message_id" />','<xsl:value-of select="./message_box" />','false')</xsl:attribute>
+            View
+        </a>
         <a href="#1" title="Click here to download the message" style="margin-left:8px;">
             <xsl:attribute name="onclick">viewMessage('<xsl:value-of select="./message_id" />','<xsl:value-of select="./message_box" />','false')</xsl:attribute>
             &#8659; Download
