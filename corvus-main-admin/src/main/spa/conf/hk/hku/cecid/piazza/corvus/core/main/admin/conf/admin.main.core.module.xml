@@ -11,4 +11,21 @@
 		<parameter name="config" value="hk/hku/cecid/piazza/corvus/core/main/admin/conf/admin.properties.xml" />
 	</component>
 
+	<component id="daofactory" name="Corvus Main DAO Factory">
+		<class>hk.hku.cecid.piazza.commons.dao.ds.SimpleDSDAOFactory</class>
+		<parameter name="driver" value="@listenerPortsDriverClass@" />
+		<parameter name="url" value="@listenerPortsConnStr@" />
+		<parameter name="username" value="@listenerPortsuser@" />
+		<parameter name="password" value="@listenerPortspw@" />
+		<parameter name="pooling" value="true" />
+		<parameter name="maxActive" value="10" />
+		<parameter name="maxIdle" value="5" />
+		<parameter name="maxWait" value="-1" />
+		<parameter name="testOnBorrow" value="true" />
+		<parameter name="testOnReturn" value="false" />
+		<parameter name="testWhileIdle" value="false" />
+		<parameter name="validationQuery" value="@listenerPortsValidationQuery@" />
+		<parameter name="config" value="@listenerPortsDAOFile@" />
+	</component>
+
 </module>

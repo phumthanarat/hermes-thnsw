@@ -22,3 +22,8 @@ CREATE DATABASE apikeys;
 GRANT ALL ON apikeys.* to 'corvus'@'%' IDENTIFIED BY 'corvus';
 USE apikeys;
 SOURCE /build/apikeys.sql
+
+CREATE DATABASE listenerports;
+GRANT ALL ON listenerports.* to 'corvus'@'%' IDENTIFIED BY 'corvus';
+USE listenerports;
+SOURCE /build/listenerports.sql

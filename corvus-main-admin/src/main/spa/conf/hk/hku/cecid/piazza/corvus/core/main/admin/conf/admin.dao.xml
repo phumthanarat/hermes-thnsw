@@ -1,0 +1,21 @@
+<dao-config>
+	<dao name="hk.hku.cecid.piazza.corvus.core.main.admin.dao.ListenerPortDAO">
+		<class>hk.hku.cecid.piazza.corvus.core.main.admin.dao.ds.ListenerPortDSDAO</class>
+		<parameter name="table" value="listener_port" />
+		<parameter name="key" value="port_id" />
+		<parameter type="column" name="port_id" value="portId" />
+		<parameter type="column" name="name" value="name" />
+		<parameter type="column" name="bind_address" value="bindAddress" />
+		<parameter type="column" name="port" value="port" />
+		<parameter type="column" name="use_tls" value="useTls" />
+		<parameter type="column" name="target_service" value="targetService" />
+		<parameter type="column" name="is_disabled" value="isDisabled" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="created_timestamp" value="createdTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM listener_port WHERE port_id = ?" />
+		<parameter type="finder" name="find_all_ports" value="SELECT * FROM listener_port ORDER BY port_id" />
+		<parameter type="finder" name="find_enabled_ports" value="SELECT * FROM listener_port WHERE is_disabled = false ORDER BY port_id" />
+	</dao>
+</dao-config>

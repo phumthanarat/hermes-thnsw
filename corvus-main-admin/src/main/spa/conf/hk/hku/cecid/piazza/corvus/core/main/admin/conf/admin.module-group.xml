@@ -7,4 +7,8 @@
 		<class>hk.hku.cecid.piazza.commons.module.ActiveTaskModule</class>
 		<descriptor>hk/hku/cecid/piazza/corvus/core/main/admin/conf/admin.main.scheduler.module.xml</descriptor>
 	</module>
+	<module>
+		<class>hk.hku.cecid.piazza.commons.module.ActiveTaskModule</class>
+		<descriptor>hk/hku/cecid/piazza/corvus/core/main/admin/conf/admin.listener.ports.module.xml</descriptor>
+	</module>
 </module-group>

@@ -102,6 +102,12 @@ RUN find /tmp/h -name *.xml -exec sed -i 's/@apiuser@/corvus/g' {} \;
 RUN find /tmp/h -name *.xml -exec sed -i 's/@apipw@/corvus/g' {} \;
 RUN find /tmp/h -name *.xml -exec sed -i 's/@apiValidationQuery@/SELECT now\(\)/g' {} \;
 RUN find /tmp/h -name *.xml -exec sed -i 's/@apiDAOFile@/hk\/hku\/cecid\/hermes\/api\/conf\/api.dao.xml/g' {} \;
+RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsDriverClass@/com\.mysql\.jdbc\.Driver/g' {} \;
+RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsConnStr@/jdbc:mysql:\/\/db\/listenerports?useSSL=false/g' {} \;
+RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsuser@/corvus/g' {} \;
+RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortspw@/corvus/g' {} \;
+RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsValidationQuery@/SELECT now\(\)/g' {} \;
+RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsDAOFile@/hk\/hku\/cecid\/piazza\/corvus\/core\/main\/admin\/conf\/admin.dao.xml/g' {} \;
 RUN mv /tmp/h/plugins /hermes_home
 RUN mv /tmp/h/sample /hermes_home
 RUN mv /tmp/h/sql /hermes_home

@@ -29,5 +29,10 @@
       <description>The JVM Properties</description>
       <link>/admin/main/jvmprops</link>
     </tab>
+    <tab id="listenerports">
+      <name>Listener Ports</name>
+      <description>Additional dedicated HTTP(S) listener ports for partners</description>
+      <link>/admin/main/listenerports</link>
+    </tab>
   </tabs>
 </module>
