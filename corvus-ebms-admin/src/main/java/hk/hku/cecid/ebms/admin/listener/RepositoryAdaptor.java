@@ -47,11 +47,13 @@ public class RepositoryAdaptor extends HttpRequestAdaptor {
             if (hasExist) {
                 response.setCharacterEncoding(null);
                 if (view) {
-                    // Rendered inline in the browser (a new tab) rather
-                    // than forced to disk -- same raw ebXML/SOAP content
-                    // the "Download" link saves, just without
-                    // Content-Disposition: attachment.
-                    response.setContentType("text/xml");
+                    // The stored content is the raw MIME multipart wire
+                    // message (boundary markers + part headers wrapping the
+                    // SOAP XML, not bare XML), so text/xml makes browsers'
+                    // XML parsers reject it outright ("Start tag expected,
+                    // '<' not found") since it doesn't begin with '<'.
+                    // text/plain displays it inline, as-is, readably.
+                    response.setContentType("text/plain; charset=UTF-8");
                 } else {
                     response.setContentType("application/download");
                     response.setHeader("Content-Disposition",
