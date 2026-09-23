@@ -30,6 +30,7 @@ import hk.hku.cecid.edi.sfrm.spa.SFRMComponent;
 import hk.hku.cecid.edi.sfrm.spa.SFRMException;
 import hk.hku.cecid.edi.sfrm.spa.SFRMLog;
 import hk.hku.cecid.edi.sfrm.spa.SFRMLogUtil;
+import hk.hku.cecid.piazza.commons.security.RevocationChecker;
 import hk.hku.cecid.edi.sfrm.spa.SFRMProcessor;
 import hk.hku.cecid.edi.sfrm.spa.SFRMProperties;
 
@@ -373,9 +374,13 @@ public class IncomingMessageHandler extends SFRMComponent {
 			} else {
 				try {
 					message.verify(partnershipDVO.getVerifyX509Certificate());
+					if (RevocationChecker.checkRevocation(partnershipDVO.getVerifyX509Certificate())
+							== RevocationChecker.Result.REVOKED) {
+						throw new SFRMException("Verify certificate has been revoked");
+					}
 				} catch (SFRMException e) {
 					SFRMProcessor.getInstance().getLogger().error(
-						SFRMLog.IMH_CALLER + "Unable to verify "  
+						SFRMLog.IMH_CALLER + "Unable to verify "
 							+ message, e);
 					throw e;
 				}

@@ -10,6 +10,7 @@ import hk.hku.cecid.edi.as2.pkg.DispositionNotification;
 import hk.hku.cecid.edi.as2.pkg.DispositionNotificationOption;
 import hk.hku.cecid.edi.as2.pkg.DispositionNotificationOptions;
 import hk.hku.cecid.piazza.commons.security.KeyStoreManager;
+import hk.hku.cecid.piazza.commons.security.RevocationChecker;
 import hk.hku.cecid.piazza.commons.security.SMimeMessage;
 import hk.hku.cecid.piazza.commons.util.Logger;
 
@@ -131,6 +132,12 @@ class IncomingMessage {
                     if (processedMessage.isSigned()) {
                         logger.debug(requestMessage + " is signed");
                         processedMessage = processedMessage.verify(partnership.getEffectiveVerifyCertificate());
+
+                        RevocationChecker.Result revocation =
+                                RevocationChecker.checkRevocation(partnership.getEffectiveVerifyCertificate());
+                        if (revocation == RevocationChecker.Result.REVOKED) {
+                            throw new AS2Exception("Verify certificate has been revoked");
+                        }
                     }
                 }
                 catch (Exception e) {

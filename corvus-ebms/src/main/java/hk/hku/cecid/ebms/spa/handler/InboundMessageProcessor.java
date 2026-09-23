@@ -19,6 +19,7 @@ import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
 import hk.hku.cecid.ebms.spa.listener.EbmsResponse;
 import hk.hku.cecid.ebms.spa.task.AgreementHandler;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
+import hk.hku.cecid.piazza.commons.security.RevocationChecker;
 import hk.hku.cecid.piazza.commons.soap.SOAPRequest;
 
 import java.io.ByteArrayInputStream;
@@ -1552,12 +1553,17 @@ public class InboundMessageProcessor {
             if (!hasSignature) {
                 return true;
             } else {
+                X509Certificate senderCert = findSenderCert(ebxmlRequestMessage);
                 SignatureHandler signatureHandler = MessageServiceHandler
-                        .createSignatureHandler(ebxmlRequestMessage,
-                                findSenderCert(ebxmlRequestMessage));
+                        .createSignatureHandler(ebxmlRequestMessage, senderCert);
                 if (!signatureHandler.verifyByPublicKey()) {
                     EbmsProcessor.core.log
                             .error("Signature verification fail: "
+                                    + ebxmlRequestMessage.getMessageId());
+                    return false;
+                } else if (RevocationChecker.checkRevocation(senderCert) == RevocationChecker.Result.REVOKED) {
+                    EbmsProcessor.core.log
+                            .error("Signature verification cert has been revoked: "
                                     + ebxmlRequestMessage.getMessageId());
                     return false;
                 } else {
