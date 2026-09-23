@@ -7,9 +7,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         tomcat8 \
 	maven \
 	unzip \
-	libmysql-java
+	libmysql-java \
+	tzdata
 ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-amd64
 RUN echo "export JAVA_HOME=$JAVA_HOME" >> /etc/profile
+
+# Log timestamps and message history dates are otherwise UTC (the base
+# image's default), not the deployment's local time. This sets both the OS
+# clock (date, cron) and the JVM's default TimeZone (used when formatting
+# any java.util.Date/java.sql.Timestamp, e.g. log lines and the
+# created_timestamp/time_stamp columns rendered in the admin console) --
+# matched by the same change in deploy/db/Dockerfile so a timestamp written
+# by MySQL's own CURRENT_TIMESTAMP and one formatted by the JVM stay
+# consistent with each other, not just individually "correct".
+ENV TZ=Asia/Bangkok
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Build Hermes
 RUN mkdir -p /build
