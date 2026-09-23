@@ -33,6 +33,7 @@ public class RepositoryAdaptor extends HttpRequestAdaptor {
 
         String messageId = request.getParameter("message_id");
         String messageBox = request.getParameter("message_box");
+        boolean view = "view".equalsIgnoreCase(request.getParameter("mode"));
 
         try {
             RepositoryDAO repositoryDAO = (RepositoryDAO) EbmsProcessor.core.dao
@@ -45,12 +46,19 @@ public class RepositoryAdaptor extends HttpRequestAdaptor {
 
             if (hasExist) {
                 response.setCharacterEncoding(null);
-                response.setContentType("application/download");
-                response
-                        .setHeader("Content-Disposition",
-                                "attachment;filename=\""
-                                        + repositoryDVO.getMessageId()
-                                        + ".ebxml\"");
+                if (view) {
+                    // Rendered inline in the browser (a new tab) rather
+                    // than forced to disk -- same raw ebXML/SOAP content
+                    // the "Download" link saves, just without
+                    // Content-Disposition: attachment.
+                    response.setContentType("text/xml");
+                } else {
+                    response.setContentType("application/download");
+                    response.setHeader("Content-Disposition",
+                            "attachment;filename=\""
+                                    + repositoryDVO.getMessageId()
+                                    + ".ebxml\"");
+                }
 
                 ByteArrayInputStream bis = new ByteArrayInputStream(
                         repositoryDVO.getContent());
