@@ -181,6 +181,10 @@ public class DocumentExportAdaptor extends HttpRequestAdaptor {
 
         final String toPartyId;
 
+        final String fromPartyType;
+
+        final String toPartyType;
+
         final boolean partyIdsKnown;
 
         final String senderUrl;
@@ -190,6 +194,8 @@ public class DocumentExportAdaptor extends HttpRequestAdaptor {
             this.partyIdsKnown = partyIds.from.length() > 0 && partyIds.to.length() > 0;
             this.fromPartyId = partyIds.from.length() > 0 ? partyIds.from : UNKNOWN_FROM_PARTY_ID;
             this.toPartyId = partyIds.to.length() > 0 ? partyIds.to : UNKNOWN_TO_PARTY_ID;
+            this.fromPartyType = partyIds.from.length() > 0 ? partyIds.fromType : CpaPartyIds.DEFAULT_TYPE;
+            this.toPartyType = partyIds.to.length() > 0 ? partyIds.toType : CpaPartyIds.DEFAULT_TYPE;
             this.senderUrl = senderUrl;
         }
 
@@ -313,12 +319,25 @@ public class DocumentExportAdaptor extends HttpRequestAdaptor {
                     + "    <p:action>" + escape(partnership.getAction()) + "</p:action>\n"
                     + "    <p:convId>CONVERSATION_ID</p:convId>\n"
                     + "    <p:fromPartyId>" + escape(fromPartyId) + "</p:fromPartyId>\n"
-                    + "    <p:fromPartyType>string</p:fromPartyType>\n"
+                    + "    <p:fromPartyType>" + escape(fromPartyType) + "</p:fromPartyType>\n"
                     + "    <p:toPartyId>" + escape(toPartyId) + "</p:toPartyId>\n"
-                    + "    <p:toPartyType>string</p:toPartyType>\n"
+                    + "    <p:toPartyType>" + escape(toPartyType) + "</p:toPartyType>\n"
                     + "    <p:refToMessageId></p:refToMessageId>\n"
                     + "  </SOAP-ENV:Body>\n"
                     + "</SOAP-ENV:Envelope>\n";
+        }
+
+        /** One eb:PartyId per comma-separated ID, each with its type. */
+        private String partyIdElements(String ids, String types) {
+            String[] idList = ids.split(",");
+            String[] typeList = types.split(",");
+            StringBuffer out = new StringBuffer();
+            for (int i = 0; i < idList.length; i++) {
+                String type = i < typeList.length ? typeList[i].trim() : CpaPartyIds.DEFAULT_TYPE;
+                out.append("<eb:PartyId eb:type=\"").append(escape(type)).append("\">")
+                        .append(escape(idList[i].trim())).append("</eb:PartyId>");
+            }
+            return out.toString();
         }
 
         String ebxmlMessage() {
@@ -343,8 +362,8 @@ public class DocumentExportAdaptor extends HttpRequestAdaptor {
                     + "                   xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
                     + "  <SOAP-ENV:Header>\n"
                     + "    <eb:MessageHeader SOAP-ENV:mustUnderstand=\"1\" eb:version=\"2.0\">\n"
-                    + "      <eb:From><eb:PartyId eb:type=\"string\">" + escape(fromPartyId) + "</eb:PartyId></eb:From>\n"
-                    + "      <eb:To><eb:PartyId eb:type=\"string\">" + escape(toPartyId) + "</eb:PartyId></eb:To>\n"
+                    + "      <eb:From>" + partyIdElements(fromPartyId, fromPartyType) + "</eb:From>\n"
+                    + "      <eb:To>" + partyIdElements(toPartyId, toPartyType) + "</eb:To>\n"
                     + "      <eb:CPAId>" + escape(partnership.getCpaId()) + "</eb:CPAId>\n"
                     + "      <eb:ConversationId>CONVERSATION_ID</eb:ConversationId>\n"
                     + "      <eb:Service>" + escape(partnership.getService()) + "</eb:Service>\n"

@@ -326,11 +326,16 @@ public class PartnershipPageletAdaptor extends AdminPageletAdaptor {
             }
 
             // Party IDs play no part in routing a Ping (the partnership does),
-            // so identify the sender as the admin console and the target by
+            // but a partner may check them: use the CPA's known ones, else
+            // identify the sender as the admin console and the target by
             // its partnership ID
-            String messageId = PingSender.send(partnershipDVO.getCpaId(),
-                    PingSender.DEFAULT_FROM_PARTY_ID,
-                    partnershipDVO.getPartnershipId(), request);
+            CpaPartyIds known = CpaPartyIds.suggest(partnershipDVO.getCpaId());
+            String messageId = known.from.length() > 0 && known.to.length() > 0
+                    ? PingSender.send(partnershipDVO.getCpaId(), known.from, known.fromType,
+                            known.to, known.toType, request)
+                    : PingSender.send(partnershipDVO.getCpaId(),
+                            PingSender.DEFAULT_FROM_PARTY_ID,
+                            partnershipDVO.getPartnershipId(), request);
 
             // wait for the Pong so the page shows the outcome right away
             Object result = PingSender.awaitResults(

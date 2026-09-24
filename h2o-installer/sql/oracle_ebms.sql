@@ -79,3 +79,14 @@ CREATE TABLE partnership (
 );
 
 CREATE SEQUENCE inbox_order_no_seq;
+
+-- party IDs of each CPA (from the CPA file on upload, or entered by an admin)
+CREATE TABLE cpa_party (
+	cpa_id varchar2(200) NOT NULL,
+	from_party_id varchar2(500),
+	from_party_type varchar2(500),
+	to_party_id varchar2(500),
+	to_party_type varchar2(500),
+	source varchar2(20),
+	PRIMARY KEY (cpa_id)
+);

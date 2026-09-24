@@ -18,8 +18,9 @@
 	  Sends an ebMS Ping to each CPA's partner MSH. A CPA without its own Ping partnership
 	  (Service <code>urn:oasis:names:tc:ebxml-msg:service</code>, Action <code>Ping</code>) uses the
 	  endpoint and security settings of the partnership shown under "Route via".
-	  Party IDs are suggested from the latest message of that CPA; a partner may reject a Ping
-	  whose party IDs don't match its CPA.
+	  Party IDs come from the CPA file (read when it is uploaded), from IDs saved here, or else
+	  from the latest message of that CPA; a partner may reject a Ping whose party IDs don't
+	  match its CPA. Several IDs can be given comma separated.
 	</p>
 
 	<xsl:if test="count(cpa)=0">
@@ -80,6 +81,19 @@
 	            <xsl:attribute name="value"><xsl:value-of select="./to_party_id" /></xsl:attribute>
 	            <xsl:attribute name="placeholder"><xsl:value-of select="./cpa_id" /></xsl:attribute>
 	          </input>
+	          <div style="font-size:11px; color:var(--text-soft); white-space:nowrap;">
+	            <xsl:choose>
+	              <xsl:when test="./party_source='cpa_upload'">From the CPA file</xsl:when>
+	              <xsl:when test="./party_source='admin'">Saved</xsl:when>
+	              <xsl:when test="./party_source='message'">From the latest message</xsl:when>
+	              <xsl:otherwise>Not known yet</xsl:otherwise>
+	            </xsl:choose>
+	            <button type="submit" name="save_parties" style="margin-left:6px; font-size:11px;"
+	                    title="Keep these party IDs as this CPA's defaults">
+	              <xsl:attribute name="value"><xsl:value-of select="./row" /></xsl:attribute>
+	              Save
+	            </button>
+	          </div>
 	        </td>
 	        <td style="font-size:12px;">
 	          <xsl:choose>
@@ -123,6 +137,7 @@
 		if (e.target &amp;&amp; e.target.type === 'submit') { pingButton = e.target; }
 	});
 	function confirmPing(form) {
+		if (pingButton &amp;&amp; pingButton.name === 'save_parties') { return true; }
 		var count = 1;
 		if (pingButton &amp;&amp; pingButton.name === 'ping_selected') {
 			count = 0;

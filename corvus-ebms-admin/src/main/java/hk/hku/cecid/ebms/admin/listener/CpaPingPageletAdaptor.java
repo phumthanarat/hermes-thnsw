@@ -36,7 +36,11 @@ public class CpaPingPageletAdaptor extends AdminPageletAdaptor {
 
         try {
             if ("POST".equalsIgnoreCase(request.getMethod())) {
-                sendPings(request);
+                if (request.getParameter("save_parties") != null) {
+                    saveParties(request);
+                } else {
+                    sendPings(request);
+                }
             }
             listCpas(dom);
         } catch (Exception e) {
@@ -44,6 +48,28 @@ public class CpaPingPageletAdaptor extends AdminPageletAdaptor {
             throw new RuntimeException("Unable to process the ping page request", e);
         }
         return dom.getSource();
+    }
+
+    /** Records the party IDs typed on a row as that CPA's defaults. */
+    private void saveParties(HttpServletRequest request) {
+        String row = request.getParameter("save_parties");
+        String cpaId = trim(request.getParameter("cpa_" + row));
+        String from = trim(request.getParameter("from_" + row));
+        String to = trim(request.getParameter("to_" + row));
+        if (cpaId == null || from == null || to == null) {
+            request.setAttribute(ATTR_MESSAGE, "Enter both From and To Party IDs to save them");
+            return;
+        }
+        try {
+            CpaPartyIds.save(cpaId, from, to);
+            request.setAttribute(ATTR_MESSAGE, "Party IDs saved for " + cpaId
+                    + ": From " + from + ", To " + to);
+        } catch (IllegalArgumentException e) {
+            request.setAttribute(ATTR_MESSAGE, "Not saved: " + e.getMessage());
+        } catch (DAOException e) {
+            EbmsProcessor.core.log.error("Unable to save the party IDs of CPA " + cpaId, e);
+            request.setAttribute(ATTR_MESSAGE, "Unable to save the party IDs: " + e.getMessage());
+        }
     }
 
     /**
@@ -76,9 +102,20 @@ public class CpaPingPageletAdaptor extends AdminPageletAdaptor {
             String fromPartyId = trim(request.getParameter("from_" + row));
             String toPartyId = trim(request.getParameter("to_" + row));
             try {
-                pingIds.add(PingSender.send(cpaId,
-                        fromPartyId == null ? PingSender.DEFAULT_FROM_PARTY_ID : fromPartyId,
-                        toPartyId == null ? cpaId : toPartyId, request));
+                // the recorded types apply while the IDs are the recorded ones
+                CpaPartyIds known = CpaPartyIds.suggest(cpaId);
+                String from = fromPartyId == null ? PingSender.DEFAULT_FROM_PARTY_ID : fromPartyId;
+                String to = toPartyId == null ? cpaId : toPartyId;
+                String fromType = from.equals(known.from) ? known.fromType : null;
+                String toType = to.equals(known.to) ? known.toType : null;
+                String problem = CpaPartyIds.checkTypes(from, fromType);
+                if (problem == null) {
+                    problem = CpaPartyIds.checkTypes(to, toType);
+                }
+                if (problem != null) {
+                    throw new IllegalArgumentException(problem);
+                }
+                pingIds.add(PingSender.send(cpaId, from, fromType, to, toType, request));
             } catch (Exception e) {
                 EbmsProcessor.core.log.error("Unable to send Ping to CPA: " + cpaId, e);
                 failures.append(failures.length() == 0 ? "" : "; ")
@@ -175,6 +212,7 @@ public class CpaPingPageletAdaptor extends AdminPageletAdaptor {
         CpaPartyIds partyIds = CpaPartyIds.suggest(cpaId);
         dom.setProperty(prefix + "from_party_id", partyIds.from);
         dom.setProperty(prefix + "to_party_id", partyIds.to);
+        dom.setProperty(prefix + "party_source", partyIds.source);
     }
 
     /**

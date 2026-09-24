@@ -5,6 +5,8 @@
 package hk.hku.cecid.ebms.admin.listener;
 
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
+import hk.hku.cecid.ebms.spa.dao.CpaPartyDAO;
+import hk.hku.cecid.ebms.spa.dao.CpaPartyDVO;
 import hk.hku.cecid.ebms.spa.dao.PartnershipDAO;
 import hk.hku.cecid.ebms.spa.dao.PartnershipDVO;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
@@ -205,14 +207,64 @@ public class AgreementUploadPageletAdaptor extends AdminPageletAdaptor {
                         "There is no party name match in the cpa");
             }
 
-            addPartnerships(cpa, dom);
+            // saved before the partnerships, so re-uploading a CPA whose
+            // partnerships already exist still records its party IDs
+            String partyIds = savePartyIds(cpa, partyNames);
+            try {
+                addPartnerships(cpa, dom);
+            } catch (Exception e) {
+                EbmsProcessor.core.log
+                        .error("Error in processing upploaded xml", e);
+                return e.getMessage() + " (" + partyIds + ")";
+            }
+            return partyIds;
 
         } catch (Exception e) {
             EbmsProcessor.core.log
                     .error("Error in processing upploaded xml", e);
             return new String(e.getMessage());
         }
-        return null;
+    }
+
+    /**
+     * Records the CPA's party IDs for the admin pages that build messages
+     * (Ping, Documents export). The selected party is the one the
+     * partnerships deliver to, i.e. the partner (To); the other is this
+     * gateway (From).
+     * 
+     * @return a summary for the page.
+     */
+    private String savePartyIds(PropertyTree cpa, String[] partyNames)
+            throws DAOException {
+        String selfName = selectedPartyName.equals(partyNames[0]) ? partyNames[1]
+                : partyNames[0];
+        String cpaId = cpa.getProperty(X_COLLABORATION_PROTOCOL_AGREEMENT
+                + "/@" + X_TP_NAMESPACE + "cpaid");
+
+        CpaPartyDAO dao = (CpaPartyDAO) EbmsProcessor.core.dao
+                .createDAO(CpaPartyDAO.class);
+        CpaPartyDVO parties = (CpaPartyDVO) dao.createDVO();
+        parties.setCpaId(cpaId);
+        parties.setFromPartyId(partyIdsOf(cpa, selfName, ""));
+        parties.setFromPartyType(partyIdsOf(cpa, selfName, "/@" + X_TP_NAMESPACE + "type"));
+        parties.setToPartyId(partyIdsOf(cpa, selectedPartyName, ""));
+        parties.setToPartyType(partyIdsOf(cpa, selectedPartyName, "/@" + X_TP_NAMESPACE + "type"));
+        parties.setSource(CpaPartyDVO.SOURCE_CPA_UPLOAD);
+        dao.save(parties);
+        return "Party IDs saved: From " + parties.getFromPartyId() + ", To "
+                + parties.getToPartyId();
+    }
+
+    /** The party's PartyId values (or their attribute), comma separated. */
+    private String partyIdsOf(PropertyTree cpa, String partyName, String attribute) {
+        String[] values = cpa.getProperties(X_COLLABORATION_PROTOCOL_AGREEMENT
+                + X_PARTY_INFO + "[@" + X_TP_NAMESPACE + "partyName='"
+                + partyName + "']/" + X_TP_NAMESPACE + "PartyId" + attribute);
+        StringBuffer joined = new StringBuffer();
+        for (int i = 0; i < values.length; i++) {
+            joined.append(i == 0 ? "" : ",").append(values[i].trim());
+        }
+        return joined.toString();
     }
 
     // XPath constants

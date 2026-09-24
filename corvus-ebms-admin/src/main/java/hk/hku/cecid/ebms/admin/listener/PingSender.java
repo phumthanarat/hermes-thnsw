@@ -40,14 +40,41 @@ class PingSender {
      */
     static String send(String cpaId, String fromPartyId, String toPartyId,
             HttpServletRequest request) throws Exception {
+        return send(cpaId, fromPartyId, null, toPartyId, null, request);
+    }
+
+    /**
+     * @param fromPartyId one or more party IDs, comma separated
+     * @param fromPartyType their types, one per ID, or null to leave untyped
+     * @return the ID of the Ping message submitted to the outbox.
+     */
+    static String send(String cpaId, String fromPartyId, String fromPartyType,
+            String toPartyId, String toPartyType, HttpServletRequest request)
+            throws Exception {
         String messageId = Generator.generateMessageID();
         EbxmlMessage ebxmlMessage = new EbxmlMessage();
         MessageHeader msgHeader = ebxmlMessage.addMessageHeader();
         msgHeader.setCpaId(cpaId);
         msgHeader.setService(MessageClassifier.SERVICE);
         msgHeader.setAction(MessageClassifier.ACTION_PING);
-        msgHeader.addFromPartyId(fromPartyId);
-        msgHeader.addToPartyId(toPartyId);
+        String[] fromIds = fromPartyId.split(",");
+        String[] fromTypes = fromPartyType == null ? new String[0] : fromPartyType.split(",");
+        for (int i = 0; i < fromIds.length; i++) {
+            if (i < fromTypes.length) {
+                msgHeader.addFromPartyId(fromIds[i].trim(), fromTypes[i].trim());
+            } else {
+                msgHeader.addFromPartyId(fromIds[i].trim());
+            }
+        }
+        String[] toIds = toPartyId.split(",");
+        String[] toTypes = toPartyType == null ? new String[0] : toPartyType.split(",");
+        for (int i = 0; i < toIds.length; i++) {
+            if (i < toTypes.length) {
+                msgHeader.addToPartyId(toIds[i].trim(), toTypes[i].trim());
+            } else {
+                msgHeader.addToPartyId(toIds[i].trim());
+            }
+        }
         msgHeader.setConversationId(messageId);
         msgHeader.setMessageId(messageId);
         msgHeader.setTimestamp(EbmsUtility.getCurrentUTCDateTime());

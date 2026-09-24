@@ -3,3 +3,5 @@ DROP TABLE repository;
 DROP TABLE outbox;
 DROP TABLE inbox;
 DROP TABLE partnership;
+
+DROP TABLE cpa_party;

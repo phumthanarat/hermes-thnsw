@@ -186,4 +186,15 @@
 		<class>hk.hku.cecid.ebms.spa.dao.MessageServerDataSourceDAO</class>			
 	</dao>
 
+	<dao name="hk.hku.cecid.ebms.spa.dao.CpaPartyDAO">
+		<class>hk.hku.cecid.ebms.spa.dao.CpaPartyDataSourceDAO</class>
+		<parameter name="table" value="cpa_party" />
+		<parameter name="key" value="cpa_id" />
+		<parameter type="column" name="cpa_id" value="cpaId" />
+		<parameter type="column" name="from_party_id" value="fromPartyId" />
+		<parameter type="column" name="from_party_type" value="fromPartyType" />
+		<parameter type="column" name="to_party_id" value="toPartyId" />
+		<parameter type="column" name="to_party_type" value="toPartyType" />
+		<parameter type="column" name="source" value="source" />
+	</dao>
 </dao-config>
