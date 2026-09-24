@@ -28,6 +28,9 @@ services:
       APP_ADMIN_USER: ${APP_ADMIN_USER:-admin}
       APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:-}
       APP_ADMIN_RESET: ${APP_ADMIN_RESET:-false}
+      # admin console over HTTPS only, redirected to the host's HTTPS port
+      APP_ADMIN_REQUIRE_HTTPS: ${APP_ADMIN_REQUIRE_HTTPS:-true}
+      APP_ADMIN_HTTPS_PORT: ${APP_HOST_HTTPS_PORT:-18443}
       APP_API_USER: ${APP_API_USER:-apiuser}
       APP_API_PASSWORD: ${APP_API_PASSWORD:-}
     expose:
@@ -60,6 +63,8 @@ services:
       APP_ADMIN_USER: ${APP2_ADMIN_USER:-admin}
       APP_ADMIN_PASSWORD: ${APP2_ADMIN_PASSWORD:-}
       APP_ADMIN_RESET: ${APP2_ADMIN_RESET:-false}
+      APP_ADMIN_REQUIRE_HTTPS: ${APP2_ADMIN_REQUIRE_HTTPS:-true}
+      APP_ADMIN_HTTPS_PORT: ${APP2_HOST_HTTPS_PORT:-28443}
       APP_API_USER: ${APP2_API_USER:-apiuser}
       APP_API_PASSWORD: ${APP2_API_PASSWORD:-}
     expose:

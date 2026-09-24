@@ -85,6 +85,11 @@
     <url-pattern>/api/*</url-pattern>
   </servlet-mapping>
 
+  <session-config>
+    <!-- minutes of inactivity before an admin console session ends -->
+    <session-timeout>30</session-timeout>
+  </session-config>
+
   <!-- Welcome Files -->
   <welcome-file-list id="WelcomeFileList">
     <welcome-file>index.html</welcome-file>
@@ -111,26 +116,13 @@
        the api_key table (see HermesAbstractApiListener), so that keys can
        be issued/revoked without a Tomcat user/redeploy. -->
 
-  <security-constraint>
-    <web-resource-collection>
-      <web-resource-name>Restricted Admin resources</web-resource-name>
-      <description>No description</description>
-      <url-pattern>/admin/*</url-pattern>
-    </web-resource-collection>
-    <!-- access levels: admin (and legacy corvus) = Administrator, operator,
-         viewer; what each may do is enforced by the admin console's
-         AccessControlFilter -->
-    <auth-constraint>
-      <role-name>admin</role-name>
-      <role-name>corvus</role-name>
-      <role-name>operator</role-name>
-      <role-name>viewer</role-name>
-    </auth-constraint>
-    <user-data-constraint>
-      <description>No description</description>
-      <transport-guarantee>NONE</transport-guarantee>
-    </user-data-constraint>
-  </security-constraint>
+  <!-- /admin/* is not gated by container-managed Basic Auth: the admin
+       console has its own sign-in page (/login.jsp, checked against the same
+       realm with request.login) and session, and its AccessControlFilter
+       sends unauthenticated requests there and enforces the access levels
+       (admin/corvus = Administrator, operator, viewer). Scripts may still
+       send Basic credentials to /admin/*. The login-config below stays
+       BASIC for /httpd/auth/*, which back-end systems call. -->
 
   <login-config>
     <auth-method>BASIC</auth-method>

@@ -93,6 +93,10 @@ hr { display: none; }
   background: var(--bg);
 }
 
+.app-header .header-links { display: flex; align-items: center; gap: 14px; font-size: 13px; }
+.app-header .header-links a { color: var(--text-soft); text-decoration: none; }
+.app-header .header-links a:hover { color: var(--text); text-decoration: underline; }
+
 .app-body {
   flex: 1;
   display: flex;
@@ -458,7 +462,11 @@ pre {
         <span class="tagline">The Universal Messaging Gateway</span>
       </div>
     </div>
-    <span class="console-label">Administration Console</span>
+    <nav class="header-links">
+      <span class="console-label">Administration Console</span>
+      <a href="/corvus/admin/access/account">My Account</a>
+      <a href="/corvus/logout.jsp">Sign out</a>
+    </nav>
   </header>
 
   <div class="app-body">

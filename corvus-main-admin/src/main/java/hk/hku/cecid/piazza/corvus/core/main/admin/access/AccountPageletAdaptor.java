@@ -18,7 +18,7 @@ public class AccountPageletAdaptor extends AdminPageletAdaptor {
         PropertyTree dom = new PropertyTree();
         dom.setProperty("/account", "");
         String username = request.getUserPrincipal().getName();
-        boolean mustChange = request.isUserInRole(AccessLevel.ROLE_PASSWORD_CHANGE_REQUIRED);
+        boolean mustChange = mustChange(request, username);
         boolean changed = false;
         try {
             if ("post".equalsIgnoreCase(request.getMethod())) {
@@ -26,8 +26,7 @@ public class AccountPageletAdaptor extends AdminPageletAdaptor {
                     changePassword(request, username);
                     changed = true;
                     mustChange = false;
-                    request.setAttribute(ATTR_MESSAGE, "Password changed. Your browser will ask you"
-                            + " to sign in again: use the new password.");
+                    request.setAttribute(ATTR_MESSAGE, "Password changed. Use it the next time you sign in.");
                 } catch (IllegalArgumentException e) {
                     request.setAttribute(ATTR_MESSAGE, "Not changed: " + e.getMessage());
                 }
@@ -37,12 +36,29 @@ public class AccountPageletAdaptor extends AdminPageletAdaptor {
             request.setAttribute(ATTR_MESSAGE, "Unable to change the password: " + e.getMessage());
         }
         AccessLevel level = AccessLevel.of(request);
+        try {
+            UserStore.User user = new UserStore().find(username);
+            if (user != null) {
+                level = user.level();
+            }
+        } catch (Exception e) {
+            // keep the level the container reports
+        }
         dom.setProperty("username", username);
         dom.setProperty("level", level == null ? "" : level.label);
         dom.setProperty("must_change", String.valueOf(mustChange));
         dom.setProperty("changed", String.valueOf(changed));
         dom.setProperty("min_password_length", String.valueOf(UsersPageletAdaptor.MIN_PASSWORD_LENGTH));
         return dom.getSource();
+    }
+
+    private static boolean mustChange(HttpServletRequest request, String username) {
+        try {
+            UserStore.User user = new UserStore().find(username);
+            return user != null && user.mustChangePassword();
+        } catch (Exception e) {
+            return request.isUserInRole(AccessLevel.ROLE_PASSWORD_CHANGE_REQUIRED);
+        }
     }
 
     private void changePassword(HttpServletRequest request, String username) throws Exception {
