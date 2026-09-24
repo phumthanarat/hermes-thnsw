@@ -11,3 +11,6 @@
 
 # local deployment secrets (APP_ADMIN_PASSWORD etc.)
 deploy/.env
+
+# local backups made by the backup service
+deploy/backups/

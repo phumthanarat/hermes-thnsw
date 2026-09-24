@@ -1,25 +1,96 @@
-version: "2"
+# Hermes: two gateways (app/db and app2/db2, e.g. for loopback tests) plus
+# test FTP/SFTP/mail servers. First run deploy/setup.sh, which writes .env
+# with the database passwords; then "docker compose up -d".
+
+x-db: &db
+  image: h2o/db:2.0
+  environment: &db-env
+    MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?run deploy/setup.sh first}
+    HERMES_DB_USER: ${HERMES_DB_USER:-hermes}
+    HERMES_DB_PASSWORD: ${HERMES_DB_PASSWORD:?run deploy/setup.sh first}
+  healthcheck:
+    test: ["CMD-SHELL", "mysqladmin ping -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+    interval: 5s
+    timeout: 5s
+    retries: 60
+
+# brings an existing database up to the current schema (runs, then exits)
+x-db-upgrade: &db-upgrade
+  image: h2o/db:2.0
+  entrypoint: ["/usr/local/bin/hermes-upgrade.sh"]
+  restart: "no"
+
+# daily backups into deploy/backups (hermes-backup.sh)
+x-backup: &backup
+  image: h2o/db:2.0
+  entrypoint: ["/usr/local/bin/hermes-backup.sh"]
+  restart: unless-stopped
+
+x-app: &app
+  image: h2o/app:2.0
+  privileged: true
+  restart: unless-stopped
+
+x-app-env: &app-env
+  HERMES_DB_USER: ${HERMES_DB_USER:-hermes}
+  HERMES_DB_PASSWORD: ${HERMES_DB_PASSWORD:?run deploy/setup.sh first}
+  # HTTPS certificate: generated for APP_TLS_HOSTNAME on first start, then
+  # replaceable from the admin console (Main > HTTPS Certificate) or with
+  # PEM files named by APP_TLS_CERT_FILE / APP_TLS_KEY_FILE (mount them)
+  APP_TLS_HOSTNAME: ${APP_TLS_HOSTNAME:-localhost}
+  APP_TLS_CERT_FILE: ${APP_TLS_CERT_FILE:-}
+  APP_TLS_KEY_FILE: ${APP_TLS_KEY_FILE:-}
+
 services:
   db:
+    <<: *db
     container_name: h2o_db
-    image: h2o/db:1.0
     build:
       context: ..
       dockerfile: deploy/db/Dockerfile
-    environment:
-      MYSQL_ROOT_PASSWORD: h2o_db_password
     volumes:
-      - h2o_db_data:/var/lib/mysql
+      - h2o_mysql_data:/var/lib/mysql
+
+  db-upgrade:
+    <<: *db-upgrade
+    container_name: h2o_db_upgrade
+    environment:
+      <<: *db-env
+      DB_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backup:
+    <<: *backup
+    container_name: h2o_backup
+    environment:
+      <<: *db-env
+      DB_HOST: db
+      BACKUP_NAME: hermes-app
+      BACKUP_TIME: ${BACKUP_TIME:-01:30}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+      BACKUP_UID: ${BACKUP_UID:-}
+      BACKUP_GID: ${BACKUP_GID:-}
+    volumes:
+      - ./backups:/backups
+      - h2o_app_repository:/app-repository:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
   app:
+    <<: *app
     container_name: h2o_app
-    image: h2o/app:1.0
     build:
       context: ..
       dockerfile: deploy/app_server/Dockerfile
-    privileged: true
-    links:
-      - db
+    depends_on:
+      db-upgrade:
+        condition: service_completed_successfully
     environment:
+      <<: *app-env
+      HERMES_DB_HOST: db
       APP_HTTP_PORT: ${APP_HTTP_PORT:-8080}
       APP_HTTPS_PORT: ${APP_HTTPS_PORT:-8443}
       # first start: administrator admin/admin, to be changed at first login;
@@ -44,20 +115,48 @@ services:
       - h2o_app_repository:/hermes_home/repository
 
   db2:
+    <<: *db
     container_name: h2o_db2
-    image: h2o/db:1.0
-    environment:
-      MYSQL_ROOT_PASSWORD: h2o_db_password
     volumes:
-      - h2o_db2_data:/var/lib/mysql
+      - h2o_mysql2_data:/var/lib/mysql
+
+  db2-upgrade:
+    <<: *db-upgrade
+    container_name: h2o_db2_upgrade
+    environment:
+      <<: *db-env
+      DB_HOST: db2
+    depends_on:
+      db2:
+        condition: service_healthy
+
+  backup2:
+    <<: *backup
+    container_name: h2o_backup2
+    environment:
+      <<: *db-env
+      DB_HOST: db2
+      BACKUP_NAME: hermes-app2
+      BACKUP_TIME: ${BACKUP_TIME:-01:30}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+      BACKUP_UID: ${BACKUP_UID:-}
+      BACKUP_GID: ${BACKUP_GID:-}
+    volumes:
+      - ./backups:/backups
+      - h2o_app2_repository:/app-repository:ro
+    depends_on:
+      db2:
+        condition: service_healthy
 
   app2:
+    <<: *app
     container_name: h2o_app2
-    image: h2o/app:1.0
-    privileged: true
-    links:
-      - db2:db
+    depends_on:
+      db2-upgrade:
+        condition: service_completed_successfully
     environment:
+      <<: *app-env
+      HERMES_DB_HOST: db2
       APP_HTTP_PORT: ${APP2_HTTP_PORT:-8080}
       APP_HTTPS_PORT: ${APP2_HTTPS_PORT:-8443}
       APP_ADMIN_USER: ${APP2_ADMIN_USER:-admin}
@@ -130,10 +229,12 @@ services:
       - 3025
 
 volumes:
-  h2o_db_data:
+  # MySQL 8.4 data (the old 5.7 volumes h2o_db_data / h2o_db2_data are no
+  # longer used; move their data with tools/migrate-from-mysql57.sh)
+  h2o_mysql_data:
+  h2o_mysql2_data:
   h2o_app_logs:
   h2o_app_repository:
-  h2o_db2_data:
   h2o_app2_logs:
   h2o_app2_repository:
   h2o_testftp_data:

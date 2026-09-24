@@ -1,139 +1,50 @@
-FROM ubuntu:16.04
-MAINTAINER patrick.yee@gmail.com
+# Hermes application server: Apache Tomcat 9 on Java 21 (Ubuntu 24.04).
+# Built from the repository root (docker-compose: context "..").
 
-# Update System
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	openjdk-8-jdk-headless \
-        tomcat8 \
-	maven \
-	unzip \
-	libmysql-java \
-	tzdata
-ENV JAVA_HOME /usr/lib/jvm/java-1.8.0-openjdk-amd64
-RUN echo "export JAVA_HOME=$JAVA_HOME" >> /etc/profile
-
-# Log timestamps and message history dates are otherwise UTC (the base
-# image's default), not the deployment's local time. This sets both the OS
-# clock (date, cron) and the JVM's default TimeZone (used when formatting
-# any java.util.Date/java.sql.Timestamp, e.g. log lines and the
-# created_timestamp/time_stamp columns rendered in the admin console) --
-# matched by the same change in deploy/db/Dockerfile so a timestamp written
-# by MySQL's own CURRENT_TIMESTAMP and one formatted by the JVM stay
-# consistent with each other, not just individually "correct".
-ENV TZ=Asia/Bangkok
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
-# Build Hermes
-RUN mkdir -p /build
+# ---- build ----------------------------------------------------------------
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /build
 COPY . /build
-RUN cd /build && \
-	mvn pre-clean && \
-	mvn compile && \
-	mvn package -Dmaven.test.skip=true
+RUN mvn -B -q pre-clean \
+ && mvn -B -q package -Dmaven.test.skip=true
+# JDBC driver for MySQL 8.x
+RUN mvn -B -q dependency:copy -Dartifact=com.mysql:mysql-connector-j:8.4.0 -DoutputDirectory=/build/jdbc
+RUN mkdir -p /hermes \
+ && cd /hermes && jar xf /build/target/hermes2_bin.zip \
+ && rm -rf plugins/corvus-as2-admin
 
-# Set up Tomcat
-COPY deploy/app_server/tomcat-users.xml /etc/tomcat8/tomcat-users.xml
-RUN chown root:tomcat8 /etc/tomcat8/tomcat-users.xml
-RUN chmod 640 /etc/tomcat8/tomcat-users.xml
+COPY deploy/app_server/configure-plugins.sh /usr/local/bin/configure-plugins.sh
+RUN sh /usr/local/bin/configure-plugins.sh /hermes
 
-# Set up HTTPS: generate a self-signed keystore for the Tomcat connector, and
-# also trust that same cert in the JVM's own truststore so Hermes' outbound
-# HTTP client (used for AS2/EbMS delivery, e.g. in loopback testing) accepts
-# the self-signed certificate on outbound HTTPS requests back to itself.
-RUN mkdir -p /etc/tomcat8/ssl && \
-	keytool -genkeypair -alias corvus -keyalg RSA -keysize 2048 -validity 3650 \
-		-keystore /etc/tomcat8/ssl/keystore.jks -storepass corvusssl -keypass corvusssl \
-		-dname "CN=localhost, OU=Corvus, O=Hermes2, L=HK, ST=HK, C=HK" \
-		-ext "SAN=dns:localhost,ip:127.0.0.1" && \
-	keytool -exportcert -alias corvus -keystore /etc/tomcat8/ssl/keystore.jks -storepass corvusssl \
-		-file /etc/tomcat8/ssl/corvus.cer && \
-	keytool -importcert -noprompt -alias corvus \
-		-keystore "$JAVA_HOME/jre/lib/security/cacerts" -storepass changeit \
-		-file /etc/tomcat8/ssl/corvus.cer && \
-	chown -R tomcat8:tomcat8 /etc/tomcat8/ssl && \
-	chmod 640 /etc/tomcat8/ssl/keystore.jks
+# ---- runtime --------------------------------------------------------------
+FROM tomcat:9.0-jre21-temurin-noble
+LABEL maintainer="patrick.yee@gmail.com"
 
-COPY deploy/app_server/server.xml /var/lib/tomcat8/conf/server.xml
-RUN chown tomcat8:tomcat8 /var/lib/tomcat8/conf/server.xml
+# Log timestamps and message history dates follow the deployment's local
+# time; deploy/db uses the same zone so MySQL's CURRENT_TIMESTAMP and the
+# JVM's formatting agree.
+ENV TZ=Asia/Bangkok
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends tzdata openssl \
+ && rm -rf /var/lib/apt/lists/* \
+ && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# server.xml's Connector ports are ${catalina.http.port}/${catalina.https.port}
-# system properties, not hardcoded numbers, so the listening ports can be
-# changed per-container via APP_HTTP_PORT/APP_HTTPS_PORT without an image
-# rebuild. catalina.sh sources bin/setenv.sh automatically if present.
-COPY deploy/app_server/setenv.sh /var/lib/tomcat8/bin/setenv.sh
-COPY deploy/app_server/admin-credentials.sh /var/lib/tomcat8/bin/admin-credentials.sh
-RUN chown tomcat8:tomcat8 /var/lib/tomcat8/bin/setenv.sh /var/lib/tomcat8/bin/admin-credentials.sh && \
-	chmod 750 /var/lib/tomcat8/bin/setenv.sh /var/lib/tomcat8/bin/admin-credentials.sh
+# Only the Hermes web application
+RUN rm -rf $CATALINA_HOME/webapps/* $CATALINA_HOME/webapps.dist
+COPY --from=build /hermes/webapps/corvus $CATALINA_HOME/webapps/corvus
+COPY --from=build /build/jdbc/mysql-connector-j-8.4.0.jar $CATALINA_HOME/webapps/corvus/WEB-INF/lib/
 
-# Tomcat's own scratch/temp directory (used e.g. by commons-fileupload to
-# buffer multipart uploads to disk) isn't created by this stripped-down
-# package install.
-RUN mkdir -p /var/lib/tomcat8/temp && chown tomcat8:tomcat8 /var/lib/tomcat8/temp
+# Plugins are installed from this pristine copy at every start, with the
+# database settings filled in (hermes-config.sh)
+COPY --from=build /hermes/plugins /opt/hermes/plugins
+COPY --from=build /hermes/sample /hermes_home/sample
+COPY --from=build /hermes/sql /hermes_home/sql
+RUN mkdir -p /hermes_home/logs /hermes_home/repository
 
-# Deploy Hermes
-RUN rm -rf /hermes_home
-RUN mkdir -p /hermes_home/logs
-RUN mkdir -p /tmp/h
-RUN cd /tmp/h && unzip /build/target/hermes2_bin.zip
-RUN rm -rf /tmp/h/plugins/corvus-as2-admin
+COPY deploy/app_server/server.xml $CATALINA_HOME/conf/server.xml
+COPY deploy/app_server/tomcat-users.xml $CATALINA_HOME/conf/tomcat-users.xml
+COPY --chmod=750 deploy/app_server/setenv.sh deploy/app_server/hermes-config.sh \
+     deploy/app_server/hermes-tls.sh deploy/app_server/admin-credentials.sh $CATALINA_HOME/bin/
 
-# corvus-as2plus shares the same @as2...@ placeholder tokens as corvus-as2, but
-# needs its own database (its DAO schema differs from as2's). Substitute its
-# tokens first, scoped to its own plugin directory, before the global as2
-# substitution below runs on everything else.
-RUN find /tmp/h/plugins/corvus-as2plus -name *.xml -exec sed -i 's/@as2DriverClass@/com\.mysql\.jdbc\.Driver/g' {} \;
-RUN find /tmp/h/plugins/corvus-as2plus -name *.xml -exec sed -i 's/@as2ConnStr@/jdbc:mysql:\/\/db\/as2plus?useSSL=false/g' {} \;
-RUN find /tmp/h/plugins/corvus-as2plus -name *.xml -exec sed -i 's/@as2user@/corvus/g' {} \;
-RUN find /tmp/h/plugins/corvus-as2plus -name *.xml -exec sed -i 's/@as2pw@/corvus/g' {} \;
-RUN find /tmp/h/plugins/corvus-as2plus -name *.xml -exec sed -i 's/@as2ValidationQuery@/SELECT now\(\)/g' {} \;
-RUN find /tmp/h/plugins/corvus-as2plus -name *.xml -exec sed -i 's/@as2DAOFile@/hk\/hku\/cecid\/edi\/as2\/conf\/as2.dao.xml/g' {} \;
-
-RUN find /tmp/h -name *.xml -exec sed -i 's/@h2\.home@/\/hermes_home/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@as2PageletAdaptor@/hk\.hku\.cecid\.edi\.as2\.admin\.listener\.MessageHistoryPageletAdaptor/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@as2DriverClass@/com\.mysql\.jdbc\.Driver/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@as2ConnStr@/jdbc:mysql:\/\/db\/as2?useSSL=false/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@as2user@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@as2pw@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@as2ValidationQuery@/SELECT now\(\)/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@as2DAOFile@/hk\/hku\/cecid\/edi\/as2\/conf\/as2.dao.xml/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@ebmsPageletAdaptor@/hk\.hku\.cecid\.ebms\.admin\.listener\.MessageHistoryPageletAdaptor/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@ebmsDriverClass@/com\.mysql\.jdbc\.Driver/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@ebmsConnStr@/jdbc:mysql:\/\/db\/ebms?useSSL=false/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@ebmsuser@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@ebmspw@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@ebmsValidationQuery@/SELECT now\(\)/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@ebmsDAOFile@/hk\/hku\/cecid\/ebms\/spa\/conf\/ebms.mysql.dao.xml/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@sfrmDriverClass@/com\.mysql\.jdbc\.Driver/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@sfrmConnStr@/jdbc:mysql:\/\/db\/sfrm?useSSL=false/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@sfrmuser@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@sfrmpw@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@sfrmValidationQuery@/SELECT now\(\)/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@sfrmDAOFile@/sfrm.dao.xml/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@apiDriverClass@/com\.mysql\.jdbc\.Driver/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@apiConnStr@/jdbc:mysql:\/\/db\/apikeys?useSSL=false/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@apiuser@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@apipw@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@apiValidationQuery@/SELECT now\(\)/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@apiDAOFile@/hk\/hku\/cecid\/hermes\/api\/conf\/api.dao.xml/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsDriverClass@/com\.mysql\.jdbc\.Driver/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsConnStr@/jdbc:mysql:\/\/db\/listenerports?useSSL=false/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsuser@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortspw@/corvus/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsValidationQuery@/SELECT now\(\)/g' {} \;
-RUN find /tmp/h -name *.xml -exec sed -i 's/@listenerPortsDAOFile@/hk\/hku\/cecid\/piazza\/corvus\/core\/main\/admin\/conf\/admin.dao.xml/g' {} \;
-RUN mv /tmp/h/plugins /hermes_home
-RUN mv /tmp/h/sample /hermes_home
-RUN mv /tmp/h/sql /hermes_home
-RUN cp /usr/share/java/mysql.jar /tmp/h/webapps/corvus/WEB-INF/lib/
-RUN rm -rf /var/lib/tomcat8/webapps/corvus
-RUN mv /tmp/h/webapps/corvus /var/lib/tomcat8/webapps
-RUN chown -R tomcat8:tomcat8 /var/lib/tomcat8/webapps/corvus
-RUN chown -R tomcat8:tomcat8 /hermes_home
-RUN rm -rf /tmp/h
-RUN rm -rf /build
-
-ENV CATALINA_BASE /var/lib/tomcat8
 EXPOSE 8080 8443
-
-# CMD service tomcat8 start && tail -f /var/log/tomcat8/catalina.out
-CMD ["/usr/share/tomcat8/bin/catalina.sh", "run"]
+CMD ["catalina.sh", "run"]

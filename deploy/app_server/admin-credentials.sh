@@ -79,6 +79,5 @@ elif [ "$APP_ADMIN_RESET" = "true" ]; then
     echo "admin-credentials: APP_ADMIN_RESET: administrator $user reset" >&2
 fi
 
-chown root:tomcat8 "$TOMCAT_USERS"
-chmod 660 "$TOMCAT_USERS"
+chmod 600 "$TOMCAT_USERS"
 umask 022
