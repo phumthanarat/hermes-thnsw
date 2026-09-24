@@ -1,16 +1,12 @@
 package hk.hku.cecid.ebms.admin.listener;
 
-import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.dao.MessageDAO;
 import hk.hku.cecid.ebms.spa.dao.MessageDVO;
-import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 
-import hk.hku.cecid.piazza.commons.util.PropertyTree;
-import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
-
-import java.util.Iterator;
+import java.sql.Timestamp;
+import java.util.List;
 
 
 /**
@@ -18,13 +14,14 @@ import java.util.Iterator;
  *  
  */
 public class MessageHistoryOraclePageletAdaptor extends MessageHistoryPageletAdaptor {
-	private Iterator findMessageWithPagination(MessageDVO data, MessageDAO messageDAO, int numberOfMessage, int offset,int displayLastInt, boolean isTime) throws DAOException{
-		 if(!isTime){
-			// oracle only
-			return messageDAO.findMessagesByHistory(data, numberOfMessage + offset, offset).iterator();
-		}else{
-			// oracle only            	
-			return messageDAO.findMessagesByTime(displayLastInt,data, numberOfMessage + offset, offset).iterator();
-		}
+	/**
+	 * Oracle's history query pages by ROWNUM: "rownum <= ?" takes the last
+	 * row of the page, so pass offset + page size rather than the page size.
+	 */
+	protected List findMessages(MessageDAO messageDAO, MessageDVO criteria,
+			Timestamp fromTime, Timestamp toTime, int numberOfMessages,
+			int offset) throws DAOException {
+		return messageDAO.findMessagesByHistory(criteria, fromTime, toTime,
+				numberOfMessages + offset, offset);
 	}
 }

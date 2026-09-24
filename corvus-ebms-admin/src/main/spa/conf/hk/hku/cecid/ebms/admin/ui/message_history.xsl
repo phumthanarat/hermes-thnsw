@@ -520,17 +520,27 @@ function selectAllMessages(checked) {
   </tr>
   <tr>
     <td width="40%">
-        <input type="checkbox" class="msg-select" style="margin-right:6px;">
-            <xsl:attribute name="data-key"><xsl:value-of select="./message_id" />|<xsl:value-of select="./message_box" /></xsl:attribute>
-        </input>
+        <xsl:choose>
+            <xsl:when test="./status='PD' or ./status='PR'">
+                <input type="checkbox" disabled="disabled" style="margin-right:6px;"
+                       title="Still pending/processing: it can be deleted once it is sent or processed" />
+            </xsl:when>
+            <xsl:otherwise>
+                <input type="checkbox" class="msg-select" style="margin-right:6px;">
+                    <xsl:attribute name="data-key"><xsl:value-of select="./message_id" />|<xsl:value-of select="./message_box" /></xsl:attribute>
+                </input>
+            </xsl:otherwise>
+        </xsl:choose>
         <xsl:value-of select="number(/message_history/search_criteria/offset) + position()" />
     </td>
     <td width="60%" align="right">
+        <xsl:if test="not(./status='PD' or ./status='PR')">
         <a href="#1" style="margin-right:12px; color:var(--danger);" title="Permanently delete this message"
            onclick="deleteMessages([this.getAttribute('data-key')])">
             <xsl:attribute name="data-key"><xsl:value-of select="./message_id" />|<xsl:value-of select="./message_box" /></xsl:attribute>
             Delete
         </a>
+        </xsl:if>
         <a href="#">Top</a>
     </td>
   </tr>

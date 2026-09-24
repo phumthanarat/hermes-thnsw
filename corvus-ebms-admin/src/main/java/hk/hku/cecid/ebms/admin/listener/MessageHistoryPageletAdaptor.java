@@ -198,7 +198,7 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
             messageDVO.setMessageType(messageType);
             messageDVO.setPrimalMessageId(primalMessageId);
 
-			messageIterator = messageDAO.findMessagesByHistory(messageDVO,
+			messageIterator = findMessages(messageDAO, messageDVO,
 					fromTime, toTime, numberOfMessagesInt, offsetInt).iterator();
             dom.setProperty("total_no_of_messages", String.valueOf(messageDAO
                     .findNumberOfMessagesByHistory(messageDVO, fromTime, toTime)));
@@ -341,6 +341,7 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
 
         int deleted = 0;
         StringBuffer failures = new StringBuffer();
+        StringBuffer inProgress = new StringBuffer();
         for (int i = 0; i < keys.length; i++) {
             int separator = keys[i].lastIndexOf('|');
             if (separator <= 0) {
@@ -350,6 +351,13 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
             message.setMessageId(keys[i].substring(0, separator));
             message.setMessageBox(keys[i].substring(separator + 1));
             try {
+                // a message the MSH is still sending or processing would be
+                // left half-handled; it can be deleted once it settles
+                if (messageDAO.findMessage(message) && isInProgress(message.getStatus())) {
+                    inProgress.append(inProgress.length() == 0 ? "" : "; ")
+                            .append(message.getMessageId());
+                    continue;
+                }
                 messageServerDAO.deleteMessage(message);
                 EbmsProcessor.core.log.info("Deleted message from the admin console: "
                         + message.getMessageId() + " (" + message.getMessageBox() + ")");
@@ -362,10 +370,29 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
             }
         }
         String result = "Deleted " + deleted + " message(s)";
+        if (inProgress.length() > 0) {
+            result += ". Not deleted, still pending/processing: " + inProgress;
+        }
         if (failures.length() > 0) {
             result += ". Unable to delete: " + failures;
         }
         request.setAttribute(ATTR_MESSAGE, result);
+    }
+
+    /**
+     * Finds one page of the search result. The Oracle adaptor overrides this
+     * because its query bounds the page by row numbers, not LIMIT/OFFSET.
+     */
+    protected List findMessages(MessageDAO messageDAO, MessageDVO criteria,
+            Timestamp fromTime, Timestamp toTime, int numberOfMessages,
+            int offset) throws DAOException {
+        return messageDAO.findMessagesByHistory(criteria, fromTime, toTime,
+                numberOfMessages, offset);
+    }
+
+    private static boolean isInProgress(String status) {
+        return MessageClassifier.INTERNAL_STATUS_PENDING.equals(status)
+                || MessageClassifier.INTERNAL_STATUS_PROCESSING.equals(status);
     }
 
     private Timestamp parseDateTime(String parameter) {
