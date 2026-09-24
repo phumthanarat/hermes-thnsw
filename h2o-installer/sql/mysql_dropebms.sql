@@ -5,3 +5,5 @@ DROP TABLE inbox;
 DROP TABLE partnership;
 
 DROP TABLE cpa_party;
+
+DROP TABLE housekeeping;

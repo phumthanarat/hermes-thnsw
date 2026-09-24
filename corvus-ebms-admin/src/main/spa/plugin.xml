@@ -79,6 +79,14 @@
 	  <parameter name="center" value="ebms.ping" />
 	</extension>
 	
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Housekeeping Pagelet Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.ebms.admin.listener.HousekeepingPageletAdaptor" />
+	  <parameter name="context" value="/ebms/housekeeping" />
+	  <parameter name="module" value="ebms" />
+	  <parameter name="tab" value="housekeeping" />
+	  <parameter name="center" value="ebms.housekeeping" />
+	</extension>
+	
 	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Change Message Status Pagelet Adaptor">
 	  <parameter name="class" value="hk.hku.cecid.ebms.admin.listener.ChangeMessageStatusPageletAdaptor" />
 	  <parameter name="context" value="/ebms/change_message_status" />
@@ -129,6 +137,11 @@
 	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="CPA Ping Pagelet">
 	  <parameter name="id" value="ebms.ping" />
 	  <parameter name="pagelet" value="hk/hku/cecid/ebms/admin/ui/cpa_ping.xsl" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Housekeeping Pagelet">
+	  <parameter name="id" value="ebms.housekeeping" />
+	  <parameter name="pagelet" value="hk/hku/cecid/ebms/admin/ui/housekeeping.xsl" />
 	</extension>
 
 	<extension point="hk.hku.cecid.piazza.corvus.admin.module" name="Piazza Corvus EbMS Admin ">

@@ -24,6 +24,11 @@
       <description>Ping the partner MSH of each CPA</description>
       <link>/admin/ebms/ping</link>
     </tab>
+    <tab id="housekeeping">
+      <name>Housekeeping</name>
+      <description>Delete old messages on a schedule</description>
+      <link>/admin/ebms/housekeeping</link>
+    </tab>
     <tab id="documents">
       <name>Documents</name>
       <description>Document Catalog: what can be sent/received</description>

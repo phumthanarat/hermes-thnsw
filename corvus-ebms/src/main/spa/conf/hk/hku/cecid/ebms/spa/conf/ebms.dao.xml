@@ -174,4 +174,18 @@
 		<parameter type="column" name="to_party_type" value="toPartyType" />
 		<parameter type="column" name="source" value="source" />
 	</dao>
+	<dao name="hk.hku.cecid.ebms.spa.dao.HousekeepingDAO">
+		<class>hk.hku.cecid.ebms.spa.dao.HousekeepingDataSourceDAO</class>
+		<parameter name="table" value="housekeeping" />
+		<parameter name="key" value="id" />
+		<parameter type="column" name="id" value="id" />
+		<parameter type="column" name="enabled" value="enabled" />
+		<parameter type="column" name="retention_days" value="retentionDays" />
+		<parameter type="column" name="run_time" value="runTime" />
+		<parameter type="column" name="message_box" value="messageBox" />
+		<parameter type="column" name="message_types" value="messageTypes" />
+		<parameter type="column" name="statuses" value="statuses" />
+		<parameter type="column" name="last_run" value="lastRun" />
+		<parameter type="column" name="last_result" value="lastResult" />
+	</dao>
 </dao-config>

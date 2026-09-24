@@ -90,3 +90,17 @@ CREATE TABLE cpa_party (
 	source varchar(20),
 	PRIMARY KEY (cpa_id)
 );
+
+-- settings and last outcome of the scheduled deletion of old messages (one row)
+CREATE TABLE housekeeping (
+	id integer NOT NULL,
+	enabled varchar(5),
+	retention_days integer,
+	run_time varchar(5),
+	message_box varchar(10),
+	message_types varchar(500),
+	statuses varchar(100),
+	last_run timestamp,
+	last_result varchar(1000),
+	PRIMARY KEY (id)
+);

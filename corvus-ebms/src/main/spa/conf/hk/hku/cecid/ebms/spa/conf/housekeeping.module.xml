@@ -1,0 +1,6 @@
+<module id="ebms.housekeeping" name="Ebms Plugin" version="1.0">
+    <parameters>
+        <!-- how often to check whether the daily housekeeping run is due -->
+        <parameter name="execution-interval" value="60000" />
+    </parameters>
+</module>

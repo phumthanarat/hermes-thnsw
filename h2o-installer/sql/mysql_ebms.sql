@@ -103,3 +103,17 @@ CREATE TABLE IF NOT EXISTS cpa_party (
 	source varchar(20),
 	PRIMARY KEY (cpa_id)
 )ENGINE=INNODB;
+
+-- settings and last outcome of the scheduled deletion of old messages (one row)
+CREATE TABLE IF NOT EXISTS housekeeping (
+	id int NOT NULL,
+	enabled varchar(5),
+	retention_days int,
+	run_time varchar(5),
+	message_box varchar(10),
+	message_types varchar(500),
+	statuses varchar(100),
+	last_run timestamp NULL,
+	last_result varchar(1000),
+	PRIMARY KEY (id)
+)ENGINE=INNODB;
