@@ -14,7 +14,7 @@
 	    </div>
 
 	    <form enctype='multipart/form-data' name="partnershipForm" method="post" action="partnership">
-	    <input type="hidden" name="request_action" value="change" />
+	    <input type="hidden" name="request_action" id="pshipRequestAction" value="change" />
 	    <input type="hidden" name="selected_partnership_id" id="selectedPartnershipId" value="" />
 	    </form>
 
@@ -47,6 +47,13 @@
 	              <xsl:attribute name="data-pid"><xsl:value-of select="./partnership_id" /></xsl:attribute>
 	              Select
 	            </a>
+	            <xsl:if test="./service='urn:oasis:names:tc:ebxml-msg:service' and ./action_id='Ping'">
+	              <a href="javascript:void(0)" style="margin-left:8px;" title="Send an ebMS Ping through this partnership; the partner answers with a Pong"
+	                 onclick="sendPing(this.getAttribute('data-pid'))">
+	                <xsl:attribute name="data-pid"><xsl:value-of select="./partnership_id" /></xsl:attribute>
+	                Send Ping
+	              </a>
+	            </xsl:if>
 	          </td>
 	        </tr>
 	      </xsl:for-each>
@@ -86,6 +93,13 @@
 
 	<script>
 	function selectPship(id) {
+		document.getElementById('pshipRequestAction').value = 'change';
+		document.getElementById('selectedPartnershipId').value = id;
+		document.partnershipForm.submit();
+	}
+	function sendPing(id) {
+		if (!confirm('Send an ebMS Ping through partnership ' + id + '?')) { return; }
+		document.getElementById('pshipRequestAction').value = 'send_ping';
 		document.getElementById('selectedPartnershipId').value = id;
 		document.partnershipForm.submit();
 	}

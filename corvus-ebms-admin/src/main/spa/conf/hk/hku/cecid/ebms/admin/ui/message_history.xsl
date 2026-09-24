@@ -610,6 +610,12 @@ function showResendAsNewMessage(pmid) {
     <td width="60%"><span class="badge badge-info">Web Service API</span></td>
   </tr>
   </xsl:if>
+  <xsl:if test="./created_via = 'admin_console'">
+  <tr>
+    <td width="40%">Source</td>
+    <td width="60%"><span class="badge badge-info">Admin Console</span></td>
+  </tr>
+  </xsl:if>
   <tr class="col-timestamp">
     <td width="40%">Timestamp</td>
     <td width="60%"><xsl:value-of select="./time_stamp" /></td>

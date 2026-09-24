@@ -1,10 +1,20 @@
 package hk.hku.cecid.ebms.admin.listener;
 
+import hk.hku.cecid.ebms.pkg.EbxmlMessage;
+import hk.hku.cecid.ebms.pkg.MessageHeader;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
+import hk.hku.cecid.ebms.spa.EbmsUtility;
+import hk.hku.cecid.ebms.spa.dao.MessageDAO;
+import hk.hku.cecid.ebms.spa.dao.MessageDVO;
 import hk.hku.cecid.ebms.spa.dao.PartnershipDAO;
 import hk.hku.cecid.ebms.spa.dao.PartnershipDVO;
+import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
+import hk.hku.cecid.ebms.spa.handler.MessageServiceHandler;
+import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.io.IOHandler;
+import hk.hku.cecid.piazza.commons.rest.RestRequest;
+import hk.hku.cecid.piazza.commons.util.Generator;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.commons.util.StringUtilities;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
@@ -35,7 +45,9 @@ import org.apache.commons.fileupload.FileUploadException;
  *  
  */
 public class PartnershipPageletAdaptor extends AdminPageletAdaptor {
-			
+
+    private static final String PING_FROM_PARTY_ID = "hermes-admin";
+
     /*
      * (non-Javadoc)
      * 
@@ -53,7 +65,10 @@ public class PartnershipPageletAdaptor extends AdminPageletAdaptor {
                 Hashtable ht = getHashtable(request);
                 String partnershipId = null;
 
-	            if (((String) ht.get("request_action")).equalsIgnoreCase("change")) {
+	            if (((String) ht.get("request_action")).equalsIgnoreCase("send_ping")) {
+	                partnershipId = (String) ht.get("selected_partnership_id");
+	                sendPing(partnershipId, request);
+	            } else if (((String) ht.get("request_action")).equalsIgnoreCase("change")) {
 	                partnershipId = (String) ht.get("selected_partnership_id");
 	            } else {
 	                partnershipId = (String) ht.get("partnership_id");
@@ -294,6 +309,68 @@ public class PartnershipPageletAdaptor extends AdminPageletAdaptor {
                 request.setAttribute(ATTR_MESSAGE, "Partnership deleted successfully");
             }
 
+        }
+    }
+
+    /**
+     * Sends an ebMS Ping through the given partnership, which must use the
+     * ebMS service namespace and the Ping action. The partner's MSH answers
+     * with a Pong, which shows up in Message History (Message Type: Pong).
+     */
+    private void sendPing(String partnershipId, HttpServletRequest request) {
+        try {
+            PartnershipDAO partnershipDAO = (PartnershipDAO) EbmsProcessor.core.dao
+                    .createDAO(PartnershipDAO.class);
+            PartnershipDVO partnershipDVO = (PartnershipDVO) partnershipDAO
+                    .createDVO();
+            partnershipDVO.setPartnershipId(partnershipId);
+            if (!partnershipDAO.retrieve(partnershipDVO)) {
+                request.setAttribute(ATTR_MESSAGE, "Partnership '" + partnershipId + "' not found");
+                return;
+            }
+            if (!MessageClassifier.SERVICE.equals(partnershipDVO.getService())
+                    || !MessageClassifier.ACTION_PING.equals(partnershipDVO.getAction())) {
+                request.setAttribute(ATTR_MESSAGE, "Send Ping needs a partnership with Service '"
+                        + MessageClassifier.SERVICE + "' and Action '" + MessageClassifier.ACTION_PING + "'");
+                return;
+            }
+
+            String messageId = Generator.generateMessageID();
+            EbxmlMessage ebxmlMessage = new EbxmlMessage();
+            MessageHeader msgHeader = ebxmlMessage.addMessageHeader();
+            msgHeader.setCpaId(partnershipDVO.getCpaId());
+            msgHeader.setService(partnershipDVO.getService());
+            msgHeader.setAction(partnershipDVO.getAction());
+            // Party IDs play no part in routing a Ping (the partnership does),
+            // so identify the sender as the admin console and the target by
+            // its partnership ID
+            msgHeader.addFromPartyId(PING_FROM_PARTY_ID);
+            msgHeader.addToPartyId(partnershipDVO.getPartnershipId());
+            msgHeader.setConversationId(messageId);
+            msgHeader.setMessageId(messageId);
+            msgHeader.setTimestamp(EbmsUtility.getCurrentUTCDateTime());
+
+            // OutboundMessageProcessor only accepts SOAP/WebServices/REST sources;
+            // wrap the admin request the same way the REST send API does
+            EbmsRequest ebmsRequest = new EbmsRequest(new RestRequest(request));
+            ebmsRequest.setMessage(ebxmlMessage);
+            MessageServiceHandler.getInstance().processOutboundMessage(ebmsRequest, null);
+
+            MessageDAO messageDAO = (MessageDAO) EbmsProcessor.core.dao
+                    .createDAO(MessageDAO.class);
+            MessageDVO createdMessage = (MessageDVO) messageDAO.createDVO();
+            createdMessage.setMessageId(messageId);
+            createdMessage.setMessageBox(MessageClassifier.MESSAGE_BOX_OUTBOX);
+            if (messageDAO.findMessage(createdMessage)) {
+                createdMessage.setCreatedVia("admin_console");
+                messageDAO.persist(createdMessage);
+            }
+
+            request.setAttribute(ATTR_MESSAGE, "Ping sent (Message ID: " + messageId
+                    + "). See Message History with Message Type Ping / Pong for the result.");
+        } catch (Exception e) {
+            EbmsProcessor.core.log.error("Unable to send Ping via partnership: " + partnershipId, e);
+            request.setAttribute(ATTR_MESSAGE, "Unable to send Ping: " + e.getMessage());
         }
     }
 
