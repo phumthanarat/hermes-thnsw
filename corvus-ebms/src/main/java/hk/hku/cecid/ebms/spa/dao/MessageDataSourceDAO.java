@@ -296,6 +296,23 @@ public class MessageDataSourceDAO extends DataSourceDAO implements MessageDAO {
      */
     public List findMessagesByHistory(MessageDVO data, int numberOfMessage,
             int offset) throws DAOException {
+        return findMessagesByHistory(data, null, null, numberOfMessage, offset);
+    }
+
+    /**
+     * Find messages order by descending timestamp by different criteria,
+     * limited to messages whose timestamp is within [fromTime, toTime).
+     * 
+     * @param data 				The message data value object carrying query criteria.
+     * @param fromTime 			earliest timestamp (inclusive), or null for no lower bound.
+     * @param toTime 			latest timestamp (exclusive), or null for no upper bound.
+     * @param numberOfMessage 	max no. of message in return.
+     * @param offset 			no. of starting record in return.  
+     * @throws DAOException
+     */
+    public List findMessagesByHistory(MessageDVO data, Timestamp fromTime,
+            Timestamp toTime, int numberOfMessage, int offset)
+            throws DAOException {
     	   	
     	List parameters = new ArrayList();
     	boolean hasSearchCriteria = false;
@@ -342,6 +359,16 @@ public class MessageDataSourceDAO extends DataSourceDAO implements MessageDAO {
     		parameters.add(data.getPrimalMessageId());
     	}
     	
+    	if (fromTime != null) {
+    		sql += " AND " + getFilter("find_message_by_history_filter_time_from");
+    		parameters.add(fromTime);
+    	}
+    	
+    	if (toTime != null) {
+    		sql += " AND " + getFilter("find_message_by_history_filter_time_to");
+    		parameters.add(toTime);
+    	}
+    	
 		sql += " " + getOrder("find_message_by_history_order");
     	parameters.add(new Integer(numberOfMessage));
     	parameters.add(new Integer(offset));
@@ -357,6 +384,20 @@ public class MessageDataSourceDAO extends DataSourceDAO implements MessageDAO {
      */
     public int findNumberOfMessagesByHistory(MessageDVO data)
             throws DAOException {
+        return findNumberOfMessagesByHistory(data, null, null);
+    }
+
+    /**
+     * Find number of messages by different criteria, limited to messages
+     * whose timestamp is within [fromTime, toTime).
+     * 
+     * @param data 			The message data value object carrying query criteria.
+     * @param fromTime 		earliest timestamp (inclusive), or null for no lower bound.
+     * @param toTime 		latest timestamp (exclusive), or null for no upper bound.
+     * @throws DAOException
+     */
+    public int findNumberOfMessagesByHistory(MessageDVO data,
+            Timestamp fromTime, Timestamp toTime) throws DAOException {
         try {
         	List parameters = new ArrayList();        	
         	String sql = super.getFinder("find_number_of_message_by_history");
@@ -401,6 +442,16 @@ public class MessageDataSourceDAO extends DataSourceDAO implements MessageDAO {
         		sql += " AND " + getFilter("find_number_of_message_by_history_filter_primal_message_id");
         		parameters.add(data.getPrimalMessageId());
         	}        	
+
+        	if (fromTime != null) {
+        		sql += " AND " + getFilter("find_number_of_message_by_history_filter_time_from");
+        		parameters.add(fromTime);
+        	}
+
+        	if (toTime != null) {
+        		sql += " AND " + getFilter("find_number_of_message_by_history_filter_time_to");
+        		parameters.add(toTime);
+        	}
 
     		List queryResult = executeRawQuery(sql, parameters.toArray());
             List resultEntry = (List) queryResult.get(0);

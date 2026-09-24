@@ -108,6 +108,8 @@
 		<parameter type="filter" name="find_message_by_history_filter_conv_id" value="conv_id LIKE ?"/>				
 		<parameter type="filter" name="find_message_by_history_filter_status" value="status = ?"/>
 		<parameter type="filter" name="find_message_by_history_filter_primal_message_id" value="primal_message_id LIKE ?"/>
+		<parameter type="filter" name="find_message_by_history_filter_time_from" value="time_stamp &gt;= ?"/>
+		<parameter type="filter" name="find_message_by_history_filter_time_to" value="time_stamp &lt; ?"/>
 		<parameter type="order" name="find_message_by_history_order" value="order by time_stamp desc, message_box asc) a where rownum &lt;= ?) where rnum &gt; ?"/>
 
 		<parameter type="finder" name="find_number_of_message_by_history" value="select count(message_id) from message where message_type LIKE ?" />
@@ -119,6 +121,8 @@
 		<parameter type="filter" name="find_number_of_message_by_history_filter_action" value="action LIKE ?"/>
 		<parameter type="filter" name="find_number_of_message_by_history_filter_conv_id" value="conv_id LIKE ?"/>
 		<parameter type="filter" name="find_number_of_message_by_history_filter_primal_message_id" value="primal_message_id LIKE ?"/>
+		<parameter type="filter" name="find_number_of_message_by_history_filter_time_from" value="time_stamp &gt;= ?"/>
+		<parameter type="filter" name="find_number_of_message_by_history_filter_time_to" value="time_stamp &lt; ?"/>
 		<parameter type="filter" name="find_number_of_message_by_history_filter_status" value="status = ?"/>
 
 		<!-- 

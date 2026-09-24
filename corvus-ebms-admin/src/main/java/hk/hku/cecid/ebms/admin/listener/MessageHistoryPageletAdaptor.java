@@ -8,7 +8,11 @@ import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -60,6 +64,8 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
         boolean isDetail = false;
         boolean isTime = false;
         int displayLastInt = 0;
+        String fromTimeParam = null;
+        String toTimeParam = null;
 
         // get the input parameters
         Iterator messageIterator = null;
@@ -126,8 +132,33 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
             if(displayLast != null){
             	if(!(displayLast.equals(""))){
             		displayLastInt = Integer.valueOf(displayLast).intValue();
-            		isTime = true;
+            		// 0 is what the page echoes back for "All"
+            		isTime = displayLastInt > 0;
             	}
+            }
+
+            // the From/To pickers send "yyyy-MM-ddTHH:mm"; a value that
+            // doesn't parse is ignored rather than failing the search
+            Timestamp fromTime = parseDateTime(request.getParameter("from_time"));
+            Timestamp toTime = parseDateTime(request.getParameter("to_time"));
+            if (fromTime != null) {
+                fromTimeParam = request.getParameter("from_time");
+            }
+            if (toTime != null) {
+                toTimeParam = request.getParameter("to_time");
+                // the picker has minute precision, so "To" includes that
+                // whole minute
+                toTime = new Timestamp(toTime.getTime() + 60 * 1000);
+            }
+            // "Messages for the Last" is just another lower bound, applied
+            // in the query so the total count and paging agree with it
+            if (isTime) {
+                GregorianCalendar calendar = new GregorianCalendar();
+                calendar.add(GregorianCalendar.MONTH, -displayLastInt);
+                Timestamp cutOff = new Timestamp(calendar.getTimeInMillis());
+                if (fromTime == null || cutOff.after(fromTime)) {
+                    fromTime = cutOff;
+                }
             }
 
             String numOfMessages = request.getParameter("num_of_messages");
@@ -162,9 +193,10 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
             messageDVO.setMessageType(messageType);
             messageDVO.setPrimalMessageId(primalMessageId);
 
-			messageIterator = findMessageWithPagination(messageDVO,messageDAO, numberOfMessagesInt, offsetInt,displayLastInt, isTime);
+			messageIterator = messageDAO.findMessagesByHistory(messageDVO,
+					fromTime, toTime, numberOfMessagesInt, offsetInt).iterator();
             dom.setProperty("total_no_of_messages", String.valueOf(messageDAO
-                    .findNumberOfMessagesByHistory(messageDVO)));
+                    .findNumberOfMessagesByHistory(messageDVO, fromTime, toTime)));
         }
 
         // pass the search criteria
@@ -187,6 +219,8 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
         dom.setProperty("search_criteria/num_of_messages", String
                 .valueOf(numberOfMessagesInt));
         dom.setProperty("search_criteria/message_time",String.valueOf(displayLastInt));
+        dom.setProperty("search_criteria/from_time", checkNullAndReturnEmpty(fromTimeParam));
+        dom.setProperty("search_criteria/to_time", checkNullAndReturnEmpty(toTimeParam));
         dom.setProperty("search_criteria/offset", String.valueOf(offsetInt));
         dom.setProperty("search_criteria/is_detail", String.valueOf(isDetail));
         dom.setProperty("search_criteria/primal_message_id", request
@@ -278,13 +312,16 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
         return parameter.replace("_", "\\_").replace("%", "\\%").replace('*', '%');
     }
 
-	private Iterator findMessageWithPagination(MessageDVO data, MessageDAO messageDAO, int numberOfMessage, int offset,int displayLastInt, boolean isTime) throws DAOException{
-		if(!isTime){
-			return messageDAO.findMessagesByHistory(data,
-					numberOfMessage, offset).iterator();
-		}else{
-			return messageDAO.findMessagesByTime(displayLastInt,data,
-					numberOfMessage, offset).iterator();
-		}
-	}
+    private Timestamp parseDateTime(String parameter) {
+        if (parameter == null || parameter.trim().equals("")) {
+            return null;
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+        format.setLenient(false);
+        try {
+            return new Timestamp(format.parse(parameter.trim()).getTime());
+        } catch (ParseException e) {
+            return null;
+        }
+    }
 }

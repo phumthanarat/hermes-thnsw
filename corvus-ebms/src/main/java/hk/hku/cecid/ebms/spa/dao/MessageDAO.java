@@ -1,5 +1,6 @@
 package hk.hku.cecid.ebms.spa.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Date;
 
@@ -61,6 +62,13 @@ public interface MessageDAO extends DAO {
 
     public int findNumberOfMessagesByHistory(MessageDVO data)
             throws DAOException;
+
+    public List findMessagesByHistory(MessageDVO data, Timestamp fromTime,
+            Timestamp toTime, int numberOfMessage, int offset)
+            throws DAOException;
+
+    public int findNumberOfMessagesByHistory(MessageDVO data,
+            Timestamp fromTime, Timestamp toTime) throws DAOException;
     
     // Since H20 01062007
     /**
