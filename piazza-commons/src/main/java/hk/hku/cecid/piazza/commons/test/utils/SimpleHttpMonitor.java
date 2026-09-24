@@ -276,16 +276,18 @@ public class SimpleHttpMonitor implements Runnable
 		
 		PushbackInputStream pbis = new PushbackInputStream(sins);
 		
-		char pc = (char) -1; char c;		
-		while ((c = (char)pbis.read()) != -1)
+		// read() yields an int so that end of stream (-1) is detectable;
+		// cast to char it would never equal -1 and the loop would not end
+		char pc = (char) -1; int c;		
+		while ((c = pbis.read()) != -1)
 		{
 			if (c != '\r'){				
 				pbis.unread(c);
 				this.parseHttpLine(pbis, capouts);
 			}
 			else {
-				pc = c;
-				c = (char) pbis.read();			
+				pc = (char) c;
+				c = pbis.read();			
 				if (c == '\n' && pc == '\r'){
 					capouts.write((int)pc);
 					capouts.write((int)c);
@@ -303,6 +305,7 @@ public class SimpleHttpMonitor implements Runnable
 	{			
 		char pc = (char) -1; 
 		char c;		
+		int read;
 		boolean colonized = false;
 		String name = null; String value = null;
 		
@@ -310,7 +313,8 @@ public class SimpleHttpMonitor implements Runnable
 		int count = 0;
 		char[] cs = new char[len];
 		
-		while ((c = (char)sins.read()) != -1){			
+		while ((read = sins.read()) != -1){			
+			c = (char) read;
 			capouts.write(c);			
 			if (c == '\n' && pc == '\r'){
 				// Get the value
@@ -332,7 +336,10 @@ public class SimpleHttpMonitor implements Runnable
 			cs[count++] = c;
 			// Re-allocate if the buffer is not big enough.
 			if (count == len){
-				char[] ncs = new char[len * 2];
+				// len must grow with the buffer, or the next overflow check
+				// never fires and a line over 256 chars overruns it
+				len *= 2;
+				char[] ncs = new char[len];
 				System.arraycopy(cs, 0, ncs, 0, count);
 				cs = ncs;
 			}
@@ -346,9 +353,8 @@ public class SimpleHttpMonitor implements Runnable
 		throws IOException 
 	{
 		int read = 0;
-		char c;
-		while ( read++ < contentLength ){
-			c = (char)sins.read();
+		int c;
+		while ( read++ < contentLength && (c = sins.read()) != -1 ){
 			capouts.write(c);				
 		}
 	}		
