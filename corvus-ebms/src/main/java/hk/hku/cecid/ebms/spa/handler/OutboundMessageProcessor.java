@@ -38,6 +38,12 @@ public class OutboundMessageProcessor {
 
 	static boolean outboundMessageProcessor_initFlag = false;
 
+	/**
+	 * The createdVia tag of the request being processed on this thread (this
+	 * processor is a singleton), applied to the messages it stores.
+	 */
+	private static final ThreadLocal<String> createdVia = new ThreadLocal<String>();
+
 	public synchronized static OutboundMessageProcessor getInstance() {
 		if (!outboundMessageProcessor_initFlag) {
 			outboundMessageProcessor = new OutboundMessageProcessor();
@@ -54,6 +60,7 @@ public class OutboundMessageProcessor {
 
 		EbxmlMessage ebxmlMsg;
 
+		createdVia.set(request.getCreatedVia());
 		try {
 			ebxmlMsg = request.getMessage();
 
@@ -91,6 +98,8 @@ public class OutboundMessageProcessor {
 			}
 		} catch (Exception e) {
 			throw new MessageServiceHandlerException("Error in processing outgoing message", e);
+		} finally {
+			createdVia.remove();
 		}
 	}
 
@@ -223,6 +232,9 @@ public class OutboundMessageProcessor {
 
 		MessageDVO messageDVO = message.getMessageDVO();
 		messageDVO.setStatus(MessageClassifier.INTERNAL_STATUS_PENDING);
+		if (createdVia.get() != null) {
+			messageDVO.setCreatedVia(createdVia.get());
+		}
 		// update the sequence group
 		int currentMaxSequenceGroup = messageDAO
 				.findMaxSequenceGroupByMessageBoxAndCpa(messageDVO);
@@ -311,6 +323,9 @@ public class OutboundMessageProcessor {
 
 		MessageDVO messageDVO = message.getMessageDVO();
 		messageDVO.setStatus(MessageClassifier.INTERNAL_STATUS_PENDING);
+		if (createdVia.get() != null) {
+			messageDVO.setCreatedVia(createdVia.get());
+		}
 		
 		if (null != primalMsgDVO) {
 			messageDVO.setPrimalMessageId(primalMsgDVO.getMessageId());

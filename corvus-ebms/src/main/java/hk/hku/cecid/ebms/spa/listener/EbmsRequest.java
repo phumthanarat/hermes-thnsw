@@ -11,6 +11,7 @@ public class EbmsRequest {
 
     private Object source = null;
     private EbxmlMessage message = null;
+    private String createdVia = null;
     
     public EbmsRequest() {
         this(null);
@@ -47,5 +48,23 @@ public class EbmsRequest {
      */
     public void setSource(Object source) {
         this.source = source;
+    }
+
+    /**
+     * @return How the message was created (e.g. "webservice_api",
+     *         "admin_console"), stored with the outbound message; null if
+     *         not tagged.
+     */
+    public String getCreatedVia() {
+        return createdVia;
+    }
+
+    /**
+     * @param createdVia How the message was created. It is stored with the
+     *            message when it is first saved, so the outbox task can't
+     *            overwrite it as it could a tag written afterwards.
+     */
+    public void setCreatedVia(String createdVia) {
+        this.createdVia = createdVia;
     }
 }

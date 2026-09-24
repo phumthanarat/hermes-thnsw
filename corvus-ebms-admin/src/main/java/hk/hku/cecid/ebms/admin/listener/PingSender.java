@@ -56,17 +56,8 @@ class PingSender {
         // wrap the admin request the same way the REST send API does
         EbmsRequest ebmsRequest = new EbmsRequest(new RestRequest(request));
         ebmsRequest.setMessage(ebxmlMessage);
+        ebmsRequest.setCreatedVia(CREATED_VIA);
         MessageServiceHandler.getInstance().processOutboundMessage(ebmsRequest, null);
-
-        MessageDAO messageDAO = (MessageDAO) EbmsProcessor.core.dao
-                .createDAO(MessageDAO.class);
-        MessageDVO createdMessage = (MessageDVO) messageDAO.createDVO();
-        createdMessage.setMessageId(messageId);
-        createdMessage.setMessageBox(MessageClassifier.MESSAGE_BOX_OUTBOX);
-        if (messageDAO.findMessage(createdMessage)) {
-            createdMessage.setCreatedVia(CREATED_VIA);
-            messageDAO.persist(createdMessage);
-        }
         return messageId;
     }
 
