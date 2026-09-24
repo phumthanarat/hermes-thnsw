@@ -324,11 +324,62 @@ function showResendAsNewMessage(pmid) {
         </td>
       </tr>
       <tr>
+        <td width="20%">Message Type</td>
+        <td width="30%">
+            <select name="message_type">
+                <xsl:element name="option">
+                    <xsl:attribute name="value"></xsl:attribute>
+                    <xsl:if test="not(/message_history/search_criteria/message_type) or ''=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>Order
+                </xsl:element>
+                <xsl:element name="option">
+                    <xsl:attribute name="value">Ping</xsl:attribute>
+                    <xsl:if test="'Ping'=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>Ping
+                </xsl:element>
+                <xsl:element name="option">
+                    <xsl:attribute name="value">Pong</xsl:attribute>
+                    <xsl:if test="'Pong'=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>Pong
+                </xsl:element>
+                <xsl:element name="option">
+                    <xsl:attribute name="value">Acknowledgement</xsl:attribute>
+                    <xsl:if test="'Acknowledgement'=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>Acknowledgement
+                </xsl:element>
+                <xsl:element name="option">
+                    <xsl:attribute name="value">Error</xsl:attribute>
+                    <xsl:if test="'Error'=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>Error
+                </xsl:element>
+                <xsl:element name="option">
+                    <xsl:attribute name="value">StatusRequest</xsl:attribute>
+                    <xsl:if test="'StatusRequest'=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>StatusRequest
+                </xsl:element>
+                <xsl:element name="option">
+                    <xsl:attribute name="value">StatusResponse</xsl:attribute>
+                    <xsl:if test="'StatusResponse'=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>StatusResponse
+                </xsl:element>
+                <xsl:element name="option">
+                    <xsl:attribute name="value">all</xsl:attribute>
+                    <xsl:if test="'all'=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>All
+                </xsl:element>
+            </select>
+        </td>
         <td width="20%"></td>
-        <td width="30%"></td>
-        <td width="20%"></td>
-        <td width="30%"><input type="Submit" name="action" value="search"/></td>        
-      </tr> 
+        <td width="30%"><input type="Submit" name="action" value="search"/></td>
+      </tr>
     </table>
 </form>
 <!-- search form - end --> 
@@ -349,7 +400,7 @@ function showResendAsNewMessage(pmid) {
     <span>
         <xsl:if test="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages) >= 0">
             <a>
-              <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" />&amp;primal_message_id=<xsl:value-of select="/message_history/search_criteria/primal_message_id"/></xsl:attribute>
+              <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;message_type=<xsl:value-of select="/message_history/search_criteria/message_type" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" />&amp;primal_message_id=<xsl:value-of select="/message_history/search_criteria/primal_message_id"/></xsl:attribute>
               &#8249; Previous Page
             </a>
         </xsl:if>
@@ -358,7 +409,7 @@ function showResendAsNewMessage(pmid) {
         <xsl:if test="(number(/message_history/search_criteria/offset) + number(/message_history/search_criteria/num_of_messages)) != number(/message_history/total_no_of_messages)">
             <xsl:if test="count(message) = number(/message_history/search_criteria/num_of_messages)">
                 <a>
-                  <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) + count(message)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" />&amp;primal_message_id=<xsl:value-of select="/message_history/search_criteria/primal_message_id"/></xsl:attribute>
+                  <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) + count(message)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;message_type=<xsl:value-of select="/message_history/search_criteria/message_type" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" />&amp;primal_message_id=<xsl:value-of select="/message_history/search_criteria/primal_message_id"/></xsl:attribute>
                   Next Page &#8250;
                 </a>
             </xsl:if>
@@ -418,6 +469,10 @@ function showResendAsNewMessage(pmid) {
   <tr>
     <td width="40%"><b>Message Box</b></td>
     <td width="60%"><b><xsl:value-of select="./message_box" /></b></td>
+  </tr>
+  <tr>
+    <td width="40%">Message Type</td>
+    <td width="60%"><xsl:value-of select="./message_type" /></td>
   </tr>
   <xsl:if test="./ref_to_message_id != ''">
       <tr>
@@ -669,7 +724,7 @@ function showResendAsNewMessage(pmid) {
     <span>
         <xsl:if test="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages) >= 0">
             <a>
-              <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" />&amp;primal_message_id=<xsl:value-of select="/message_history/search_criteria/primal_message_id"/></xsl:attribute>
+              <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) - number(/message_history/search_criteria/num_of_messages)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;message_type=<xsl:value-of select="/message_history/search_criteria/message_type" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" />&amp;primal_message_id=<xsl:value-of select="/message_history/search_criteria/primal_message_id"/></xsl:attribute>
               &#8249; Previous Page
             </a>
         </xsl:if>
@@ -678,7 +733,7 @@ function showResendAsNewMessage(pmid) {
         <xsl:if test="(number(/message_history/search_criteria/offset) + number(/message_history/search_criteria/num_of_messages)) != number(/message_history/total_no_of_messages)">
             <xsl:if test="count(message) = number(/message_history/search_criteria/num_of_messages)">
                 <a>
-                  <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) + count(message)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" />&amp;primal_message_id=<xsl:value-of select="/message_history/search_criteria/primal_message_id"/></xsl:attribute>
+                  <xsl:attribute name="href">message_history?offset=<xsl:value-of select="number(/message_history/search_criteria/offset) + count(message)" />&amp;message_id=<xsl:value-of select="/message_history/search_criteria/message_id" />&amp;message_box=<xsl:value-of select="/message_history/search_criteria/message_box" />&amp;cpa_id=<xsl:value-of select="/message_history/search_criteria/cpa_id" />&amp;service=<xsl:value-of select="/message_history/search_criteria/service" />&amp;action=<xsl:value-of select="/message_history/search_criteria/action" />&amp;conv_id=<xsl:value-of select="/message_history/search_criteria/conv_id" />&amp;status=<xsl:value-of select="/message_history/search_criteria/status" />&amp;message_type=<xsl:value-of select="/message_history/search_criteria/message_type" />&amp;num_of_messages=<xsl:value-of select="/message_history/search_criteria/num_of_messages" />&amp;is_detail=<xsl:value-of select="/message_history/search_criteria/is_detail" />&amp;primal_message_id=<xsl:value-of select="/message_history/search_criteria/primal_message_id"/></xsl:attribute>
                   Next Page &#8250;
                 </a>
             </xsl:if>

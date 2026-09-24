@@ -99,7 +99,7 @@
 		<parameter type="finder" name="find_no_of_messages_by_history" value="select count(message_id) from message where message_id like ? and message_box like ? and cpa_id like ? and service like ? and action like ? and conv_id like ? and status like ? and principal_id like ? and message_type = 'Order'" />
 -->
 
-		<parameter type="finder" name="find_message_by_history" value="select * from (select a.*, rownum rnum from (select * from message where message_type = 'Order'" />
+		<parameter type="finder" name="find_message_by_history" value="select * from (select a.*, rownum rnum from (select * from message where message_type LIKE ?" />
 		<parameter type="filter" name="find_message_by_history_filter_message_box" value="message_box = ?"/>
 		<parameter type="filter" name="find_message_by_history_filter_message_id" value="message_id LIKE ?"/>
 		<parameter type="filter" name="find_message_by_history_filter_cpa_id" value="cpa_id LIKE ?"/>
@@ -110,7 +110,7 @@
 		<parameter type="filter" name="find_message_by_history_filter_primal_message_id" value="primal_message_id LIKE ?"/>
 		<parameter type="order" name="find_message_by_history_order" value="order by time_stamp desc, message_box asc) a where rownum &lt;= ?) where rnum &gt; ?"/>
 
-		<parameter type="finder" name="find_number_of_message_by_history" value="select count(message_id) from message where message_type = 'Order'" />
+		<parameter type="finder" name="find_number_of_message_by_history" value="select count(message_id) from message where message_type LIKE ?" />
 		<parameter type="filter" name="find_number_of_message_by_history_filter_message_box" value="message_box = ?"/>
 		<parameter type="filter" name="find_number_of_message_by_history_filter_status" value="status = ?"/>
 		<parameter type="filter" name="find_number_of_message_by_history_filter_message_id" value="message_id LIKE ?"/>

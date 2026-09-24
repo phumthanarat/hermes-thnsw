@@ -278,6 +278,15 @@ public class MessageDataSourceDAO extends DataSourceDAO implements MessageDAO {
     }
 
     /**
+     * The message type to filter the history by, as a LIKE pattern. Callers
+     * that set no message type get the original Order-only behaviour.
+     */
+    private String historyMessageType(MessageDVO data) {
+        String type = data.getMessageType();
+        return (type == null || type.trim().equals("")) ? "Order" : type;
+    }
+
+    /**
      * Find messages order by descending timestamp by different criteria.
      * 
      * @param data 				The message data value object carrying query criteria.
@@ -291,6 +300,7 @@ public class MessageDataSourceDAO extends DataSourceDAO implements MessageDAO {
     	List parameters = new ArrayList();
     	boolean hasSearchCriteria = false;
     	String sql = super.getFinder("find_message_by_history");
+    	parameters.add(historyMessageType(data));
     	
     	if (data.getMessageId() != null && !data.getMessageId().trim().equals("")) {
     		sql += " AND " + getFilter("find_message_by_history_filter_message_id");
@@ -350,6 +360,7 @@ public class MessageDataSourceDAO extends DataSourceDAO implements MessageDAO {
         try {
         	List parameters = new ArrayList();        	
         	String sql = super.getFinder("find_number_of_message_by_history");
+        	parameters.add(historyMessageType(data));
         	
         	if (data.getMessageId() != null && !data.getMessageId().trim().equals("")) {
         		sql += " AND " +  getFilter("find_number_of_message_by_history_filter_message_id");

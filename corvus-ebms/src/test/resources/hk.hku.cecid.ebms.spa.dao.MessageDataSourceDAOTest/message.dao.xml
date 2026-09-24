@@ -39,7 +39,7 @@
 		<parameter type="filter" name="find_message_by_cpa_filter_to_party_id" value="to_party_id = ?"/>
 		<parameter type="filter" name="find_message_by_cpa_filter_to_party_role" value="to_party_role = ?"/>
             
-        <parameter type="finder" name="find_message_by_history" value="select * from message where message_type = 'Order'" />
+        <parameter type="finder" name="find_message_by_history" value="select * from message where message_type LIKE ?" />
 		<parameter type="filter" name="find_message_by_history_filter_message_box" value="message_box = ?"/>
         <parameter type="filter" name="find_message_by_history_filter_message_id" value="message_id LIKE ?"/>
 		<parameter type="filter" name="find_message_by_history_filter_cpa_id" value="cpa_id LIKE ?"/>
@@ -49,7 +49,7 @@
 		<parameter type="filter" name="find_message_by_history_filter_status" value="status = ?"/>
 		<parameter type="order" name="find_message_by_history_order" value="order by time_stamp desc LIMIT ? offset ?"/>
            
-        <parameter type="finder" name="find_number_of_message_by_history" value="select count(message_id) from message where message_type = 'Order'" />
+        <parameter type="finder" name="find_number_of_message_by_history" value="select count(message_id) from message where message_type LIKE ?" />
 		<parameter type="filter" name="find_number_of_message_by_history_filter_message_box" value="message_box = ?"/>
 		<parameter type="filter" name="find_number_of_message_by_history_filter_status" value="status = ?"/>
         <parameter type="filter" name="find_number_of_message_by_history_filter_message_id" value="message_id LIKE ?"/>

@@ -114,7 +114,13 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
                     .getParameter("message_box"));
             String status = checkEmptyAndReturnNull(request
                     .getParameter("status"));
-            
+            // blank means the DAO's default (Order only); "all" matches any type
+            String messageType = checkEmptyAndReturnNull(request
+                    .getParameter("message_type"));
+            if ("all".equals(messageType)) {
+                messageType = "%";
+            }
+
             //get the message_time value
             String displayLast = request.getParameter("message_time");
             if(displayLast != null){
@@ -152,7 +158,8 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
             messageDVO.setAction(action);
             messageDVO.setConvId(convId);
             messageDVO.setMessageBox(messageBox);
-            messageDVO.setStatus(status);            
+            messageDVO.setStatus(status);
+            messageDVO.setMessageType(messageType);
             messageDVO.setPrimalMessageId(primalMessageId);
 
 			messageIterator = findMessageWithPagination(messageDVO,messageDAO, numberOfMessagesInt, offsetInt,displayLastInt, isTime);
@@ -175,6 +182,8 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
                 .getParameter("conv_id"));
         dom.setProperty("search_criteria/status", request
                 .getParameter("status"));
+        dom.setProperty("search_criteria/message_type", request
+                .getParameter("message_type"));
         dom.setProperty("search_criteria/num_of_messages", String
                 .valueOf(numberOfMessagesInt));
         dom.setProperty("search_criteria/message_time",String.valueOf(displayLastInt));
