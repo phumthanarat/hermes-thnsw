@@ -328,8 +328,14 @@ function showResendAsNewMessage(pmid) {
         <td width="30%">
             <select name="message_type">
                 <xsl:element name="option">
-                    <xsl:attribute name="value"></xsl:attribute>
-                    <xsl:if test="not(/message_history/search_criteria/message_type) or ''=/message_history/search_criteria/message_type">
+                    <xsl:attribute name="value">all</xsl:attribute>
+                    <xsl:if test="not(/message_history/search_criteria/message_type) or ''=/message_history/search_criteria/message_type or 'all'=/message_history/search_criteria/message_type">
+                        <xsl:attribute name="SELECTED"></xsl:attribute>
+                    </xsl:if>All
+                </xsl:element>
+                <xsl:element name="option">
+                    <xsl:attribute name="value">Order</xsl:attribute>
+                    <xsl:if test="'Order'=/message_history/search_criteria/message_type">
                         <xsl:attribute name="SELECTED"></xsl:attribute>
                     </xsl:if>Order
                 </xsl:element>
@@ -368,12 +374,6 @@ function showResendAsNewMessage(pmid) {
                     <xsl:if test="'StatusResponse'=/message_history/search_criteria/message_type">
                         <xsl:attribute name="SELECTED"></xsl:attribute>
                     </xsl:if>StatusResponse
-                </xsl:element>
-                <xsl:element name="option">
-                    <xsl:attribute name="value">all</xsl:attribute>
-                    <xsl:if test="'all'=/message_history/search_criteria/message_type">
-                        <xsl:attribute name="SELECTED"></xsl:attribute>
-                    </xsl:if>All
                 </xsl:element>
             </select>
         </td>

@@ -114,10 +114,10 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
                     .getParameter("message_box"));
             String status = checkEmptyAndReturnNull(request
                     .getParameter("status"));
-            // blank means the DAO's default (Order only); "all" matches any type
+            // the page shows every message type unless one is picked
             String messageType = checkEmptyAndReturnNull(request
                     .getParameter("message_type"));
-            if ("all".equals(messageType)) {
+            if (messageType == null || "all".equals(messageType)) {
                 messageType = "%";
             }
 
