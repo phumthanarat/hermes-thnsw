@@ -79,5 +79,11 @@
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.55</version>
 		</dependency>
+		<!-- QR codes for setting up two-factor sign-in (MIT) -->
+		<dependency>
+			<groupId>io.nayuki</groupId>
+			<artifactId>qrcodegen</artifactId>
+			<version>1.8.0</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -20,3 +20,36 @@ CREATE TABLE IF NOT EXISTS ca_issued_cert (
 	revoked_timestamp timestamp NULL DEFAULT NULL,
 	PRIMARY KEY (serial_number)
 )ENGINE=INNODB;
+
+-- admin console: who did what (Access > Audit Log)
+CREATE TABLE IF NOT EXISTS audit_log (
+	audit_id bigint NOT NULL AUTO_INCREMENT,
+	event_time timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	username varchar(64),
+	client_ip varchar(64),
+	action varchar(100) NOT NULL,
+	target varchar(500),
+	outcome varchar(20) NOT NULL,
+	detail varchar(1000),
+	PRIMARY KEY (audit_id),
+	KEY audit_log_time (event_time),
+	KEY audit_log_user (username)
+)ENGINE=INNODB;
+
+-- admin console: per-user password age/history and two-factor secret
+CREATE TABLE IF NOT EXISTS console_user_security (
+	username varchar(64) NOT NULL,
+	password_changed timestamp NULL DEFAULT NULL,
+	password_history varchar(4000),
+	totp_secret varchar(64),
+	totp_enabled varchar(5) NOT NULL DEFAULT 'false',
+	totp_last_step bigint,
+	PRIMARY KEY (username)
+)ENGINE=INNODB;
+
+-- admin console: security settings (Access > Security Settings)
+CREATE TABLE IF NOT EXISTS console_setting (
+	name varchar(64) NOT NULL,
+	value varchar(500),
+	PRIMARY KEY (name)
+)ENGINE=INNODB;

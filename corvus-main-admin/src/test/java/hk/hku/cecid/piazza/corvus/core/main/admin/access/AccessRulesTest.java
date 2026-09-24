@@ -61,6 +61,12 @@ public class AccessRulesTest extends TestCase {
         assertEquals(AccessLevel.ADMINISTRATOR, required("GET", "/api/keys"));
         assertEquals(AccessLevel.ADMINISTRATOR, required("GET", "/main/httpd", "action", "halt"));
         assertEquals(AccessLevel.ADMINISTRATOR, required("GET", "/home", "action", "gc"));
+        assertEquals(AccessLevel.ADMINISTRATOR, required("GET", "/access/audit"));
+        assertEquals(AccessLevel.ADMINISTRATOR, required("GET", "/access/audit_export"));
+        assertEquals(AccessLevel.ADMINISTRATOR, required("POST", "/access/security"));
+        assertEquals(AccessLevel.ADMINISTRATOR, required("POST", "/main/tls", "request_action", "pem"));
+        assertEquals(AccessLevel.VIEWER, required("GET", "/main/tls"));
+        assertEquals(AccessLevel.VIEWER, required("GET", "/access/whoami"));
     }
 
     public void testLevelsInclude() {

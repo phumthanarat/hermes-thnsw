@@ -13,6 +13,7 @@
 
 	<runtime>
 		<library name="corvus-main-admin.jar"/>
+		<library name="qrcodegen.jar"/>
 		<library name="conf/"/>
 	</runtime>
 
@@ -147,6 +148,65 @@
 	  <parameter name="module" value="access" />
 	  <parameter name="tab" value="account" />
 	  <parameter name="center" value="access.account" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Sign-in Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.SignInAdaptor" />
+	  <parameter name="context" value="/login" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Sign-out Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.SignOutAdaptor" />
+	  <parameter name="context" value="/logout" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Security Settings Pagelet Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.SecuritySettingsPageletAdaptor" />
+	  <parameter name="context" value="/access/security" />
+	  <parameter name="module" value="access" />
+	  <parameter name="tab" value="security" />
+	  <parameter name="center" value="access.security" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Audit Log Pagelet Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.AuditLogPageletAdaptor" />
+	  <parameter name="context" value="/access/audit" />
+	  <parameter name="module" value="access" />
+	  <parameter name="tab" value="audit" />
+	  <parameter name="center" value="access.audit" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Audit Log Export Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.AuditExportAdaptor" />
+	  <parameter name="context" value="/access/audit_export" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="HTTPS Certificate Pagelet Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.TlsPageletAdaptor" />
+	  <parameter name="context" value="/main/tls" />
+	  <parameter name="module" value="main" />
+	  <parameter name="tab" value="tls" />
+	  <parameter name="center" value="main.tls" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Who Am I Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.WhoAmIAdaptor" />
+	  <parameter name="context" value="/access/whoami" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Security Settings Pagelet">
+	  <parameter name="id" value="access.security" />
+	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/security.xsl" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Audit Log Pagelet">
+	  <parameter name="id" value="access.audit" />
+	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/audit.xsl" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="HTTPS Certificate Pagelet">
+	  <parameter name="id" value="main.tls" />
+	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/tls.xsl" />
 	</extension>
 
 	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Users Pagelet">

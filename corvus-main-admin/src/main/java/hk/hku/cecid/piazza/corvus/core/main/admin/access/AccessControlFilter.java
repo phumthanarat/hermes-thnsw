@@ -40,7 +40,14 @@ public class AccessControlFilter implements HttpRequestFilter {
     public static final String REQUIRE_HTTPS_PROPERTY = "hermes.admin.requireHttps";
     public static final String HTTPS_PORT_PROPERTY = "hermes.admin.httpsPort";
 
+    private static volatile boolean lockOutApplied;
+
     public boolean requestAccepted(HttpRequestEvent event) {
+        if (!lockOutApplied) {
+            // the saved lock-out settings, once the plugins are up
+            lockOutApplied = true;
+            LockOut.apply();
+        }
         HttpServletRequest request = event.getRequest();
         HttpServletResponse response = event.getResponse();
         String path = event.getPathInfo();
@@ -48,6 +55,11 @@ public class AccessControlFilter implements HttpRequestFilter {
             if (Boolean.getBoolean(REQUIRE_HTTPS_PROPERTY) && !request.isSecure()) {
                 response.sendRedirect(httpsUrl(request));
                 return false;
+            }
+
+            // the sign-in and sign-out pages themselves
+            if ("/login".equals(path) || "/logout".equals(path)) {
+                return true;
             }
 
             boolean basic = false;
@@ -66,6 +78,12 @@ public class AccessControlFilter implements HttpRequestFilter {
             }
 
             String username = request.getUserPrincipal().getName();
+            HttpSession session = request.getSession(false);
+            if (!basic && session != null && session.getAttribute(SignInAdaptor.TWO_FACTOR_PENDING) != null) {
+                // password given, two-factor code still due
+                response.sendRedirect(request.getContextPath() + "/admin/login");
+                return false;
+            }
             if (!basic && "POST".equalsIgnoreCase(request.getMethod()) && isCrossSite(request)) {
                 AdminMainProcessor.core.log.warn("Access denied: cross-site POST " + path
                         + " for " + username + " from " + request.getHeader("Origin")
@@ -81,20 +99,41 @@ public class AccessControlFilter implements HttpRequestFilter {
                 deny(request, response, "Your account is disabled or no longer exists.");
                 return false;
             }
-            if (roles.contains(AccessLevel.ROLE_PASSWORD_CHANGE_REQUIRED)
-                    && !AccessRules.ACCOUNT_PATH.equals(path)) {
+            AccessLevel level = AccessLevel.ofRoles(roles);
+            boolean twoFactor = Accounts.twoFactorEnabled(username);
+            if (basic && (twoFactor || Accounts.twoFactorRequired(level))) {
+                AuditLog.record(request, username, "basic-auth", path, AuditLog.DENIED,
+                        "two-factor accounts must sign in on the sign-in page");
+                response.setHeader("WWW-Authenticate", "Basic realm=\"Corvus Restricted Area\"");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+                        "This account uses two-factor sign-in: sign in on the sign-in page.");
+                return false;
+            }
+            // held on My Account until the password is changed (first
+            // sign-in, reset, expired) and, for Administrators who must,
+            // two-factor sign-in is set up
+            boolean mustChange = roles.contains(AccessLevel.ROLE_PASSWORD_CHANGE_REQUIRED)
+                    || Accounts.passwordExpired(username);
+            boolean mustEnrol = !twoFactor && Accounts.twoFactorRequired(level);
+            if ((mustChange || mustEnrol) && !AccessRules.ACCOUNT_PATH.equals(path)
+                    && !"/access/whoami".equals(path)) {
                 response.sendRedirect(request.getContextPath() + "/admin" + AccessRules.ACCOUNT_PATH);
                 return false;
             }
-            AccessLevel level = AccessLevel.ofRoles(roles);
+            request.setAttribute(ACCESS_LEVEL_ATTRIBUTE, level == null ? "" : level.role);
             AccessLevel required = AccessRules.required(path, request);
             if (level == null || !level.includes(required)) {
                 AdminMainProcessor.core.log.info("Access denied: " + username + " ("
                         + (level == null ? "no level" : level.label) + ") " + request.getMethod()
                         + " " + path + " needs " + required.label);
+                AuditLog.record(request, username, request.getMethod() + " " + path, null, AuditLog.DENIED,
+                        "needs " + required.label);
                 deny(request, response, "This needs the " + required.label + " access level; you are "
                         + (level == null ? "not assigned one" : "a " + level.label) + ".");
                 return false;
+            }
+            if ("POST".equalsIgnoreCase(request.getMethod()) && !selfAudited(path)) {
+                AuditLog.record(request, username, "POST " + path, null, AuditLog.OK, describe(request));
             }
             return true;
         } catch (IOException e) {
@@ -104,6 +143,35 @@ public class AccessControlFilter implements HttpRequestFilter {
     }
 
     public void requestProcessed(HttpRequestEvent event) {
+    }
+
+    /** The signed-in user's access level role, for pages to hide what they can't use. */
+    public static final String ACCESS_LEVEL_ATTRIBUTE = "hermes.access.level";
+
+    /** Pages that record their own, more precise, audit entries. */
+    private static boolean selfAudited(String path) {
+        return path.startsWith("/access/") || path.equals("/main/tls");
+    }
+
+    /** The request's action parameters (never its free-text or secret fields). */
+    static String describe(HttpServletRequest request) {
+        StringBuilder out = new StringBuilder();
+        for (String name : new String[] { "request_action", "action", "format", "username", "level",
+                "cpa_id", "partnership_id", "message_type", "ping_one", "save_parties" }) {
+            String value = request.getParameter(name);
+            if (value != null && !value.isEmpty() && value.length() <= 200) {
+                out.append(out.length() == 0 ? "" : ", ").append(name).append('=').append(value);
+            }
+        }
+        String[] keys = request.getParameterValues("delete_key");
+        if (keys != null) {
+            out.append(out.length() == 0 ? "" : ", ").append("delete ").append(keys.length).append(" message(s)");
+        }
+        String[] selected = request.getParameterValues("selected");
+        if (selected != null) {
+            out.append(out.length() == 0 ? "" : ", ").append(selected.length).append(" selected");
+        }
+        return out.length() == 0 ? null : out.toString();
     }
 
     /** Signs in a script's Basic credentials for this request only. */
@@ -191,7 +259,7 @@ public class AccessControlFilter implements HttpRequestFilter {
         if ("GET".equalsIgnoreCase(request.getMethod()) && request.getQueryString() != null) {
             next += "?" + request.getQueryString();
         }
-        return request.getContextPath() + "/login.jsp?next=" + URLEncoder.encode(next, "UTF-8");
+        return request.getContextPath() + "/admin/login?next=" + URLEncoder.encode(next, "UTF-8");
     }
 
     private static String httpsUrl(HttpServletRequest request) {
@@ -213,7 +281,7 @@ public class AccessControlFilter implements HttpRequestFilter {
         out.print("<!DOCTYPE html><html><head><title>Access denied</title></head>"
                 + "<body style=\"font-family:sans-serif;margin:40px;\"><h2>Access denied</h2><p>"
                 + escape(reason) + "</p><p><a href=\"" + home + "\">Back to the admin console</a>"
-                + " &middot; <a href=\"" + request.getContextPath() + "/logout.jsp\">Sign out</a></p>"
+                + " &middot; <a href=\"" + request.getContextPath() + "/admin/logout\">Sign out</a></p>"
                 + "</body></html>");
         response.flushBuffer();
     }

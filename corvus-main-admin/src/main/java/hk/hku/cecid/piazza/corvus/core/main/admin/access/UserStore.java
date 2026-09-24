@@ -73,15 +73,17 @@ public class UserStore {
         return user == null ? null : new User(username, roles(user));
     }
 
-    public void create(String username, String password, AccessLevel level,
+    /** @return the stored password digest. */
+    public String create(String username, String password, AccessLevel level,
             boolean mustChangePassword) throws Exception {
         if (user(username) != null) {
             throw new IllegalArgumentException("User " + username + " already exists");
         }
-        server.invoke(database, "createUser", new Object[] { username,
-                PasswordDigest.mutate(password), "" }, new String[] { String.class.getName(),
-                String.class.getName(), String.class.getName() });
+        String digest = PasswordDigest.mutate(password);
+        server.invoke(database, "createUser", new Object[] { username, digest, "" },
+                new String[] { String.class.getName(), String.class.getName(), String.class.getName() });
         setRoles(username, level, mustChangePassword, false);
+        return digest;
     }
 
     public void remove(String username) throws Exception {
@@ -96,12 +98,15 @@ public class UserStore {
                 && PasswordDigest.matches(password, (String) server.getAttribute(user, "password"));
     }
 
-    public void setPassword(String username, String password, boolean mustChangePassword)
+    /** @return the stored password digest. */
+    public String setPassword(String username, String password, boolean mustChangePassword)
             throws Exception {
         ObjectName user = requireUser(username);
-        server.setAttribute(user, new Attribute("password", PasswordDigest.mutate(password)));
+        String digest = PasswordDigest.mutate(password);
+        server.setAttribute(user, new Attribute("password", digest));
         User current = find(username);
         setRoles(username, current.level(), mustChangePassword, current.isDisabled());
+        return digest;
     }
 
     /** Replaces the user's console roles, keeping any others (e.g. "user"). */

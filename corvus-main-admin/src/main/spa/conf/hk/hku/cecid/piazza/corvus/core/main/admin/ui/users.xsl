@@ -12,7 +12,7 @@
 	</p>
 
 	<table border="0" cellpadding="2" cellspacing="2" width="100%">
-	  <tr><th>User</th><th>Access level</th><th>Status</th><th>Reset password</th><th></th></tr>
+	  <tr><th>User</th><th>Access level</th><th>Status</th><th>Two-factor</th><th>Reset password</th><th></th></tr>
 	  <xsl:for-each select="user">
 	    <tr>
 	      <td>
@@ -43,6 +43,31 @@
 	              <xsl:otherwise><span class="badge badge-success">Active</span></xsl:otherwise>
 	            </xsl:choose>
 	            <xsl:if test="must_change='true'"> <span class="badge badge-warning">Must change password</span></xsl:if>
+	            <xsl:if test="locked='true'">
+	              <span class="badge badge-danger">Locked</span>
+	              <form method="post" action="users" style="display:inline; margin-left:4px;">
+	                <input type="hidden" name="request_action" value="unlock" />
+	                <input type="hidden" name="username"><xsl:attribute name="value"><xsl:value-of select="username" /></xsl:attribute></input>
+	                <input type="submit" value="Unlock" title="Clear the failed sign-ins now instead of waiting" />
+	              </form>
+	            </xsl:if>
+	            <xsl:if test="password_changed!=''">
+	              <div style="font-size:11px; color:var(--text-soft);">Password set <xsl:value-of select="password_changed" /></div>
+	            </xsl:if>
+	          </td>
+	          <td style="white-space:nowrap;">
+	            <xsl:choose>
+	              <xsl:when test="two_factor='true'">
+	                <span class="badge badge-success">On</span>
+	                <form method="post" action="users" style="display:inline; margin-left:4px;"
+	                      onsubmit="return confirm('Reset two-factor sign-in? They will have to set it up again.')">
+	                  <input type="hidden" name="request_action" value="reset_2fa" />
+	                  <input type="hidden" name="username"><xsl:attribute name="value"><xsl:value-of select="username" /></xsl:attribute></input>
+	                  <input type="submit" value="Reset" title="For a lost phone: the user sets it up again" />
+	                </form>
+	              </xsl:when>
+	              <xsl:otherwise><span class="badge badge-neutral">Off</span></xsl:otherwise>
+	            </xsl:choose>
 	          </td>
 	          <td>
 	            <form method="post" action="users" style="display:inline; white-space:nowrap;">
@@ -72,7 +97,7 @@
 	          </td>
 	        </xsl:when>
 	        <xsl:otherwise>
-	          <td colspan="4" style="color:var(--text-soft);">Not a console user (roles: <xsl:value-of select="level_label" />)</td>
+	          <td colspan="5" style="color:var(--text-soft);">Not a console user (roles: <xsl:value-of select="level_label" />)</td>
 	        </xsl:otherwise>
 	      </xsl:choose>
 	    </tr>
@@ -86,10 +111,8 @@
 	  <tr><th colspan="2" align="left">Add a user</th></tr>
 	  <tr><td width="30%">Username</td><td><input type="text" name="username" size="24" required="required" pattern="[A-Za-z0-9._@-]{{1,64}}" /></td></tr>
 	  <tr><td>Password</td><td>
-	    <input type="password" name="password" size="24" required="required" autocomplete="new-password">
-	      <xsl:attribute name="minlength"><xsl:value-of select="min_password_length" /></xsl:attribute>
-	    </input>
-	    <span style="color:var(--text-soft); font-size:12px;"> at least <xsl:value-of select="min_password_length" /> characters</span>
+	    <input type="password" name="password" size="24" required="required" autocomplete="new-password" />
+	    <div style="color:var(--text-soft); font-size:12px;"><xsl:value-of select="policy" /></div>
 	  </td></tr>
 	  <tr><td>Access level</td><td>
 	    <select name="level">

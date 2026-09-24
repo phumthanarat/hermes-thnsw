@@ -17,17 +17,20 @@ import javax.xml.transform.Source;
  */
 public class UsersPageletAdaptor extends AdminPageletAdaptor {
 
-    static final int MIN_PASSWORD_LENGTH = 8;
-
     protected Source getCenterSource(HttpServletRequest request) {
         PropertyTree dom = new PropertyTree();
         dom.setProperty("/users", "");
         try {
             UserStore store = new UserStore();
             if ("post".equalsIgnoreCase(request.getMethod())) {
+                String action = request.getParameter("request_action");
+                String target = request.getParameter("username");
                 try {
-                    request.setAttribute(ATTR_MESSAGE, handle(request, store));
+                    String result = handle(request, store);
+                    AuditLog.record(request, "users: " + action, target, AuditLog.OK, result);
+                    request.setAttribute(ATTR_MESSAGE, result);
                 } catch (IllegalArgumentException e) {
+                    AuditLog.record(request, "users: " + action, target, AuditLog.FAILED, e.getMessage());
                     request.setAttribute(ATTR_MESSAGE, "Not changed: " + e.getMessage());
                 }
             }
@@ -52,9 +55,9 @@ public class UsersPageletAdaptor extends AdminPageletAdaptor {
                 throw new IllegalArgumentException("a username has 1-64 letters, digits or . _ @ -");
             }
             AccessLevel level = level(request);
-            store.create(username, password(request.getParameter("password"), username), level,
-                    request.getParameter("must_change") != null);
-            log(self, "added " + username + " as " + level.label);
+            String digest = store.create(username, password(request.getParameter("password"), username, null),
+                    level, request.getParameter("must_change") != null);
+            Accounts.passwordChanged(username, digest);
             return "User " + username + " added as " + level.label;
         }
 
@@ -68,13 +71,13 @@ public class UsersPageletAdaptor extends AdminPageletAdaptor {
                 requireAnotherAdministrator(store, user);
             }
             store.setRoles(username, level, user.mustChangePassword(), user.isDisabled());
-            log(self, "set " + username + " to " + level.label);
             return username + " is now " + level.label;
         }
         if ("reset_password".equals(action)) {
             boolean mustChange = request.getParameter("must_change") != null;
-            store.setPassword(username, password(request.getParameter("password"), username), mustChange);
-            log(self, "reset the password of " + username);
+            String digest = store.setPassword(username,
+                    password(request.getParameter("password"), username, Accounts.history(username)), mustChange);
+            Accounts.passwordChanged(username, digest);
             return "Password of " + username + " reset"
                     + (mustChange ? "; it must be changed at next sign-in" : "");
         }
@@ -86,7 +89,6 @@ public class UsersPageletAdaptor extends AdminPageletAdaptor {
                 requireAnotherAdministrator(store, user);
             }
             store.setRoles(username, user.level(), user.mustChangePassword(), !user.isDisabled());
-            log(self, (user.isDisabled() ? "enabled " : "disabled ") + username);
             return username + (user.isDisabled() ? " enabled" : " disabled");
         }
         if ("delete".equals(action)) {
@@ -95,8 +97,17 @@ public class UsersPageletAdaptor extends AdminPageletAdaptor {
             }
             requireAnotherAdministrator(store, user);
             store.remove(username);
-            log(self, "deleted " + username);
+            Accounts.forget(username);
             return "User " + username + " deleted";
+        }
+        if ("unlock".equals(action)) {
+            LockOut.unlock(username);
+            return username + " unlocked";
+        }
+        if ("reset_2fa".equals(action)) {
+            Accounts.resetTwoFactor(username);
+            return "Two-factor sign-in of " + username + " reset: they set it up again"
+                    + (Accounts.twoFactorRequired(user.level()) ? " at their next sign-in" : " if they want");
         }
         throw new IllegalArgumentException("unknown action");
     }
@@ -123,15 +134,11 @@ public class UsersPageletAdaptor extends AdminPageletAdaptor {
         return level;
     }
 
-    /** @return the password if it is acceptable. */
-    static String password(String password, String username) {
-        if (password == null || password.length() < MIN_PASSWORD_LENGTH) {
-            throw new IllegalArgumentException("a password needs at least " + MIN_PASSWORD_LENGTH
-                    + " characters");
-        }
-        if (password.equalsIgnoreCase(username) || password.equalsIgnoreCase("admin")
-                || password.equalsIgnoreCase("password")) {
-            throw new IllegalArgumentException("that password is too easy to guess");
+    /** @return the password if the password policy accepts it. */
+    static String password(String password, String username, String[] history) {
+        String problem = PasswordPolicy.check(password, username, history);
+        if (problem != null) {
+            throw new IllegalArgumentException(problem);
         }
         return password;
     }
@@ -150,17 +157,20 @@ public class UsersPageletAdaptor extends AdminPageletAdaptor {
             dom.setProperty(prefix + "disabled", String.valueOf(user.isDisabled()));
             dom.setProperty(prefix + "must_change", String.valueOf(user.mustChangePassword()));
             dom.setProperty(prefix + "self", String.valueOf(user.username.equals(self)));
+            dom.setProperty(prefix + "locked", String.valueOf(LockOut.isLocked(user.username)));
+            if (user.isConsoleUser()) {
+                dom.setProperty(prefix + "two_factor", String.valueOf(Accounts.twoFactorEnabled(user.username)));
+                java.sql.Timestamp changed = Accounts.passwordChangedAt(user.username);
+                dom.setProperty(prefix + "password_changed",
+                        changed == null ? "" : changed.toString().substring(0, 10));
+            }
         }
         i = 0;
         for (AccessLevel level : AccessLevel.values()) {
             dom.setProperty("level[" + (++i) + "]/role", level.role);
             dom.setProperty("level[" + i + "]/label", level.label);
         }
-        dom.setProperty("min_password_length", String.valueOf(MIN_PASSWORD_LENGTH));
-    }
-
-    private static void log(String by, String what) {
-        AdminMainProcessor.core.log.info("Users: " + by + " " + what);
+        dom.setProperty("policy", PasswordPolicy.describe());
     }
 
     private static String trim(String value) {

@@ -32,8 +32,11 @@ public final class AccessRules {
         String action = request.getParameter("action");
         boolean post = "POST".equalsIgnoreCase(request.getMethod());
 
-        // pages that show secrets or users
-        if (path.startsWith("/access/users") || path.startsWith("/api/keys")) {
+        // pages that show secrets, users, security settings or the audit log
+        if (path.equals("/access/whoami")) {
+            return AccessLevel.VIEWER;
+        }
+        if ((path.startsWith("/access/") && !path.equals(ACCOUNT_PATH)) || path.startsWith("/api/keys")) {
             return AccessLevel.ADMINISTRATOR;
         }
         // actions some pages take on any method, GET included

@@ -34,6 +34,11 @@
       <description>Additional dedicated HTTP(S) listener ports for partners</description>
       <link>/admin/main/listenerports</link>
     </tab>
+    <tab id="tls">
+      <name>HTTPS Certificate</name>
+      <description>The certificate this gateway and console serve over HTTPS</description>
+      <link>/admin/main/tls</link>
+    </tab>
     <tab id="certificates">
       <name>Certificates</name>
       <description>Certificate health across AS2plus, ebMS and SFRM</description>

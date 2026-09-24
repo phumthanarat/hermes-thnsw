@@ -100,7 +100,7 @@
                      certificateKeystorePasswordFile="${hermes.tls.passwordFile}"
                      certificateKeystoreType="PKCS12"
                      certificateKeyAlias="hermes"
-                     type="RSA" />
+                     />
       </SSLHostConfig>
     </Connector>
 

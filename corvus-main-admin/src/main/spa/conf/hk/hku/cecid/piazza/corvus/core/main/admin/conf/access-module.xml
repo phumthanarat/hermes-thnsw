@@ -14,5 +14,15 @@
       <description>Add, remove and manage console users (Administrator)</description>
       <link>/admin/access/users</link>
     </tab>
+    <tab id="security">
+      <name>Security Settings</name>
+      <description>Password policy, lock-out, two-factor sign-in, sessions (Administrator)</description>
+      <link>/admin/access/security</link>
+    </tab>
+    <tab id="audit">
+      <name>Audit Log</name>
+      <description>Who did what in the admin console (Administrator)</description>
+      <link>/admin/access/audit</link>
+    </tab>
   </tabs>
 </module>

@@ -465,7 +465,7 @@ pre {
     <nav class="header-links">
       <span class="console-label">Administration Console</span>
       <a href="/corvus/admin/access/account">My Account</a>
-      <a href="/corvus/logout.jsp">Sign out</a>
+      <a href="/corvus/admin/logout">Sign out</a>
     </nav>
   </header>
 
@@ -494,5 +494,84 @@ pre {
   </footer>
 
 </div>
+<script>
+/* Disables what the signed-in user's access level can't use (the server
+   enforces the same rules in AccessControlFilter/AccessRules; this only
+   spares users forms that would be refused). */
+(function () {
+  var RANK = { viewer: 1, operator: 2, admin: 3 };
+  var LABEL = { 2: 'Operator', 3: 'Administrator' };
+  var base = '/corvus/admin';
+
+  function required(path, params, post) {
+    var action = params.action;
+    if (path === '/access/whoami') { return 1; }
+    if ((path.indexOf('/access/') === 0 && path !== '/access/account') || path.indexOf('/api/keys') === 0) { return 3; }
+    if (path === '/home' && (action === 'gc' || action === 'final')) { return 3; }
+    if (path === '/main/httpd' && action) { return action === 'ping_test' ? 2 : 3; }
+    if (!post || path === '/access/account') { return 1; }
+    if (/\/message_history$/.test(path)) { return params.request_action === 'delete' ? 2 : 1; }
+    if (/\/repository$/.test(path) || path === '/ebms/document_reference' || path === '/ebms/document_export') { return 1; }
+    if (path === '/ebms/ping') { return params.save_parties !== undefined ? 3 : 2; }
+    if (/\/(change_message_status|resend_as_new)$/.test(path)) { return 2; }
+    return 3;
+  }
+
+  function pathOf(url) {
+    var a = document.createElement('a');
+    a.href = url || location.href;
+    var p = a.pathname.charAt(0) === '/' ? a.pathname : '/' + a.pathname;
+    return p.indexOf(base) === 0 ? p.substring(base.length) : null;
+  }
+
+  function block(el, need) {
+    el.disabled = true;
+    el.title = 'Needs the ' + LABEL[need] + ' access level';
+    el.style.opacity = '0.5';
+    el.style.cursor = 'not-allowed';
+  }
+
+  function apply(level) {
+    var rank = RANK[level] || 0;
+    document.documentElement.setAttribute('data-access-level', level);
+    // menu links to pages the user can't open
+    Array.prototype.forEach.call(document.querySelectorAll('a[href]'), function (a) {
+      var path = pathOf(a.getAttribute('href'));
+      if (path && required(path, {}, false) > rank) {
+        var holder = a.closest('.tab-link') || a;
+        holder.style.display = 'none';
+      }
+    });
+    // elements marked with the level they need (e.g. JavaScript delete links)
+    Array.prototype.forEach.call(document.querySelectorAll('[data-requires]'), function (el) {
+      var need = RANK[el.getAttribute('data-requires')] || 3;
+      if (need > rank) { el.style.display = 'none'; }
+    });
+    // POST forms: each submit button, with the form's fields and its own name
+    Array.prototype.forEach.call(document.querySelectorAll('form'), function (form) {
+      var post = (form.getAttribute('method') || 'get').toLowerCase() === 'post';
+      var path = pathOf(form.getAttribute('action') || location.href);
+      if (!post || !path) { return; }
+      var params = {};
+      Array.prototype.forEach.call(form.elements, function (el) {
+        if (el.name && (el.type === 'hidden' || el.tagName === 'SELECT')) { params[el.name] = el.value; }
+      });
+      var buttons = form.querySelectorAll('input[type=submit], button[type=submit], button:not([type])');
+      Array.prototype.forEach.call(buttons, function (b) {
+        var p = Object.assign({}, params);
+        if (b.name) { p[b.name] = b.value; }
+        var need = required(path, p, true);
+        if (need > rank) { block(b, need); }
+      });
+    });
+  }
+
+  if (!window.fetch) { return; }
+  fetch(base + '/access/whoami', { credentials: 'same-origin' })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (me) { if (me && me.level) { apply(me.level); } })
+    .catch(function () {});
+})();
+</script>
 </body>
 </html>

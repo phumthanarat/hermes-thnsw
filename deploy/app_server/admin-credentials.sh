@@ -73,10 +73,20 @@ EOF
     echo "admin-credentials: created $TOMCAT_USERS with administrator ${APP_ADMIN_USER:-admin}" >&2
 elif [ "$APP_ADMIN_RESET" = "true" ]; then
     user=${APP_ADMIN_USER:-admin}
-    grep -v "username=\"$(xml_escape "$user")\"" "$TOMCAT_USERS" \
-        | sed "s#</tomcat-users>#$(admin_user_line | sed 's/[#&\\]/\\&/g')\n</tomcat-users>#" \
-        > "$TOMCAT_USERS.new" && mv "$TOMCAT_USERS.new" "$TOMCAT_USERS"
-    echo "admin-credentials: APP_ADMIN_RESET: administrator $user reset" >&2
+    # Tomcat writes every <user .../> (and the closing tag) on one line, so
+    # edit elements, not lines: drop this user's element, add the new one
+    RESET_USER=$(xml_escape "$user") RESET_LINE=$(admin_user_line) \
+        perl -0pe 's{\s*<user\b[^>]*?\busername="\Q$ENV{RESET_USER}\E"[^>]*?/>}{}gs;
+                   s{</tomcat-users>}{$ENV{RESET_LINE}\n</tomcat-users>}s' \
+        "$TOMCAT_USERS" > "$TOMCAT_USERS.new"
+    if grep -q '</tomcat-users>' "$TOMCAT_USERS.new"; then
+        cp "$TOMCAT_USERS" "$TOMCAT_USERS.before-reset"
+        mv "$TOMCAT_USERS.new" "$TOMCAT_USERS"
+        echo "admin-credentials: APP_ADMIN_RESET: administrator $user reset (previous file: $TOMCAT_USERS.before-reset)" >&2
+    else
+        rm -f "$TOMCAT_USERS.new"
+        echo "admin-credentials: APP_ADMIN_RESET: $TOMCAT_USERS is not a complete user file; left unchanged" >&2
+    fi
 fi
 
 chmod 600 "$TOMCAT_USERS"
