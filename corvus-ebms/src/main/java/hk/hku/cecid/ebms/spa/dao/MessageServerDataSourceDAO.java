@@ -100,7 +100,7 @@ public class MessageServerDataSourceDAO extends DataSourceDAO implements
     	partnershipDVO.setCpaId(msgDVO.getCpaId());
     	partnershipDVO.setService(msgDVO.getService());
     	partnershipDVO.setAction(msgDVO.getAction());
-    	if (partnershipDAO.findPartnershipByCPA(partnershipDVO)) {
+    	if (partnershipDAO.findPartnershipForMessage(partnershipDVO)) {
     		msgDVO.setPartnershipId(partnershipDVO.getPartnershipId());
     	}
     }

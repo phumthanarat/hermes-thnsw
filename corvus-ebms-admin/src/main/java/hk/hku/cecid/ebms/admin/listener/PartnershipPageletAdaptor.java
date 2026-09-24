@@ -1,20 +1,11 @@
 package hk.hku.cecid.ebms.admin.listener;
 
-import hk.hku.cecid.ebms.pkg.EbxmlMessage;
-import hk.hku.cecid.ebms.pkg.MessageHeader;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
-import hk.hku.cecid.ebms.spa.EbmsUtility;
-import hk.hku.cecid.ebms.spa.dao.MessageDAO;
-import hk.hku.cecid.ebms.spa.dao.MessageDVO;
 import hk.hku.cecid.ebms.spa.dao.PartnershipDAO;
 import hk.hku.cecid.ebms.spa.dao.PartnershipDVO;
 import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
-import hk.hku.cecid.ebms.spa.handler.MessageServiceHandler;
-import hk.hku.cecid.ebms.spa.listener.EbmsRequest;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.io.IOHandler;
-import hk.hku.cecid.piazza.commons.rest.RestRequest;
-import hk.hku.cecid.piazza.commons.util.Generator;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
 import hk.hku.cecid.piazza.commons.util.StringUtilities;
 import hk.hku.cecid.piazza.corvus.admin.listener.AdminPageletAdaptor;
@@ -28,6 +19,7 @@ import java.security.MessageDigest;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -45,8 +37,6 @@ import org.apache.commons.fileupload.FileUploadException;
  *  
  */
 public class PartnershipPageletAdaptor extends AdminPageletAdaptor {
-
-    private static final String PING_FROM_PARTY_ID = "hermes-admin";
 
     /*
      * (non-Javadoc)
@@ -335,39 +325,28 @@ public class PartnershipPageletAdaptor extends AdminPageletAdaptor {
                 return;
             }
 
-            String messageId = Generator.generateMessageID();
-            EbxmlMessage ebxmlMessage = new EbxmlMessage();
-            MessageHeader msgHeader = ebxmlMessage.addMessageHeader();
-            msgHeader.setCpaId(partnershipDVO.getCpaId());
-            msgHeader.setService(partnershipDVO.getService());
-            msgHeader.setAction(partnershipDVO.getAction());
             // Party IDs play no part in routing a Ping (the partnership does),
             // so identify the sender as the admin console and the target by
             // its partnership ID
-            msgHeader.addFromPartyId(PING_FROM_PARTY_ID);
-            msgHeader.addToPartyId(partnershipDVO.getPartnershipId());
-            msgHeader.setConversationId(messageId);
-            msgHeader.setMessageId(messageId);
-            msgHeader.setTimestamp(EbmsUtility.getCurrentUTCDateTime());
+            String messageId = PingSender.send(partnershipDVO.getCpaId(),
+                    PingSender.DEFAULT_FROM_PARTY_ID,
+                    partnershipDVO.getPartnershipId(), request);
 
-            // OutboundMessageProcessor only accepts SOAP/WebServices/REST sources;
-            // wrap the admin request the same way the REST send API does
-            EbmsRequest ebmsRequest = new EbmsRequest(new RestRequest(request));
-            ebmsRequest.setMessage(ebxmlMessage);
-            MessageServiceHandler.getInstance().processOutboundMessage(ebmsRequest, null);
-
-            MessageDAO messageDAO = (MessageDAO) EbmsProcessor.core.dao
-                    .createDAO(MessageDAO.class);
-            MessageDVO createdMessage = (MessageDVO) messageDAO.createDVO();
-            createdMessage.setMessageId(messageId);
-            createdMessage.setMessageBox(MessageClassifier.MESSAGE_BOX_OUTBOX);
-            if (messageDAO.findMessage(createdMessage)) {
-                createdMessage.setCreatedVia("admin_console");
-                messageDAO.persist(createdMessage);
+            // wait for the Pong so the page shows the outcome right away
+            Object result = PingSender.awaitResults(
+                    Collections.singletonList(messageId), 15 * 1000).get(messageId);
+            String outcome;
+            if (PingSender.RESULT_OK.equals(result)) {
+                outcome = "Pong received";
+            } else if (PingSender.RESULT_ERROR.equals(result)) {
+                outcome = "the partner answered with an ebMS Error";
+            } else if (PingSender.RESULT_FAILED.equals(result)) {
+                outcome = "delivery failed";
+            } else {
+                outcome = "no reply within 15s";
             }
-
             request.setAttribute(ATTR_MESSAGE, "Ping sent (Message ID: " + messageId
-                    + "). See Message History with Message Type Ping / Pong for the result.");
+                    + "): " + outcome + ". See Message History with Message Type Ping / Pong for details.");
         } catch (Exception e) {
             EbmsProcessor.core.log.error("Unable to send Ping via partnership: " + partnershipId, e);
             request.setAttribute(ATTR_MESSAGE, "Unable to send Ping: " + e.getMessage());

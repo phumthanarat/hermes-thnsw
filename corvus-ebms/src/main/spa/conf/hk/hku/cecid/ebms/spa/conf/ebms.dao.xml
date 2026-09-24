@@ -30,6 +30,7 @@
 		<parameter type="column" name="is_hostname_verified" value="isHostnameVerified" />
 		<parameter type="finder" name="find_all_partnerships" value="select * from partnership order by partnership_id" />			
 		<parameter type="finder" name="find_partnerships_by_cpa" value="select * from partnership where cpa_id = ? and service = ? and action = ?  and disabled = 'false'" />
+		<parameter type="finder" name="find_partnerships_by_cpa_id" value="select * from partnership where cpa_id = ? and disabled = 'false' order by partnership_id" />
 	</dao>
 
 	<dao name="hk.hku.cecid.ebms.spa.dao.MessageDAO">

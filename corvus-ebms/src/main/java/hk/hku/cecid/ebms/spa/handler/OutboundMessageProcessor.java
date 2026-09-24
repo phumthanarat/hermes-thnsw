@@ -345,7 +345,7 @@ public class OutboundMessageProcessor {
 		partnershipDVO.setService(ebxmlRequestMessage.getService());
 		partnershipDVO.setAction(ebxmlRequestMessage.getAction());
 
-		if (!partnershipDAO.findPartnershipByCPA(partnershipDVO)) {
+		if (!partnershipDAO.findPartnershipForMessage(partnershipDVO)) {
 			EbmsProcessor.core.log.error("Partnership not found");
 			throw new MessageServiceHandlerException("Partnership not found");
 		}

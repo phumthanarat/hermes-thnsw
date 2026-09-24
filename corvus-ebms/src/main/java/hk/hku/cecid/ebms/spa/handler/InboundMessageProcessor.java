@@ -1164,7 +1164,7 @@ public class InboundMessageProcessor {
             parntershipDVO.setCpaId(responseMessage.getCpaId());
             parntershipDVO.setService(responseMessage.getService());
             parntershipDVO.setAction(responseMessage.getAction());
-            if (partnershipDAO.findPartnershipByCPA(parntershipDVO)) {
+            if (partnershipDAO.findPartnershipForMessage(parntershipDVO)) {
                 dsAlgorithm = parntershipDVO.getDsAlgorithm();
                 mdAlgorithm = parntershipDVO.getMdAlgorithm();
             }
@@ -1358,7 +1358,7 @@ public class InboundMessageProcessor {
                     partnershipDVO.setCpaId(messageDVO.getCpaId());
                     partnershipDVO.setService(messageDVO.getService());
                     partnershipDVO.setAction(messageDVO.getAction());
-                    if (partnershipDAO.findPartnershipByCPA(partnershipDVO)) {
+                    if (partnershipDAO.findPartnershipForMessage(partnershipDVO)) {
                         return partnershipDVO.getPartnershipId();
                     }
                 }
@@ -1381,7 +1381,7 @@ public class InboundMessageProcessor {
             partnershipDVO.setCpaId(ebxmlRequestMessage.getCpaId());
             partnershipDVO.setService(ebxmlRequestMessage.getService());
             partnershipDVO.setAction(ebxmlRequestMessage.getAction());
-            if (partnershipDAO.findPartnershipByCPA(partnershipDVO)) {
+            if (partnershipDAO.findPartnershipForMessage(partnershipDVO)) {
                 return partnershipDVO.getPartnershipId();
             }
         } catch (DAOException e) {
@@ -1436,7 +1436,7 @@ public class InboundMessageProcessor {
             partnershipDVO.setCpaId(ebxmlRequestMessage.getCpaId());
             partnershipDVO.setService(ebxmlRequestMessage.getService());
             partnershipDVO.setAction(ebxmlRequestMessage.getAction());
-            if (partnershipDAO.findPartnershipByCPA(partnershipDVO)) {
+            if (partnershipDAO.findPartnershipForMessage(partnershipDVO)) {
                 return partnershipDVO.getPrincipalId();
             }
         } catch (DAOException e) {
@@ -1491,7 +1491,7 @@ public class InboundMessageProcessor {
                 }
             }
 
-            partnershipDAO.findPartnershipByCPA(partnershipDVO);
+            partnershipDAO.findPartnershipForMessage(partnershipDVO);
 
             if (partnershipDVO.getSignCert() != null) {
                 ByteArrayInputStream bais = new ByteArrayInputStream(

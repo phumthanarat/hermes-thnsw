@@ -891,7 +891,7 @@ public class OutboxTask implements ActiveTask {
             partnershipDVO.setCpaId(ebxmlRequestMessage.getCpaId());
             partnershipDVO.setService(ebxmlRequestMessage.getService());
             partnershipDVO.setAction(ebxmlRequestMessage.getAction());
-            partnershipDAO.findPartnershipByCPA(partnershipDVO);
+            partnershipDAO.findPartnershipForMessage(partnershipDVO);
             return partnershipDVO.getPrincipalId();
         } catch (DAOException e) {
             EbmsProcessor.core.log.error("Error in finding principal id", e);

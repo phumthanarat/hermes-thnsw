@@ -133,7 +133,7 @@ public class AgreementHandler {
             }
         }
 
-        if (partnershipDAO.findPartnershipByCPA(partnershipDVO)) {
+        if (partnershipDAO.findPartnershipForMessage(partnershipDVO)) {
             // there is a predefined sender channel
             signCert = partnershipDVO.getSignCert();
             encryptCert = partnershipDVO.getEncryptCert();

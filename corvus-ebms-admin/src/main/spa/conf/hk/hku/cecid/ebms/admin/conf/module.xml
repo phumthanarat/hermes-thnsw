@@ -19,6 +19,11 @@
       <description>The Partnership</description>
       <link>/admin/ebms/partnership</link>
     </tab>
+    <tab id="ping">
+      <name>Ping</name>
+      <description>Ping the partner MSH of each CPA</description>
+      <link>/admin/ebms/ping</link>
+    </tab>
     <tab id="documents">
       <name>Documents</name>
       <description>Document Catalog: what can be sent/received</description>
