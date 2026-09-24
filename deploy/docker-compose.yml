@@ -22,9 +22,12 @@ services:
     environment:
       APP_HTTP_PORT: ${APP_HTTP_PORT:-8080}
       APP_HTTPS_PORT: ${APP_HTTPS_PORT:-8443}
-      # unset passwords are generated and kept in /hermes_home/repository/.credentials
-      APP_ADMIN_USER: ${APP_ADMIN_USER:-corvus}
+      # first start: administrator admin/admin, to be changed at first login;
+      # APP_ADMIN_RESET=true resets it on each start while set: use it for one
+      # start, then remove it (see app_server/admin-credentials.sh)
+      APP_ADMIN_USER: ${APP_ADMIN_USER:-admin}
       APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:-}
+      APP_ADMIN_RESET: ${APP_ADMIN_RESET:-false}
       APP_API_USER: ${APP_API_USER:-apiuser}
       APP_API_PASSWORD: ${APP_API_PASSWORD:-}
     expose:
@@ -54,8 +57,9 @@ services:
     environment:
       APP_HTTP_PORT: ${APP2_HTTP_PORT:-8080}
       APP_HTTPS_PORT: ${APP2_HTTPS_PORT:-8443}
-      APP_ADMIN_USER: ${APP2_ADMIN_USER:-corvus}
+      APP_ADMIN_USER: ${APP2_ADMIN_USER:-admin}
       APP_ADMIN_PASSWORD: ${APP2_ADMIN_PASSWORD:-}
+      APP_ADMIN_RESET: ${APP2_ADMIN_RESET:-false}
       APP_API_USER: ${APP2_API_USER:-apiuser}
       APP_API_PASSWORD: ${APP2_API_PASSWORD:-}
     expose:

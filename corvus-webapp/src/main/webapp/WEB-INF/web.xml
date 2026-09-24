@@ -117,9 +117,14 @@
       <description>No description</description>
       <url-pattern>/admin/*</url-pattern>
     </web-resource-collection>
+    <!-- access levels: admin (and legacy corvus) = Administrator, operator,
+         viewer; what each may do is enforced by the admin console's
+         AccessControlFilter -->
     <auth-constraint>
       <role-name>admin</role-name>
       <role-name>corvus</role-name>
+      <role-name>operator</role-name>
+      <role-name>viewer</role-name>
     </auth-constraint>
     <user-data-constraint>
       <description>No description</description>
@@ -140,6 +145,12 @@
   </security-role> 
   <security-role> 
     <role-name>api</role-name> 
+  </security-role> 
+  <security-role> 
+    <role-name>operator</role-name> 
+  </security-role> 
+  <security-role> 
+    <role-name>viewer</role-name> 
   </security-role> 
   <security-role> 
     <role-name>user</role-name> 

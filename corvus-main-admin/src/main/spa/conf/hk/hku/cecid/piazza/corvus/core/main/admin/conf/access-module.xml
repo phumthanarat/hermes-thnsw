@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module id="access" seqno="0">
+  <name>Access</name>
+  <description>Console users and access levels</description>
+  <link>/admin/access/account</link>
+  <tabs>
+    <tab id="account">
+      <name>My Account</name>
+      <description>Your access level and password</description>
+      <link>/admin/access/account</link>
+    </tab>
+    <tab id="users">
+      <name>Users</name>
+      <description>Add, remove and manage console users (Administrator)</description>
+      <link>/admin/access/users</link>
+    </tab>
+  </tabs>
+</module>

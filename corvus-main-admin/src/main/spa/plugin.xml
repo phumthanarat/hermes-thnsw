@@ -128,6 +128,41 @@
 	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/certificate_authority.xsl" />
 	</extension>
 
+	<!-- Access: console users and access levels -->
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.filter" name="Access Control Filter">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.AccessControlFilter" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Users Pagelet Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.UsersPageletAdaptor" />
+	  <parameter name="context" value="/access/users" />
+	  <parameter name="module" value="access" />
+	  <parameter name="tab" value="users" />
+	  <parameter name="center" value="access.users" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Account Pagelet Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.piazza.corvus.core.main.admin.access.AccountPageletAdaptor" />
+	  <parameter name="context" value="/access/account" />
+	  <parameter name="module" value="access" />
+	  <parameter name="tab" value="account" />
+	  <parameter name="center" value="access.account" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Users Pagelet">
+	  <parameter name="id" value="access.users" />
+	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/users.xsl" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.pagelet" name="Account Pagelet">
+	  <parameter name="id" value="access.account" />
+	  <parameter name="pagelet" value="hk/hku/cecid/piazza/corvus/core/main/admin/ui/account.xsl" />
+	</extension>
+
+	<extension point="hk.hku.cecid.piazza.corvus.admin.module" name="Access Admin Module">
+	  <parameter name="module" value="hk/hku/cecid/piazza/corvus/core/main/admin/conf/access-module.xml" />
+	</extension>
+
 	<extension point="hk.hku.cecid.piazza.corvus.admin.module" name="Corvus Main Admin Module">
 	  <parameter name="module" value="hk/hku/cecid/piazza/corvus/core/main/admin/conf/admin-module.xml" />
 	</extension>

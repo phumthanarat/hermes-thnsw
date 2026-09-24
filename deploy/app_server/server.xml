@@ -44,7 +44,12 @@
               type="org.apache.catalina.UserDatabase"
               description="User database that can be updated and saved"
               factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
-              pathname="conf/tomcat-users.xml" />
+              pathname="/hermes_home/repository/tomcat-users.xml"
+              readonly="false" />
+    <!-- On the repository volume so users survive container re-creation;
+         writable so the admin console's Access > Users page can manage them
+         (admin-credentials.sh creates it with the default admin on first
+         start). -->
   </GlobalNamingResources>
 
   <!-- A "Service" is a collection of one or more "Connectors" that share
@@ -123,7 +128,12 @@
              that are performed against this UserDatabase are immediately
              available for use by the Realm.  -->
         <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
-               resourceName="UserDatabase"/>
+               resourceName="UserDatabase">
+          <!-- passwords are stored as salted, iterated SHA-256 digests
+               ("salt$iterations$digest"), never in plain text -->
+          <CredentialHandler className="org.apache.catalina.realm.MessageDigestCredentialHandler"
+                             algorithm="SHA-256" iterations="10000" saltLength="16" />
+        </Realm>
       </Realm>
 
       <Host name="localhost"  appBase="webapps"
