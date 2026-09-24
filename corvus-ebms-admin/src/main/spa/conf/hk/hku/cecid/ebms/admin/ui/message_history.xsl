@@ -456,6 +456,62 @@ function showResendAsNewMessage(pmid) {
 	<input type="hidden" name="primal_message_id" value=""/>
 </form>
 
+<!-- deletes the messages in its delete_key inputs, then repeats the
+     current search so the page stays where it was -->
+<form name="deleteMessagesForm" method="post" action="./message_history">
+    <input type="hidden" name="request_action" value="delete" />
+    <input type="hidden" name="message_id"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/message_id" /></xsl:attribute></input>
+    <input type="hidden" name="message_box"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/message_box" /></xsl:attribute></input>
+    <input type="hidden" name="cpa_id"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/cpa_id" /></xsl:attribute></input>
+    <input type="hidden" name="service"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/service" /></xsl:attribute></input>
+    <input type="hidden" name="action"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/action" /></xsl:attribute></input>
+    <input type="hidden" name="conv_id"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/conv_id" /></xsl:attribute></input>
+    <input type="hidden" name="status"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/status" /></xsl:attribute></input>
+    <input type="hidden" name="message_type"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/message_type" /></xsl:attribute></input>
+    <input type="hidden" name="num_of_messages"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/num_of_messages" /></xsl:attribute></input>
+    <input type="hidden" name="is_detail"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/is_detail" /></xsl:attribute></input>
+    <input type="hidden" name="primal_message_id"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/primal_message_id" /></xsl:attribute></input>
+    <input type="hidden" name="message_time"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/message_time" /></xsl:attribute></input>
+    <input type="hidden" name="from_time"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/from_time" /></xsl:attribute></input>
+    <input type="hidden" name="to_time"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/to_time" /></xsl:attribute></input>
+    <input type="hidden" name="offset"><xsl:attribute name="value"><xsl:value-of select="/message_history/search_criteria/offset" /></xsl:attribute></input>
+</form>
+
+<script>
+function deleteMessages(keys) {
+    if (keys.length === 0) { alert('Select at least one message'); return; }
+    if (!confirm('Permanently delete ' + keys.length + ' message(s), including their content?\nThis cannot be undone.')) { return; }
+    var form = document.deleteMessagesForm;
+    for (var i = 0; i &lt; keys.length; i++) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'delete_key';
+        input.value = keys[i];
+        form.appendChild(input);
+    }
+    form.submit();
+}
+function deleteSelectedMessages() {
+    var keys = [];
+    var boxes = document.querySelectorAll('.msg-select');
+    for (var i = 0; i &lt; boxes.length; i++) {
+        if (boxes[i].checked) { keys.push(boxes[i].getAttribute('data-key')); }
+    }
+    deleteMessages(keys);
+}
+function selectAllMessages(checked) {
+    var boxes = document.querySelectorAll('.msg-select');
+    for (var i = 0; i &lt; boxes.length; i++) { boxes[i].checked = checked; }
+}
+</script>
+
+<xsl:if test="count(message) > 0">
+<div style="margin:8px 0;">
+    <label><input type="checkbox" onclick="selectAllMessages(this.checked)" /> Select all on this page</label>
+    <input type="button" value="Delete selected" style="margin-left:12px;" onclick="deleteSelectedMessages()" />
+</div>
+</xsl:if>
+
 <!-- Loop the message history - start-->
 <table border="0" cellpadding="2" cellspacing="2" width="100%">          
   <xsl:for-each select="message">
@@ -463,8 +519,20 @@ function showResendAsNewMessage(pmid) {
     <th colspan="2"/>
   </tr>
   <tr>
-    <td width="40%"><xsl:value-of select="number(/message_history/search_criteria/offset) + position()" /></td>
-    <td width="60%" align="right"><a href="#">Top</a></td>
+    <td width="40%">
+        <input type="checkbox" class="msg-select" style="margin-right:6px;">
+            <xsl:attribute name="data-key"><xsl:value-of select="./message_id" />|<xsl:value-of select="./message_box" /></xsl:attribute>
+        </input>
+        <xsl:value-of select="number(/message_history/search_criteria/offset) + position()" />
+    </td>
+    <td width="60%" align="right">
+        <a href="#1" style="margin-right:12px; color:var(--danger);" title="Permanently delete this message"
+           onclick="deleteMessages([this.getAttribute('data-key')])">
+            <xsl:attribute name="data-key"><xsl:value-of select="./message_id" />|<xsl:value-of select="./message_box" /></xsl:attribute>
+            Delete
+        </a>
+        <a href="#">Top</a>
+    </td>
   </tr>
   <tr class="col-message_id">
     <td width="40%"><b>Message ID</b></td>

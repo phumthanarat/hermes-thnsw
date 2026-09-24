@@ -140,6 +140,49 @@ public class MessageServerDataSourceDAO extends DataSourceDAO implements
 
     }
 
+    public void deleteMessage(final MessageDVO data) throws DAOException {
+
+        DataSourceProcess process = new DataSourceProcess(this) {
+            protected void doTransaction(DataSourceTransaction tx)
+                    throws DAOException {
+                MessageDAO messageDAO = (MessageDAO) getFactory().createDAO(
+                        MessageDAO.class);
+                RepositoryDAO repositoryDAO = (RepositoryDAO) getFactory()
+                        .createDAO(RepositoryDAO.class);
+                InboxDAO inboxDAO = (InboxDAO) getFactory().createDAO(
+                        InboxDAO.class);
+                OutboxDAO outboxDAO = (OutboxDAO) getFactory().createDAO(
+                        OutboxDAO.class);
+
+                messageDAO.setTransaction(tx);
+                repositoryDAO.setTransaction(tx);
+                inboxDAO.setTransaction(tx);
+                outboxDAO.setTransaction(tx);
+
+                if (MessageClassifier.MESSAGE_BOX_INBOX
+                        .equalsIgnoreCase(data.getMessageBox())) {
+                    InboxDVO inboxDVO = (InboxDVO) inboxDAO.createDVO();
+                    inboxDVO.setMessageId(data.getMessageId());
+                    inboxDAO.deleteInbox(inboxDVO);
+                } else {
+                    OutboxDVO outboxDVO = (OutboxDVO) outboxDAO.createDVO();
+                    outboxDVO.setMessageId(data.getMessageId());
+                    outboxDAO.deleteOutbox(outboxDVO);
+                }
+
+                RepositoryDVO repositoryDVO = (RepositoryDVO) repositoryDAO
+                        .createDVO();
+                repositoryDVO.setMessageId(data.getMessageId());
+                repositoryDVO.setMessageBox(data.getMessageBox());
+                repositoryDAO.deleteRepository(repositoryDVO);
+
+                messageDAO.deleteMessage(data);
+            }
+        };
+
+        process.start();
+    }
+
     /*
      * (non-Javadoc)
      * 

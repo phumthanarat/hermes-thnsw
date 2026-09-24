@@ -3,6 +3,7 @@ package hk.hku.cecid.ebms.admin.listener;
 import hk.hku.cecid.ebms.spa.EbmsProcessor;
 import hk.hku.cecid.ebms.spa.dao.MessageDAO;
 import hk.hku.cecid.ebms.spa.dao.MessageDVO;
+import hk.hku.cecid.ebms.spa.dao.MessageServerDAO;
 import hk.hku.cecid.ebms.spa.handler.MessageClassifier;
 import hk.hku.cecid.piazza.commons.dao.DAOException;
 import hk.hku.cecid.piazza.commons.util.PropertyTree;
@@ -35,6 +36,10 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
         PropertyTree dom = null;
 
         try {
+            if ("post".equalsIgnoreCase(request.getMethod())
+                    && "delete".equals(request.getParameter("request_action"))) {
+                deleteMessages(request);
+            }
             // construct updated delivery channels property tree
             dom = getMessageHistory(request);
         } catch (DAOException e) {
@@ -310,6 +315,57 @@ public class MessageHistoryPageletAdaptor extends AdminPageletAdaptor {
             return "%";
         }
         return parameter.replace("_", "\\_").replace("%", "\\%").replace('*', '%');
+    }
+
+    /**
+     * Deletes the messages ticked on the page, each posted as a "delete_key"
+     * of "message ID|message box", with their repository content and
+     * inbox/outbox entries.
+     */
+    private void deleteMessages(HttpServletRequest request) {
+        String[] keys = request.getParameterValues("delete_key");
+        if (keys == null || keys.length == 0) {
+            request.setAttribute(ATTR_MESSAGE, "No message selected");
+            return;
+        }
+        MessageServerDAO messageServerDAO;
+        MessageDAO messageDAO;
+        try {
+            messageServerDAO = (MessageServerDAO) EbmsProcessor.core.dao
+                    .createDAO(MessageServerDAO.class);
+            messageDAO = (MessageDAO) EbmsProcessor.core.dao
+                    .createDAO(MessageDAO.class);
+        } catch (DAOException e) {
+            throw new RuntimeException("Unable to delete messages", e);
+        }
+
+        int deleted = 0;
+        StringBuffer failures = new StringBuffer();
+        for (int i = 0; i < keys.length; i++) {
+            int separator = keys[i].lastIndexOf('|');
+            if (separator <= 0) {
+                continue;
+            }
+            MessageDVO message = (MessageDVO) messageDAO.createDVO();
+            message.setMessageId(keys[i].substring(0, separator));
+            message.setMessageBox(keys[i].substring(separator + 1));
+            try {
+                messageServerDAO.deleteMessage(message);
+                EbmsProcessor.core.log.info("Deleted message from the admin console: "
+                        + message.getMessageId() + " (" + message.getMessageBox() + ")");
+                deleted++;
+            } catch (DAOException e) {
+                EbmsProcessor.core.log.error("Unable to delete message: "
+                        + message.getMessageId(), e);
+                failures.append(failures.length() == 0 ? "" : "; ")
+                        .append(message.getMessageId());
+            }
+        }
+        String result = "Deleted " + deleted + " message(s)";
+        if (failures.length() > 0) {
+            result += ". Unable to delete: " + failures;
+        }
+        request.setAttribute(ATTR_MESSAGE, result);
     }
 
     private Timestamp parseDateTime(String parameter) {

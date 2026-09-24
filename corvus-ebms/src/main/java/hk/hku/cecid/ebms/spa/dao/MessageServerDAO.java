@@ -22,4 +22,10 @@ public interface MessageServerDAO extends DAO {
             MessageDVO primalMsgDVO) throws DAOException;
 
     public void clearMessage(MessageDVO data) throws DAOException;
+
+    /**
+     * Permanently deletes a message (identified by its message ID and
+     * message box) with its repository content and inbox/outbox entry.
+     */
+    public void deleteMessage(MessageDVO data) throws DAOException;
 }
