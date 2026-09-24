@@ -19,6 +19,11 @@
     <input type="hidden" name="mode" value="" />
 </form>
 
+<form name="exportForm" method="post" action="./document_export">
+    <input type="hidden" name="partnership_id" value="" />
+    <input type="hidden" name="format" value="" />
+</form>
+
 <form name="deleteReferenceForm" method="post" action="./documents">
     <input type="hidden" name="action" value="delete_reference" />
     <input type="hidden" name="reference_id" value="" />
@@ -37,6 +42,7 @@
     <th>Endpoint</th>
     <th>Status</th>
     <th>Reference Files</th>
+    <th title="Integration files for this document type">Export</th>
   </tr>
   <xsl:for-each select="cpa">
     <xsl:variable name="cpaId" select="./id" />
@@ -113,6 +119,9 @@
               </div>
             </xsl:for-each>
           </td>
+          <td style="font-size:12px; white-space:nowrap;">
+            <a href="#1" onclick="exportDoc(this.getAttribute('data-pid'), 'wsdl')" title="WSDL of the Hermes sender web service for this document"><xsl:attribute name="data-pid"><xsl:value-of select="./partnership_id" /></xsl:attribute>WSDL</a> · <a href="#1" onclick="exportDoc(this.getAttribute('data-pid'), 'xsd')" title="Schema of the sender request for this document"><xsl:attribute name="data-pid"><xsl:value-of select="./partnership_id" /></xsl:attribute>XSD</a> · <a href="#1" onclick="exportDoc(this.getAttribute('data-pid'), 'soap')" title="Sample SOAP request to the Hermes sender web service"><xsl:attribute name="data-pid"><xsl:value-of select="./partnership_id" /></xsl:attribute>SOAP</a> · <a href="#1" onclick="exportDoc(this.getAttribute('data-pid'), 'xml')" title="Sample ebXML message Hermes sends to the partner"><xsl:attribute name="data-pid"><xsl:value-of select="./partnership_id" /></xsl:attribute>XML</a> · <a href="#1" onclick="exportDoc(this.getAttribute('data-pid'), 'zip')" title="All of these plus the attached reference files"><xsl:attribute name="data-pid"><xsl:value-of select="./partnership_id" /></xsl:attribute>ZIP</a>
+          </td>
         </tr>
       </xsl:for-each>
     </xsl:for-each>
@@ -154,6 +163,11 @@
 </form>
 
 <script>
+function exportDoc(pid, format) {
+  document.exportForm.partnership_id.value = pid;
+  document.exportForm.format.value = format;
+  document.exportForm.submit();
+}
 function filterDocs() {
   var q = document.getElementById('docSearch').value.toLowerCase();
   var rows = document.getElementById('docTable').getElementsByTagName('tr');

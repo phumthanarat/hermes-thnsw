@@ -165,32 +165,16 @@ public class CpaPingPageletAdaptor extends AdminPageletAdaptor {
             dom.setProperty(prefix + "route_partnership_id", nullToEmpty(route.getPartnershipId()));
             dom.setProperty(prefix + "endpoint", nullToEmpty(route.getTransportEndpoint()));
 
-            setPartyIds(messageDAO, cpaId, prefix, dom);
+            setPartyIds(cpaId, prefix, dom);
             setLastPing(messageDAO, cpaId, prefix, dom);
         }
     }
 
-    /**
-     * Suggests party IDs from the latest message exchanged under the CPA:
-     * an outbox message as is, or an inbox message the other way round.
-     */
-    private void setPartyIds(MessageDAO messageDAO, String cpaId,
-            String prefix, PropertyTree dom) throws DAOException {
-        String from = "";
-        String to = "";
-        MessageDVO outbound = latestMessage(messageDAO, cpaId,
-                MessageClassifier.MESSAGE_BOX_OUTBOX, "%");
-        MessageDVO inbound = latestMessage(messageDAO, cpaId,
-                MessageClassifier.MESSAGE_BOX_INBOX, "%");
-        if (outbound != null && outbound.getFromPartyId() != null) {
-            from = outbound.getFromPartyId();
-            to = nullToEmpty(outbound.getToPartyId());
-        } else if (inbound != null && inbound.getToPartyId() != null) {
-            from = inbound.getToPartyId();
-            to = nullToEmpty(inbound.getFromPartyId());
-        }
-        dom.setProperty(prefix + "from_party_id", from);
-        dom.setProperty(prefix + "to_party_id", to);
+    private void setPartyIds(String cpaId, String prefix, PropertyTree dom)
+            throws DAOException {
+        CpaPartyIds partyIds = CpaPartyIds.suggest(cpaId);
+        dom.setProperty(prefix + "from_party_id", partyIds.from);
+        dom.setProperty(prefix + "to_party_id", partyIds.to);
     }
 
     /**
@@ -199,7 +183,7 @@ public class CpaPingPageletAdaptor extends AdminPageletAdaptor {
      */
     private void setLastPing(MessageDAO messageDAO, String cpaId,
             String prefix, PropertyTree dom) throws DAOException {
-        MessageDVO ping = latestMessage(messageDAO, cpaId,
+        MessageDVO ping = CpaPartyIds.latestMessage(messageDAO, cpaId,
                 MessageClassifier.MESSAGE_BOX_OUTBOX, MessageClassifier.MESSAGE_TYPE_PING);
         if (ping == null) {
             dom.setProperty(prefix + "result", "never");
@@ -227,17 +211,6 @@ public class CpaPingPageletAdaptor extends AdminPageletAdaptor {
         if (reply != null) {
             dom.setProperty(prefix + "reply_time", reply.getTimeStamp().toString());
         }
-    }
-
-    private MessageDVO latestMessage(MessageDAO messageDAO, String cpaId,
-            String messageBox, String messageType) throws DAOException {
-        MessageDVO criteria = (MessageDVO) messageDAO.createDVO();
-        // cpa_id is matched with LIKE, so its wildcards must be literal
-        criteria.setCpaId(cpaId.replace("_", "\\_").replace("%", "\\%"));
-        criteria.setMessageBox(messageBox);
-        criteria.setMessageType(messageType);
-        List found = messageDAO.findMessagesByHistory(criteria, 1, 0);
-        return found.isEmpty() ? null : (MessageDVO) found.get(0);
     }
 
     private static String trim(String value) {

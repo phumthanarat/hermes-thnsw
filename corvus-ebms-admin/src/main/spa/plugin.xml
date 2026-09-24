@@ -58,6 +58,11 @@
 	  <parameter name="context" value="/ebms/document_reference" />
 	</extension>
 
+	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Document Export Adaptor">
+	  <parameter name="class" value="hk.hku.cecid.ebms.admin.listener.DocumentExportAdaptor" />
+	  <parameter name="context" value="/ebms/document_export" />
+	</extension>
+
 	<extension point="hk.hku.cecid.piazza.corvus.admin.httpd.listener" name="Partnership Pagelet Adaptor">
 	  <parameter name="class" value="hk.hku.cecid.ebms.admin.listener.PartnershipPageletAdaptor" />
 	  <parameter name="context" value="/ebms/partnership" />
