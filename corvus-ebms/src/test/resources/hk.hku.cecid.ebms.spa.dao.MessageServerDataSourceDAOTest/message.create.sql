@@ -32,3 +32,17 @@ CREATE TABLE outbox (
 	PRIMARY KEY (message_id)
 );
 
+CREATE TABLE inbox (
+	message_id varchar(200),
+	order_no bigint,
+	PRIMARY KEY (message_id)
+);
+
+CREATE TABLE repository (
+	message_id varchar(200),
+	content_type varchar(200),
+	content binary,
+	time_stamp timestamp,
+	message_box varchar(200),
+	PRIMARY KEY (message_id, message_box)
+);

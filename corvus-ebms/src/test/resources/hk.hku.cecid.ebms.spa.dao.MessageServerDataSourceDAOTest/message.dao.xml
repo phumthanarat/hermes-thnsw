@@ -97,4 +97,22 @@
 		<parameter type="column" name="retried" value="retried" />
 		<parameter type="finder" name="select_outbox" value="select * from outbox" />
 	</dao>
+	<dao name="hk.hku.cecid.ebms.spa.dao.InboxDAO">
+		<class>hk.hku.cecid.ebms.spa.dao.InboxDataSourceDAO</class>
+		<parameter name="table" value="inbox" />
+		<parameter name="key" value="message_id" />
+		<parameter type="column" name="message_id" value="messageId" />
+		<parameter type="column" name="order_no" value="orderNo" />
+		<parameter type="finder" name="find_inbox_next_order_no" value="select nextval('inbox_order_no_seq')" />
+	</dao>
+	<dao name="hk.hku.cecid.ebms.spa.dao.RepositoryDAO">
+		<class>hk.hku.cecid.ebms.spa.dao.RepositoryDataSourceDAO</class>
+		<parameter name="table" value="repository" />
+		<parameter name="key" value="message_id,message_box" />
+		<parameter type="column" name="message_id" value="messageId" />
+		<parameter type="column" name="message_box" value="messageBox" />
+		<parameter type="column" name="content_type" value="contentType" />
+		<parameter type="column" name="content" value="content" />
+		<parameter type="column" name="time_stamp" value="timeStamp" />
+	</dao>
 </dao-config>

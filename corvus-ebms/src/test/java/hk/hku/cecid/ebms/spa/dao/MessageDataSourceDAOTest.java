@@ -1,5 +1,6 @@
 package hk.hku.cecid.ebms.spa.dao;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.junit.Assert;
@@ -486,5 +487,36 @@ public class MessageDataSourceDAOTest extends DAOTest<MessageDataSourceDAO> {
 		result = dao.findNumberOfMessagesByHistory(criteriaDVO);			
 		Assert.assertEquals(0, result);		
 	}
+
+	@Test
+	public void testFindMessagesByHistoryWithinTimeRange() throws DAOException {
+		MessageDataSourceDAO dao = super.getTestingTarget();
+		// cecid1 has two outbox messages, at 12:08:11.786 and 12:08:18.369
+		MessageDVO dvo = (MessageDVO) dao.createDVO();
+		dvo.setCpaId("cecid1");
+		dvo.setMessageBox("outbox");
+		dvo.setMessageType("%");
+		Timestamp between = Timestamp.valueOf("2008-01-07 12:08:15");
+
+		Assert.assertEquals(2, dao.findMessagesByHistory(dvo, null, null, 10, 0).size());
+		Assert.assertEquals(2, dao.findNumberOfMessagesByHistory(dvo, null, null));
+
+		List later = dao.findMessagesByHistory(dvo, between, null, 10, 0);
+		Assert.assertEquals(1, later.size());
+		Assert.assertEquals(Timestamp.valueOf("2008-01-07 12:08:18.369"),
+				((MessageDVO) later.get(0)).getTimeStamp());
+		Assert.assertEquals(1, dao.findNumberOfMessagesByHistory(dvo, between, null));
+
+		List earlier = dao.findMessagesByHistory(dvo, null, between, 10, 0);
+		Assert.assertEquals(1, earlier.size());
+		Assert.assertEquals(Timestamp.valueOf("2008-01-07 12:08:11.786"),
+				((MessageDVO) earlier.get(0)).getTimeStamp());
+
+		// "to" is exclusive
+		Assert.assertEquals(0, dao.findNumberOfMessagesByHistory(dvo, null,
+				Timestamp.valueOf("2008-01-07 12:08:11.786")));
+		Assert.assertEquals(0, dao.findMessagesByHistory(dvo,
+				Timestamp.valueOf("2008-01-07 12:08:12"),
+				Timestamp.valueOf("2008-01-07 12:08:18"), 10, 0).size());
+	}
 }
-	
