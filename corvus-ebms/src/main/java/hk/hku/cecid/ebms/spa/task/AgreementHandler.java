@@ -95,8 +95,12 @@ public class AgreementHandler {
         PartnershipDVO partnershipDVO = (PartnershipDVO) partnershipDAO
                 .createDVO();
         partnershipDVO.setCpaId(message.getCpaId());
+        // Order and Ping messages initiate a conversation, so they carry no
+        // RefToMessageId: look the partnership up by their own service/action
         if (message.getMessageType().equalsIgnoreCase(
-                MessageClassifier.MESSAGE_TYPE_ORDER)) {
+                MessageClassifier.MESSAGE_TYPE_ORDER)
+                || message.getMessageType().equalsIgnoreCase(
+                        MessageClassifier.MESSAGE_TYPE_PING)) {
             partnershipDVO.setService(message.getService());
             partnershipDVO.setAction(message.getAction());
         } else {
