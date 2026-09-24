@@ -8,3 +8,6 @@
 **/.DS_Store
 **/.classpath
 **/.project
+
+# local deployment secrets (APP_ADMIN_PASSWORD etc.)
+deploy/.env

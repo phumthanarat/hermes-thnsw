@@ -7,3 +7,7 @@
 CATALINA_OPTS="$CATALINA_OPTS -Dcatalina.http.port=${APP_HTTP_PORT:-8080}"
 CATALINA_OPTS="$CATALINA_OPTS -Dcatalina.https.port=${APP_HTTPS_PORT:-8443}"
 export CATALINA_OPTS
+
+# No default password ships in the image: tomcat-users.xml is written from
+# APP_ADMIN_*/APP_API_* (or generated credentials) on every start.
+. "$CATALINA_BASE/bin/admin-credentials.sh"

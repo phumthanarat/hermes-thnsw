@@ -61,8 +61,9 @@ RUN chown tomcat8:tomcat8 /var/lib/tomcat8/conf/server.xml
 # changed per-container via APP_HTTP_PORT/APP_HTTPS_PORT without an image
 # rebuild. catalina.sh sources bin/setenv.sh automatically if present.
 COPY deploy/app_server/setenv.sh /var/lib/tomcat8/bin/setenv.sh
-RUN chown tomcat8:tomcat8 /var/lib/tomcat8/bin/setenv.sh && \
-	chmod 750 /var/lib/tomcat8/bin/setenv.sh
+COPY deploy/app_server/admin-credentials.sh /var/lib/tomcat8/bin/admin-credentials.sh
+RUN chown tomcat8:tomcat8 /var/lib/tomcat8/bin/setenv.sh /var/lib/tomcat8/bin/admin-credentials.sh && \
+	chmod 750 /var/lib/tomcat8/bin/setenv.sh /var/lib/tomcat8/bin/admin-credentials.sh
 
 # Tomcat's own scratch/temp directory (used e.g. by commons-fileupload to
 # buffer multipart uploads to disk) isn't created by this stripped-down

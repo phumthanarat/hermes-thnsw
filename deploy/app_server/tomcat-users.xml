@@ -1,9 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
+<!-- Placeholder: overwritten at startup by admin-credentials.sh from
+     APP_ADMIN_USER/APP_ADMIN_PASSWORD and APP_API_USER/APP_API_PASSWORD. -->
 <tomcat-users>
-  <role rolename="tomcat"/>
-  <role rolename="admin"/>
-  <role rolename="api"/>
-  <role rolename="user"/>
-  <user username="corvus" password="corvus" roles="tomcat,admin,user"/>
-  <user username="apiuser" password="corvus" roles="api"/>
 </tomcat-users>
