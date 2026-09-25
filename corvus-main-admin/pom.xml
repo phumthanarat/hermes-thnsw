@@ -76,8 +76,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcpkix-jdk15on</artifactId>
-			<version>1.55</version>
+			<artifactId>bcpkix-jdk18on</artifactId>
+			<!-- same as bcmail-jdk18on's (piazza-commons), so the plugin and
+			     the web application load one BouncyCastle version -->
+			<version>1.81.1</version>
 		</dependency>
 		<!-- QR codes for setting up two-factor sign-in (MIT) -->
 		<dependency>

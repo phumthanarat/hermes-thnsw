@@ -1,0 +1,9 @@
+# Build context of deploy/*/Dockerfile (the repository root): only sources.
+# Stale build output would put old jars in the image, and local data or
+# secrets have no business in it.
+**/target
+.git
+deploy/backups
+deploy/.env
+cpa
+**/*.log
