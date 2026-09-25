@@ -183,8 +183,7 @@ public class SFRMMessageDSDAO extends DataSourceDAO implements SFRMMessageDAO {
 			}
 			
 			sql += " " + getOrder("find_message_by_history_order");
-			parameters.add(new Integer(numberOfMessage));
-			parameters.add(new Integer(offset));
+			addPage(parameters, numberOfMessage, offset);
 			SFRMProcessor.getInstance().getLogger().info(sql);
 			
 			List queryResult = executeQuery(sql, parameters.toArray());
@@ -225,8 +224,7 @@ public class SFRMMessageDSDAO extends DataSourceDAO implements SFRMMessageDAO {
 			}
 			
 			sql += " " + getOrder("find_message_by_history_order");
-			parameters.add(new Integer(numberOfMessage));
-			parameters.add(new Integer(offset));
+			addPage(parameters, numberOfMessage, offset);
 			
 			SFRMProcessor.getInstance().getLogger().info(sql);
 			
@@ -246,8 +244,7 @@ public class SFRMMessageDSDAO extends DataSourceDAO implements SFRMMessageDAO {
     		String order = getOrder("find_message_for_acknowledgement_order");
     		sql = sql + " " + order;
     		//Build the parameters
-    		parameters.add(new Integer(numberOfMessage));
-    		parameters.add(new Integer(offset));
+    		addPage(parameters, numberOfMessage, offset);
     		List queryResult = executeQuery(sql, parameters.toArray());
     		return queryResult;   		   		
     	}catch(Exception e){
@@ -279,5 +276,20 @@ public class SFRMMessageDSDAO extends DataSourceDAO implements SFRMMessageDAO {
     		strings[i] = (String)objs[i];
     	}
     	return strings;
+    }
+
+    /**
+     * Adds a page's bounds in the order the dialect's paging clause takes
+     * them: LIMIT ? OFFSET ? (default), or OFFSET ? ROWS FETCH NEXT ? ROWS
+     * ONLY when the DAO sets page_offset_first (Oracle).
+     */
+    private void addPage(java.util.List parameters, int numberOfMessage, int offset) {
+        if ("true".equals(getParameters().getProperty("page_offset_first"))) {
+            parameters.add(new Integer(offset));
+            parameters.add(new Integer(numberOfMessage));
+        } else {
+            parameters.add(new Integer(numberOfMessage));
+            parameters.add(new Integer(offset));
+        }
     }
 }

@@ -8,3 +8,4 @@ DROP TABLE partnership;
 DROP TABLE cpa_party;
 
 DROP TABLE housekeeping;
+DROP TABLE document_reference;

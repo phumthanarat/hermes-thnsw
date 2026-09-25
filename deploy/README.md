@@ -22,6 +22,34 @@ Plain `http://` addresses redirect to HTTPS.
 
 `.env` holds the passwords: keep it private (it is git-ignored).
 
+## Database: MySQL, PostgreSQL or Oracle
+
+The application image works with any of them; `HERMES_DB_TYPE` picks one
+(`mysql`, the default; `postgres`; `oracle`).
+
+| | MySQL (default) | PostgreSQL | Oracle |
+|---|---|---|---|
+| Version | 8.4 | 12 or later (tested 16) | 23ai or later (tested 23ai Free) |
+| Stack | `docker-compose.yml` | `docker-compose.postgres.yml` (app-pg, ports 38080/38443) | `docker-compose.oracle.yml` (app-ora, ports 48080/48443) |
+| Schema scripts | `h2o-installer/sql/mysql_*.sql` | `h2o-installer/sql/<db>.sql` | `h2o-installer/sql/oracle_*.sql` |
+| Upgrade | `upgrade/mysql_upgrade.sql` | `upgrade/postgres_upgrade.sql` | `upgrade/oracle_upgrade.sql` |
+
+```sh
+docker compose -f docker-compose.postgres.yml up -d
+docker compose -f docker-compose.oracle.yml up -d   # first start takes a few minutes
+```
+
+Every feature works on all three (ebMS, AS2, SFRM, Documents, Ping,
+Housekeeping, API keys, listener ports, CA, console security). Oracle keeps
+each Hermes database as a schema `hermes_<database>` (e.g. `hermes_ebms`,
+prefix `HERMES_ORACLE_SCHEMA_PREFIX`) in the PDB `HERMES_DB_SERVICE`
+(default `FREEPDB1`); it needs 23ai for its BOOLEAN type and
+`CREATE ... IF NOT EXISTS`.
+
+Settings for an external database (in `.env` or the compose file):
+`HERMES_DB_TYPE`, `HERMES_DB_HOST`, `HERMES_DB_PORT`, `HERMES_DB_USER`
+(MySQL/PostgreSQL), `HERMES_DB_PASSWORD`, `HERMES_DB_SERVICE` (Oracle).
+
 ## Database password
 
 * Set on first start from `.env` (`HERMES_DB_PASSWORD`, `DB_ROOT_PASSWORD`).

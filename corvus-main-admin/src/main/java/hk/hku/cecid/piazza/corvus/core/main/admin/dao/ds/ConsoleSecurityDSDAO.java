@@ -36,8 +36,14 @@ public class ConsoleSecurityDSDAO extends DataSourceDAO implements ConsoleSecuri
         List<Object> params = new ArrayList<Object>();
         String sql = getSQL("audit_select") + where(username, text, from, to, params) + " "
                 + getSQL("audit_page");
-        params.add(Integer.valueOf(limit));
-        params.add(Integer.valueOf(offset));
+        // LIMIT ? OFFSET ?, or OFFSET ? ROWS FETCH NEXT ? ROWS ONLY (Oracle)
+        if ("true".equals(getParameters().getProperty("page_offset_first"))) {
+            params.add(Integer.valueOf(offset));
+            params.add(Integer.valueOf(limit));
+        } else {
+            params.add(Integer.valueOf(limit));
+            params.add(Integer.valueOf(offset));
+        }
         List<AuditEntry> entries = new ArrayList<AuditEntry>();
         for (Iterator<?> i = executeRawQuery(sql, params.toArray()).iterator(); i.hasNext();) {
             List<?> row = (List<?>) i.next();

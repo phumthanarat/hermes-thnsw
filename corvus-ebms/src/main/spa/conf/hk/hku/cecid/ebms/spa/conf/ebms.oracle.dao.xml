@@ -67,6 +67,7 @@
 		<!-- <parameter type="column" name="principal_id" value="principalId" /> -->
 		<parameter type="column" name="status" value="status" />
 		<parameter type="column" name="status_description" value="statusDescription" />
+		<parameter type="column" name="created_via" value="createdVia" />
 
 		<parameter type="finder" name="get_all_before_time" value="select * from message where time_stamp &lt; ?" />
 		<parameter type="finder" name="find_ref_to_message" value="select * from message where ref_to_message_id=? and message_box=? and message_type=?" />			
@@ -192,5 +193,26 @@
 		<parameter type="column" name="statuses" value="statuses" />
 		<parameter type="column" name="last_run" value="lastRun" />
 		<parameter type="column" name="last_result" value="lastResult" />
+	</dao>
+	<dao name="hk.hku.cecid.ebms.spa.dao.DocumentReferenceDAO">
+		<class>hk.hku.cecid.ebms.spa.dao.DocumentReferenceDataSourceDAO</class>
+		<parameter name="table" value="document_reference" />
+		<parameter name="key" value="reference_id" />
+		<parameter type="column" name="reference_id" value="referenceId" />
+		<parameter type="column" name="cpa_id" value="cpaId" />
+		<parameter type="column" name="service" value="service" />
+		<parameter type="column" name="action" value="action" />
+		<parameter type="column" name="filename" value="filename" />
+		<parameter type="column" name="file_type" value="fileType" />
+		<parameter type="column" name="content" value="content" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="disabled" value="disabled" />
+		<parameter type="column" name="uploaded_timestamp" value="uploadedTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM document_reference WHERE reference_id = ?" />
+		<parameter type="finder" name="find_by_document_type"
+			value="SELECT * FROM document_reference WHERE cpa_id = ? AND service = ? AND action = ? ORDER BY uploaded_timestamp DESC" />
+		<parameter type="finder" name="find_all" value="SELECT * FROM document_reference ORDER BY uploaded_timestamp DESC" />
 	</dao>
 </dao-config>

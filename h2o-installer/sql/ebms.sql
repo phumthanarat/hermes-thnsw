@@ -26,6 +26,7 @@ CREATE TABLE message (
 	timeout_time_stamp timestamp,
 	status varchar(200),
 	status_description varchar(200),
+	created_via varchar(20),
 	PRIMARY KEY (message_id, message_box)
 );
 
@@ -103,4 +104,19 @@ CREATE TABLE housekeeping (
 	last_run timestamp,
 	last_result varchar(1000),
 	PRIMARY KEY (id)
+);
+
+-- reference files attached to a document type (Documents page)
+CREATE TABLE IF NOT EXISTS document_reference (
+	reference_id serial,
+	cpa_id varchar(50) NOT NULL,
+	service varchar(200) NOT NULL,
+	action varchar(200) NOT NULL,
+	filename varchar(255) NOT NULL,
+	file_type varchar(10) NOT NULL,
+	content bytea NOT NULL,
+	description varchar(500),
+	disabled boolean NOT NULL DEFAULT false,
+	uploaded_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (reference_id)
 );

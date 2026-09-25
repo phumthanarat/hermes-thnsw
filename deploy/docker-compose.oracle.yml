@@ -1,0 +1,63 @@
+# Hermes on Oracle Database 23ai (Free): a separate gateway (app-ora,
+# ports 48080/48443) with its own database, from the same application image.
+#   docker compose -f docker-compose.oracle.yml up -d
+# Uses the passwords of .env (deploy/setup.sh). The database takes a few
+# minutes to initialise on first start.
+
+services:
+  db-ora:
+    image: gvenzl/oracle-free:23-slim
+    container_name: h2o_db_ora
+    environment:
+      ORACLE_PASSWORD: ${DB_ROOT_PASSWORD:?run deploy/setup.sh first}
+      HERMES_DB_PASSWORD: ${HERMES_DB_PASSWORD:?run deploy/setup.sh first}
+      TZ: Asia/Bangkok
+    volumes:
+      - h2o_ora_data:/opt/oracle/oradata
+      - ../h2o-installer/sql:/sql:ro
+      - ./oracle/hermes-oracle.sh:/container-entrypoint-initdb.d/10-hermes.sh:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      retries: 60
+
+  db-ora-upgrade:
+    image: gvenzl/oracle-free:23-slim
+    container_name: h2o_db_ora_upgrade
+    entrypoint: ["bash", "/hermes-oracle.sh"]
+    restart: "no"
+    environment:
+      ORACLE_PASSWORD: ${DB_ROOT_PASSWORD}
+      ORACLE_CONNECT: db-ora/FREEPDB1
+      HERMES_DB_PASSWORD: ${HERMES_DB_PASSWORD}
+    volumes:
+      - ../h2o-installer/sql:/sql:ro
+      - ./oracle/hermes-oracle.sh:/hermes-oracle.sh:ro
+    depends_on:
+      db-ora:
+        condition: service_healthy
+
+  app-ora:
+    image: h2o/app:2.0
+    container_name: h2o_app_ora
+    restart: unless-stopped
+    depends_on:
+      db-ora-upgrade:
+        condition: service_completed_successfully
+    environment:
+      HERMES_DB_TYPE: oracle
+      HERMES_DB_HOST: db-ora
+      HERMES_DB_PASSWORD: ${HERMES_DB_PASSWORD}
+      APP_TLS_HOSTNAME: ${APP_TLS_HOSTNAME:-localhost}
+      APP_ADMIN_HTTPS_PORT: "48443"
+    ports:
+      - "48080:8080"
+      - "48443:8443"
+    volumes:
+      - h2o_app_ora_logs:/hermes_home/logs
+      - h2o_app_ora_repository:/hermes_home/repository
+
+volumes:
+  h2o_ora_data:
+  h2o_app_ora_logs:
+  h2o_app_ora_repository:

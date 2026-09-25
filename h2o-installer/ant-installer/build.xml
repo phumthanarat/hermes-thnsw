@@ -50,6 +50,11 @@ input in the page to choose components to install
 		<property name="ebmsDBMSDriverStr" value="org.postgresql.Driver"/>
 		<property name="ebmsConnStr" value="jdbc:postgresql://${ebmsHost}/${ebmsDatabase}"/>
 		<property name="ebmsValidationQuery" value="SELECT now()"/>
+		<!-- admin console and API keys: databases "listenerports" and "apikeys"
+		     on the ebMS database's server, with its account -->
+		<property name="listenerPortsConnStr" value="jdbc:postgresql://${ebmsHost}/listenerports"/>
+		<property name="apiConnStr" value="jdbc:postgresql://${ebmsHost}/apikeys"/>
+		<property name="listenerPortsDAOFile" value="hk/hku/cecid/piazza/corvus/core/main/admin/conf/admin.dao.xml"/>
 		<property name="ebmsJDBCFile" value="postgresql-9.4.1212.jar"/>
 		<property name="ebms.sql.dir" value="${basedir}/temp/sql"/>
 		<property name="ebmsDAOFile" value="hk/hku/cecid/ebms/spa/conf/ebms.dao.xml"/>
@@ -85,6 +90,10 @@ input in the page to choose components to install
 		<property name="ebmsDBMSDriverStr" value="oracle.jdbc.driver.OracleDriver"/>
 		<property name="ebmsConnStr" value="jdbc:oracle:thin:@${ebmsHost}:${ebmsDatabase}"/>
 		<property name="ebmsValidationQuery" value="SELECT sysdate from dual"/>
+		<!-- admin console and API keys: in the ebMS schema (Oracle 23ai or later) -->
+		<property name="listenerPortsConnStr" value="${ebmsConnStr}"/>
+		<property name="apiConnStr" value="${ebmsConnStr}"/>
+		<property name="listenerPortsDAOFile" value="hk/hku/cecid/piazza/corvus/core/main/admin/conf/admin.oracle.dao.xml"/>
 		<property name="ebmsJDBCFile" value="${DriverFN}"/>
 		<property name="ebmsDAOFile" value="hk/hku/cecid/ebms/spa/conf/ebms.oracle.dao.xml"/>
 		<property name="ebmsPageletAdaptor" value="hk.hku.cecid.ebms.admin.listener.MessageHistoryOraclePageletAdaptor"/>
@@ -118,6 +127,11 @@ input in the page to choose components to install
 		<property name="ebmsDBMSDriverStr" value="com.mysql.jdbc.Driver"/>
 		<property name="ebmsConnStr" value="jdbc:mysql://${ebmsHost}/${ebmsDatabase}"/>
 		<property name="ebmsValidationQuery" value="SELECT now()"/>
+		<!-- admin console and API keys: databases "listenerports" and "apikeys"
+		     on the ebMS database's server, with its account -->
+		<property name="listenerPortsConnStr" value="jdbc:mysql://${ebmsHost}/listenerports"/>
+		<property name="apiConnStr" value="jdbc:mysql://${ebmsHost}/apikeys"/>
+		<property name="listenerPortsDAOFile" value="hk/hku/cecid/piazza/corvus/core/main/admin/conf/admin.dao.xml"/>
 		<property name="ebmsJDBCFile" value="${DriverFN}"/>
 		<property name="ebmsDAOFile" value="hk/hku/cecid/ebms/spa/conf/ebms.mysql.dao.xml"/>
 		<property name="ebmsPageletAdaptor" value="hk.hku.cecid.ebms.admin.listener.MessageHistoryPageletAdaptor"/>
@@ -172,6 +186,28 @@ input in the page to choose components to install
         <copy todir="${coreDir}/plugins/corvus-api">
             <fileset dir="${basedir}/temp/plugins/corvus-api"/>
         </copy>
+
+		<!-- The admin console (listener ports, CA, users' security, audit
+		     log) and the REST API keys have databases of their own, created
+		     from sql/<prefix>listenerports.sql and sql/<prefix>apikeys.sql;
+		     they use the ebMS database's server and account. -->
+		<echo message="Configure the admin console and API key databases"/>
+		<replace dir="${coreDir}/plugins/corvus-main-admin/conf/hk/hku/cecid/piazza/corvus/core/main/admin/conf" includes="*.xml">
+			<replacefilter token="@listenerPortsDriverClass@" value="${ebmsDBMSDriverStr}"/>
+			<replacefilter token="@listenerPortsConnStr@" value="${listenerPortsConnStr}"/>
+			<replacefilter token="@listenerPortsuser@" value="${ebmsuser}"/>
+			<replacefilter token="@listenerPortspw@" value="${ebmspwd}"/>
+			<replacefilter token="@listenerPortsValidationQuery@" value="${ebmsValidationQuery}"/>
+			<replacefilter token="@listenerPortsDAOFile@" value="${listenerPortsDAOFile}"/>
+		</replace>
+		<replace dir="${coreDir}/plugins/corvus-api/conf/hk/hku/cecid/hermes/api/conf" includes="*.xml">
+			<replacefilter token="@apiDriverClass@" value="${ebmsDBMSDriverStr}"/>
+			<replacefilter token="@apiConnStr@" value="${apiConnStr}"/>
+			<replacefilter token="@apiuser@" value="${ebmsuser}"/>
+			<replacefilter token="@apipw@" value="${ebmspwd}"/>
+			<replacefilter token="@apiValidationQuery@" value="${ebmsValidationQuery}"/>
+			<replacefilter token="@apiDAOFile@" value="hk/hku/cecid/hermes/api/conf/api.dao.xml"/>
+		</replace>
 		
 		<copy todir="${coreDir}/sql">
 			<fileset dir="${basedir}/temp/sql" />

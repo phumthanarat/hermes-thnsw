@@ -20,7 +20,13 @@ CATALINA_OPTS="$CATALINA_OPTS --add-opens java.base/java.net=ALL-UNNAMED -Djava.
 
 # Plugins and their database settings, the HTTPS certificate, and the
 # console users (created on first start, admin/admin).
-. "$CATALINA_BASE/bin/hermes-config.sh"
-. "$CATALINA_BASE/bin/hermes-tls.sh"
-. "$CATALINA_BASE/bin/admin-credentials.sh"
+# Tomcat's own tools (digest.sh, used by admin-credentials.sh) source this
+# file again: do the Hermes setup once, for the server start only.
+if [ -z "$HERMES_SETENV_DONE" ]; then
+    HERMES_SETENV_DONE=1
+    export HERMES_SETENV_DONE
+    . "${CATALINA_BASE:-$CATALINA_HOME}/bin/hermes-config.sh"
+    . "${CATALINA_BASE:-$CATALINA_HOME}/bin/hermes-tls.sh"
+    . "${CATALINA_BASE:-$CATALINA_HOME}/bin/admin-credentials.sh"
+fi
 export CATALINA_OPTS

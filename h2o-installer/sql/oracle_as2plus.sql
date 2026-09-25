@@ -42,6 +42,7 @@ CREATE TABLE message (
   time_stamp timestamp NOT NULL,
   status varchar2(2) NOT NULL,
   status_desc varchar2(4000),
+	created_via varchar2(20),
   PRIMARY KEY (message_id, message_box)
 );
 

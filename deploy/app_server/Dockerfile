@@ -7,8 +7,11 @@ WORKDIR /build
 COPY . /build
 RUN mvn -B -q pre-clean \
  && mvn -B -q package -Dmaven.test.skip=true
-# JDBC driver for MySQL 8.x
-RUN mvn -B -q dependency:copy -Dartifact=com.mysql:mysql-connector-j:8.4.0 -DoutputDirectory=/build/jdbc
+# JDBC drivers: MySQL 8.x, PostgreSQL, Oracle (HERMES_DB_TYPE picks one at start)
+RUN for a in com.mysql:mysql-connector-j:8.4.0 org.postgresql:postgresql:42.7.4 \
+             com.oracle.database.jdbc:ojdbc11:23.6.0.24.10; do \
+        mvn -B -q dependency:copy -Dartifact=$a -DoutputDirectory=/build/jdbc || exit 1; \
+    done
 RUN mkdir -p /hermes \
  && cd /hermes && jar xf /build/target/hermes2_bin.zip \
  && rm -rf plugins/corvus-as2-admin
@@ -32,7 +35,7 @@ RUN apt-get update \
 # Only the Hermes web application
 RUN rm -rf $CATALINA_HOME/webapps/* $CATALINA_HOME/webapps.dist
 COPY --from=build /hermes/webapps/corvus $CATALINA_HOME/webapps/corvus
-COPY --from=build /build/jdbc/mysql-connector-j-8.4.0.jar $CATALINA_HOME/webapps/corvus/WEB-INF/lib/
+COPY --from=build /build/jdbc/*.jar $CATALINA_HOME/webapps/corvus/WEB-INF/lib/
 
 # Plugins are installed from this pristine copy at every start, with the
 # database settings filled in (hermes-config.sh)

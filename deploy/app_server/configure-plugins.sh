@@ -1,40 +1,35 @@
 #!/bin/sh
 # Build time: fills the @token@ placeholders of the Hermes plugin
-# descriptors in $1 for a MySQL deployment. Where the database lives and
-# the account used are left as __HERMES_DB_HOST__ / __HERMES_DB_USER__ /
-# __HERMES_DB_PASSWORD__, filled at each start by hermes-config.sh, so no
-# credential is baked into the image.
+# descriptors in $1. Everything that depends on the database - its type
+# (MySQL, PostgreSQL, Oracle), where it is and the account used - is left
+# as a __HERMES_DB_*__ placeholder that hermes-config.sh fills at each
+# start, so one image serves every database and holds no credential.
 set -eu
 dir=$1
 
-# JDBC URLs are XML attribute values: "&" must be "&amp;" (and escaped for sed)
-jdbc() {
-    echo "jdbc:mysql:\/\/__HERMES_DB_HOST__\/$1?useSSL=false\&amp;allowPublicKeyRetrieval=true"
-}
-
-# each database: token prefix, database name, DAO descriptor
+# each Hermes database: token prefix, database name, DAO descriptor key
 set_db() {
     files=$1 prefix=$2 db=$3 dao=$4
     find $files -name '*.xml' -exec sed -i \
-        -e "s/@${prefix}DriverClass@/com.mysql.cj.jdbc.Driver/g" \
-        -e "s/@${prefix}ConnStr@/$(jdbc "$db")/g" \
-        -e "s/@${prefix}user@/__HERMES_DB_USER__/g" \
+        -e "s/@${prefix}DriverClass@/__HERMES_DB_DRIVER__/g" \
+        -e "s/@${prefix}ConnStr@/__HERMES_DB_URL_${db}__/g" \
+        -e "s/@${prefix}user@/__HERMES_DB_USER_${db}__/g" \
         -e "s/@${prefix}pw@/__HERMES_DB_PASSWORD__/g" \
-        -e "s/@${prefix}ValidationQuery@/SELECT now()/g" \
-        -e "s#@${prefix}DAOFile@#${dao}#g" {} \;
+        -e "s/@${prefix}ValidationQuery@/__HERMES_DB_VALIDATION__/g" \
+        -e "s#@${prefix}DAOFile@#__HERMES_DAO_${dao}__#g" {} \;
 }
 
 # as2plus shares as2's tokens but has its own database: do it first, scoped
 # to its plugin, before the global as2 substitution
-set_db "$dir/plugins/corvus-as2plus" as2 as2plus hk/hku/cecid/edi/as2/conf/as2.dao.xml
+set_db "$dir/plugins/corvus-as2plus" as2 as2plus AS2
 
 find "$dir" -name '*.xml' -exec sed -i \
     -e 's#@h2\.home@#/hermes_home#g' \
-    -e 's/@as2PageletAdaptor@/hk.hku.cecid.edi.as2.admin.listener.MessageHistoryPageletAdaptor/g' \
-    -e 's/@ebmsPageletAdaptor@/hk.hku.cecid.ebms.admin.listener.MessageHistoryPageletAdaptor/g' {} \;
+    -e 's/@as2PageletAdaptor@/__HERMES_AS2_PAGELET_ADAPTOR__/g' \
+    -e 's/@ebmsPageletAdaptor@/__HERMES_EBMS_PAGELET_ADAPTOR__/g' {} \;
 
-set_db "$dir" as2 as2 hk/hku/cecid/edi/as2/conf/as2.dao.xml
-set_db "$dir" ebms ebms hk/hku/cecid/ebms/spa/conf/ebms.mysql.dao.xml
-set_db "$dir" sfrm sfrm sfrm.dao.xml
-set_db "$dir" api apikeys hk/hku/cecid/hermes/api/conf/api.dao.xml
-set_db "$dir" listenerPorts listenerports hk/hku/cecid/piazza/corvus/core/main/admin/conf/admin.dao.xml
+set_db "$dir" as2 as2 AS2
+set_db "$dir" ebms ebms EBMS
+set_db "$dir" sfrm sfrm SFRM
+set_db "$dir" api apikeys API
+set_db "$dir" listenerPorts listenerports ADMIN

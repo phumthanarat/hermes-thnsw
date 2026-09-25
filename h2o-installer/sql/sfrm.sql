@@ -17,7 +17,7 @@ CREATE TABLE sfrm_partnership
   modified_timestamp timestamp NOT NULL DEFAULT now(),
   UNIQUE (partnership_id),
   PRIMARY KEY (partnership_seq)
-) WITH OIDS;
+);
 
 CREATE TABLE sfrm_message
 (
@@ -38,7 +38,7 @@ CREATE TABLE sfrm_message
   completed_timestamp timestamp,
   filename varchar,
   PRIMARY KEY (message_id, message_box)
-) WITH OIDS;
+);
 
 CREATE TABLE sfrm_message_segment 
 (
@@ -55,5 +55,71 @@ CREATE TABLE sfrm_message_segment
    proceed_timestamp timestamp,
    completed_timestamp timestamp,
    PRIMARY KEY (message_id, message_box, segment_no, segment_type)
-) WITH OIDS;
+);
 
+-- polling channels (FTP, SFTP, folder, mail)
+CREATE TABLE IF NOT EXISTS sfrm_ftp_channel (
+	channel_id varchar(50) NOT NULL,
+	name varchar(200) NOT NULL,
+	host varchar(255) NOT NULL,
+	port int NOT NULL DEFAULT 21,
+	username varchar(200),
+	password_encrypted varchar(1000),
+	remote_path varchar(500) NOT NULL DEFAULT '/',
+	is_passive_mode boolean NOT NULL DEFAULT true,
+	use_tls boolean NOT NULL DEFAULT false,
+	tls_cert_fingerprint varchar(200),
+	polling_interval int,
+	max_files_per_poll int,
+	is_disabled boolean NOT NULL DEFAULT false,
+	description varchar(500),
+	created_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (channel_id)
+);
+
+CREATE TABLE IF NOT EXISTS sfrm_sftp_channel (
+	channel_id varchar(50) NOT NULL,
+	name varchar(200) NOT NULL,
+	host varchar(255) NOT NULL,
+	port int NOT NULL DEFAULT 22,
+	username varchar(200),
+	password_encrypted varchar(1000),
+	remote_path varchar(500) NOT NULL DEFAULT '/',
+	host_key_fingerprint varchar(200),
+	polling_interval int,
+	max_files_per_poll int,
+	is_disabled boolean NOT NULL DEFAULT false,
+	description varchar(500),
+	created_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (channel_id)
+);
+
+CREATE TABLE IF NOT EXISTS sfrm_file_polling_channel (
+	channel_id varchar(50) NOT NULL,
+	name varchar(200) NOT NULL,
+	watch_path varchar(500) NOT NULL,
+	polling_interval int,
+	max_files_per_poll int,
+	is_disabled boolean NOT NULL DEFAULT false,
+	description varchar(500),
+	created_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (channel_id)
+);
+
+CREATE TABLE IF NOT EXISTS sfrm_mail_channel (
+	channel_id varchar(50) NOT NULL,
+	name varchar(200) NOT NULL,
+	protocol varchar(10) NOT NULL DEFAULT 'imap',
+	host varchar(255) NOT NULL,
+	port int,
+	username varchar(200),
+	password_encrypted varchar(1000),
+	folder varchar(200) NOT NULL DEFAULT 'INBOX',
+	use_ssl boolean NOT NULL DEFAULT true,
+	polling_interval int,
+	max_messages_per_poll int,
+	is_disabled boolean NOT NULL DEFAULT false,
+	description varchar(500),
+	created_timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	PRIMARY KEY (channel_id)
+);

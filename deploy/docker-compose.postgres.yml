@@ -1,0 +1,66 @@
+# Hermes on PostgreSQL: a separate gateway (app-pg, ports 38080/38443) with
+# its own PostgreSQL 16 database, from the same application image.
+#   docker compose -f docker-compose.postgres.yml up -d
+# Uses the passwords of .env (deploy/setup.sh).
+
+services:
+  db-pg:
+    image: postgres:16
+    container_name: h2o_db_pg
+    environment:
+      POSTGRES_PASSWORD: ${DB_ROOT_PASSWORD:?run deploy/setup.sh first}
+      HERMES_DB_USER: ${HERMES_DB_USER:-hermes}
+      HERMES_DB_PASSWORD: ${HERMES_DB_PASSWORD:?run deploy/setup.sh first}
+      TZ: Asia/Bangkok
+    volumes:
+      - h2o_pg_data:/var/lib/postgresql/data
+      - ../h2o-installer/sql:/sql:ro
+      - ./postgres/hermes-postgres.sh:/docker-entrypoint-initdb.d/10-hermes.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 60
+
+  db-pg-upgrade:
+    image: postgres:16
+    container_name: h2o_db_pg_upgrade
+    entrypoint: ["bash", "/hermes-postgres.sh"]
+    restart: "no"
+    environment:
+      PGHOST: db-pg
+      PGUSER: postgres
+      PGPASSWORD: ${DB_ROOT_PASSWORD}
+      HERMES_DB_USER: ${HERMES_DB_USER:-hermes}
+      HERMES_DB_PASSWORD: ${HERMES_DB_PASSWORD}
+    volumes:
+      - ../h2o-installer/sql:/sql:ro
+      - ./postgres/hermes-postgres.sh:/hermes-postgres.sh:ro
+    depends_on:
+      db-pg:
+        condition: service_healthy
+
+  app-pg:
+    image: h2o/app:2.0
+    container_name: h2o_app_pg
+    restart: unless-stopped
+    depends_on:
+      db-pg-upgrade:
+        condition: service_completed_successfully
+    environment:
+      HERMES_DB_TYPE: postgres
+      HERMES_DB_HOST: db-pg
+      HERMES_DB_USER: ${HERMES_DB_USER:-hermes}
+      HERMES_DB_PASSWORD: ${HERMES_DB_PASSWORD}
+      APP_TLS_HOSTNAME: ${APP_TLS_HOSTNAME:-localhost}
+      APP_ADMIN_HTTPS_PORT: "38443"
+    ports:
+      - "38080:8080"
+      - "38443:8443"
+    volumes:
+      - h2o_app_pg_logs:/hermes_home/logs
+      - h2o_app_pg_repository:/hermes_home/repository
+
+volumes:
+  h2o_pg_data:
+  h2o_app_pg_logs:
+  h2o_app_pg_repository:

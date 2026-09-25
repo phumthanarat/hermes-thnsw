@@ -1,0 +1,62 @@
+<!-- Oracle Database 23ai or later: admin.dao.xml with Oracle paging -->
+<dao-config>
+	<dao name="hk.hku.cecid.piazza.corvus.core.main.admin.dao.ListenerPortDAO">
+		<class>hk.hku.cecid.piazza.corvus.core.main.admin.dao.ds.ListenerPortDSDAO</class>
+		<parameter name="page_offset_first" value="true" />
+		<parameter name="table" value="listener_port" />
+		<parameter name="key" value="port_id" />
+		<parameter type="column" name="port_id" value="portId" />
+		<parameter type="column" name="name" value="name" />
+		<parameter type="column" name="bind_address" value="bindAddress" />
+		<parameter type="column" name="port" value="port" />
+		<parameter type="column" name="use_tls" value="useTls" />
+		<parameter type="column" name="target_service" value="targetService" />
+		<parameter type="column" name="is_disabled" value="isDisabled" />
+		<parameter type="column" name="description" value="description" />
+		<parameter type="column" name="created_timestamp" value="createdTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM listener_port WHERE port_id = ?" />
+		<parameter type="finder" name="find_all_ports" value="SELECT * FROM listener_port ORDER BY port_id" />
+		<parameter type="finder" name="find_enabled_ports" value="SELECT * FROM listener_port WHERE is_disabled = false ORDER BY port_id" />
+	</dao>
+
+	<dao name="hk.hku.cecid.piazza.corvus.core.main.admin.dao.CaIssuedCertDAO">
+		<class>hk.hku.cecid.piazza.corvus.core.main.admin.dao.ds.CaIssuedCertDSDAO</class>
+		<parameter name="page_offset_first" value="true" />
+		<parameter name="table" value="ca_issued_cert" />
+		<parameter name="key" value="serial_number" />
+		<parameter type="column" name="serial_number" value="serialNumber" />
+		<parameter type="column" name="subject_dn" value="subjectDn" />
+		<parameter type="column" name="cert" value="cert" />
+		<parameter type="column" name="revoked" value="revoked" />
+		<parameter type="column" name="issued_timestamp" value="issuedTimestamp" />
+		<parameter type="column" name="revoked_timestamp" value="revokedTimestamp" />
+		<parameter type="selective" name="insert" value="true" />
+		<parameter type="selective" name="update" value="true" />
+		<parameter type="finder" name="key" value="SELECT * FROM ca_issued_cert WHERE serial_number = ?" />
+		<parameter type="finder" name="find_all_certs" value="SELECT * FROM ca_issued_cert ORDER BY issued_timestamp DESC" />
+		<parameter type="finder" name="find_revoked_certs" value="SELECT * FROM ca_issued_cert WHERE revoked = true" />
+	</dao>
+
+	<!-- admin console security: audit log, per-user security, settings.
+	     Oracle paging. -->
+	<dao name="hk.hku.cecid.piazza.corvus.core.main.admin.dao.ConsoleSecurityDAO">
+		<class>hk.hku.cecid.piazza.corvus.core.main.admin.dao.ds.ConsoleSecurityDSDAO</class>
+		<parameter name="page_offset_first" value="true" />
+		<parameter name="table" value="audit_log" />
+		<parameter name="key" value="audit_id" />
+		<parameter type="sql" name="audit_insert" value="INSERT INTO audit_log (event_time, username, client_ip, action, target, outcome, detail) VALUES (?, ?, ?, ?, ?, ?, ?)" />
+		<parameter type="sql" name="audit_select" value="SELECT event_time, username, client_ip, action, target, outcome, detail FROM audit_log" />
+		<parameter type="sql" name="audit_count" value="SELECT count(*) FROM audit_log" />
+		<parameter type="sql" name="audit_page" value="ORDER BY event_time DESC, audit_id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY" />
+		<parameter type="sql" name="audit_purge" value="DELETE FROM audit_log WHERE event_time &lt; ?" />
+		<parameter type="sql" name="security_select" value="SELECT password_changed, password_history, totp_secret, totp_enabled, totp_last_step FROM console_user_security WHERE username = ?" />
+		<parameter type="sql" name="security_update" value="UPDATE console_user_security SET password_changed = ?, password_history = ?, totp_secret = ?, totp_enabled = ?, totp_last_step = ? WHERE username = ?" />
+		<parameter type="sql" name="security_insert" value="INSERT INTO console_user_security (password_changed, password_history, totp_secret, totp_enabled, totp_last_step, username) VALUES (?, ?, ?, ?, ?, ?)" />
+		<parameter type="sql" name="security_delete" value="DELETE FROM console_user_security WHERE username = ?" />
+		<parameter type="sql" name="setting_select_all" value="SELECT name, value FROM console_setting" />
+		<parameter type="sql" name="setting_update" value="UPDATE console_setting SET value = ? WHERE name = ?" />
+		<parameter type="sql" name="setting_insert" value="INSERT INTO console_setting (value, name) VALUES (?, ?)" />
+	</dao>
+</dao-config>
